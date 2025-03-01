@@ -1,0 +1,148 @@
+body {
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    font-family: Arial, sans-serif;
+    background: linear-gradient(to bottom, #416190, #776f98);
+    height: 100vh;
+}
+
+.slide-window {
+    position: fixed;
+    top: 0;
+    left: -300px; 
+    width: 300px;
+    height: 100vh;
+    background: rgba(97, 60, 192, 0.9);
+    transition: left 0.5s ease;
+    z-index: 5;
+}
+
+.slide-window.open {
+    left: 0; /* Полностью открыт */
+}
+
+.slide-window.closed {
+    left: -300px; /* Только кнопки (выдвижные без окна) */
+}
+
+.toggle-btn {
+    position: absolute;
+    right: -75px; 
+    background: rgba(70, 30, 169, 0.9);
+    border: none;
+    padding: 10px;
+    border-radius: 0 5px 5px 0;
+    cursor: pointer;
+    z-index: 10;
+    transition: background 0.3s ease, opacity 0.3s ease; /* выдвигание и прозрачность */
+}
+
+.toggle-btn.hidden {
+    opacity: 0; /* Прячет кнопки, когда выдвинуто окно */
+    pointer-events: none; /* Запрещает клик */
+}
+
+.toggle-btn:hover {
+    background: rgba(171, 144, 239, 0.9);
+}
+
+.icon {
+    width: 60px;
+    height: -70px;
+}
+
+/* позиция кнопок (выдвижных) */
+#calc-toggle {
+    top: 40%;
+    transform: translateY(-50%);
+}
+
+#gear-toggle {
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+#cup-toggle {
+    top: 60%;
+    transform: translateY(-50%);
+}
+
+.Title {
+    position: absolute;
+    top: 15%; 
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 2; 
+    font-family: 'Comfortaa', cursive; 
+    font-size: 5.5em;
+    color: #ffffff; 
+    text-align: center;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3); 
+}
+
+.moonre {
+    position: absolute;
+    top: 17%;
+    left: 69%;
+    transform: translate(-50%, -50%);
+    z-index: 2;
+    width: 170px; 
+    animation: moonreMove 3s infinite alternate;
+}
+
+.cloudmoon3 { /* left Title */
+    position: absolute;
+    top: 21%; 
+    left: 31%;
+    transform: translate(-50%, -50%);
+    z-index: 3;
+    width: 350px;
+    animation: cloudMove 6s infinite alternate;
+}
+
+.cloudmoon6 { /* Top title */
+    position: absolute;
+    top: 21%; 
+    left: 72%;
+    transform: translate(-50%, -50%);
+    z-index: 3;
+    width: 400px;
+    animation: cloudMove 6s infinite alternate;
+}
+
+.stars1 {
+    position: absolute;
+    top: 40%; 
+    left: 25%;
+    transform: translate(-50%, -50%);
+    z-index: 1;
+    width: 700px;
+}
+
+.stars2 {
+    position: absolute;
+    top: 45%; 
+    left: 75%;
+    transform: translate(-50%, -50%);
+    z-index: 1;
+    width: 700px;
+}
+
+@keyframes moonreMove {
+    0% {
+        transform: translate(-50%, -50%) translateY(0);
+    }
+    100% {
+        transform: translate(-50%, -50%) translateY(-3px);
+    }
+}
+
+@keyframes cloudMove {
+    0% {
+        transform: translate(-50%, -50%) translateX(-7px);
+    }
+    100% {
+        transform: translate(-50%, -50%) translateX(7px);
+    }
+}
