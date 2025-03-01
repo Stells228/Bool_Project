@@ -1,0 +1,267 @@
+body {
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    font-family: Arial, sans-serif;
+}
+
+#welcome-screen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    background: linear-gradient(to bottom, #416190, #776f98);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    transition: transform 0.8s ease-in-out;
+    cursor: pointer;
+}
+
+/* штука, чтоб окно при клике вверх уходило */
+#welcome-screen.hidden {
+    transform: translateY(-100%);
+}
+
+.image-container {
+    position: relative;
+    width: 500px;
+    height: 500px;
+}
+
+.moon {
+    position: absolute;
+    top: 60%;
+    left: -25%;
+    transform: translate(-50%, -50%);
+    z-index: 2;
+    width: 600px; 
+    animation: moonMove 6s infinite alternate;
+}
+
+.cloudmoon { /* cloud with moon */
+    position: absolute;
+    top: 90%;
+    left: -35%;
+    transform: translate(-50%, -50%);
+    z-index: 3;
+    width: 700px; 
+    animation: cloudmoon1Move 7s infinite alternate;
+}
+
+.cloudmoon2 { /* Top left */
+    position: absolute;
+    top: 15%; 
+    left: -65%;
+    transform: translate(-50%, -50%);
+    z-index: 3;
+    width: 450px; 
+    animation: cloudMove 7s infinite alternate;
+}
+
+.cloudmoon3 { /* Bottom right */
+    position: absolute;
+    top: 100%; 
+    left: 175%;
+    transform: translate(-50%, -50%);
+    z-index: 3;
+    width: 350px;
+    animation: cloudMove 8s infinite alternate;
+}
+
+.cloudmoon4 { /* Top center */
+    position: absolute;
+    top: 15%; 
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 3;
+    width: 450px; 
+    animation: cloudMove 8s infinite alternate;
+}
+
+.cloudmoon5 { /* Top right */
+    position: absolute;
+    top: 3%; 
+    left: 180%;
+    transform: translate(-50%, -50%);
+    z-index: 3;
+    width: 250px;
+    animation: cloudMove 8s infinite alternate;
+}
+
+.stars1 {
+    position: absolute;
+    top: 50%; 
+    left: -25%;
+    transform: translate(-50%, -50%);
+    z-index: 1;
+    width: 700px;
+}
+
+.stars2 {
+    position: absolute;
+    top: 50%; 
+    left: 140%;
+    transform: translate(-50%, -50%);
+    z-index: 1;
+    width: 800px;
+}
+
+.comet1 {
+    position: absolute;
+    top: -45%;
+    left: 200%;
+    width: 200px;
+    z-index: 3;
+    animation: cometFly1 9s infinite linear 3s; 
+}
+
+.comet2 {
+    position: absolute;
+    top: -45%;
+    left: 100%;
+    width: 200px;
+    z-index: 3;
+    animation: cometFly2 9s infinite linear 16s; 
+}
+
+.comet3 {
+    position: absolute;
+    top: -45%;
+    left: 10%;
+    width: 200px;
+    z-index: 3;
+    animation: cometFly3 9s infinite linear 21s; 
+}
+
+.comet4 {
+    position: absolute;
+    top: -40%;
+    left: -50%;
+    width: 200px;
+    z-index: 3;
+    animation: cometFly4 9s infinite linear 32s; 
+}
+
+
+.welcome-text {
+    position: absolute;
+    top: 59%; 
+    left: 63%;
+    transform: translate(-50%, -50%);
+    z-index: 4; /* будет выше all png */
+    font-family: 'Comfortaa', cursive; 
+    font-size: 7.5em;
+    color: #ffffff; 
+    text-align: center;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3); /* для глубины, добавила тени */
+}
+
+
+@keyframes moonMove {
+    0% {
+        transform: translate(-50%, -50%) translateY(0);
+    }
+    100% {
+        transform: translate(-50%, -50%) translateY(-25px);
+    }
+}
+
+@keyframes cloudmoon1Move {
+    0% {
+        transform: translate(-50%, -50%) translateX(40px);
+    }
+    100% {
+        transform: translate(-50%, -50%) translateY(-5px);
+    }
+}
+
+@keyframes cloudMove {
+    0% {
+        transform: translate(-50%, -50%) translateX(-15px);
+    }
+    100% {
+        transform: translate(-50%, -50%) translateX(15px);
+    }
+}
+
+@keyframes cometFly1 {
+    0% {
+        top: -40%;
+        left: 200%;
+        opacity: 1;
+    }
+    50% {
+        top: 50%;
+        left: 50%; 
+        opacity: 0;
+    }
+    100% {
+        top: 100%;
+        left: 0%; 
+        opacity: 0;
+    }
+}
+
+@keyframes cometFly2 {
+    0% {
+        top: -40%;
+        left: 100%;
+        opacity: 1;
+    }
+    50% {
+        top: 50%;
+        left: 0%; 
+        opacity: 0;
+    }
+    100% {
+        top: 100%;
+        left: -80%; 
+        opacity: 0;
+    }
+}
+
+@keyframes cometFly3 {
+    0% {
+        top: -30%;
+        left: 10%;
+        opacity: 1;
+    }
+    50% {
+        top: 50%;
+        left: -50%; 
+        opacity: 0;
+    }
+    100% {
+        top: 100%;
+        left: -100%; 
+        opacity: 0;
+    }
+}
+
+@keyframes cometFly4 {
+    0% {
+        top: -30%;
+        left: -50%;
+        opacity: 1;
+    }
+    50% {
+        top: 50%;
+        left: -150%; 
+        opacity: 0;
+    }
+    100% {
+        top: 100%;
+        left: -200%; 
+        opacity: 0;
+    }
+}
+
+#main-iframe {
+    width: 100%;
+    height: 100vh;
+    border: none;
+    display: block;
+}
