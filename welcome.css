@@ -159,6 +159,16 @@ body {
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3); /* для глубины, добавила тени */
 }
 
+.continue-btn {
+    position: absolute;
+    top: 86%; 
+    left: 64%;
+    transform: translate(-50%, -50%);
+    width: 95px;
+    z-index: 4; 
+    animation: continuePulse 2s infinite alternate; 
+}
+
 
 @keyframes moonMove {
     0% {
@@ -256,6 +266,15 @@ body {
         top: 100%;
         left: -200%; 
         opacity: 0;
+    }
+}
+
+@keyframes continuePulse {
+    0% {
+        transform: translate(-50%, -50%) scale(1) rotate(8deg);
+    }
+    100% {
+        transform: translate(-50%, -50%) scale(1.05) rotate(-4deg); 
     }
 }
 
