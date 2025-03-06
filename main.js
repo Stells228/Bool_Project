@@ -61,4 +61,27 @@ document.addEventListener('DOMContentLoaded', () => {
             console.error(`Elements not found for ${window.id}:`, { toggleBtn, slideWindow });
         }
     });
+
+    // Логика кнопки для "Play"
+    const mapBtn = document.getElementById('map-btn');
+    const mainScreen = document.getElementById('main-screen');
+    const levelIframe = document.getElementById('level-iframe');
+
+    if (mapBtn && mainScreen && levelIframe) {
+        mapBtn.addEventListener('click', () => {
+            mainScreen.classList.add('hidden'); // Скрыть основной экран
+            levelIframe.classList.remove('hidden');  // Показать карту уровней
+            setTimeout(() => {
+                levelIframe.style.opacity = '1'; //чтоб всё плавненько показывалось
+                windows.forEach(window => {
+                    document.getElementById(window.id).style.display = 'none';  // Скрыть все окна
+                });
+                mapBtn.style.display = 'none'; 
+            }, 100); // задержка для плавности перехода
+            console.log('Map button clicked, transitioning to level map');
+        });
+    } 
+    else {
+    console.error('Map elements not found:', { mapBtn, mainScreen, levelIframe });
+    }
 });
