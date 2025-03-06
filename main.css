@@ -146,3 +146,55 @@ body {
         transform: translate(-50%, -50%) translateX(7px);
     }
 }
+
+#main-screen {
+    position: relative; 
+    width: 100%;
+    height: 100vh;
+    transition: opacity 1s ease; /* расстворение */
+   }
+   
+   #main-screen.hidden {
+    opacity: 0; /* состояние для расстворения */
+   }
+   
+   .map-btn {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 150px;
+    height: 60px;
+    background: rgba(97, 60, 192, 0.9); 
+    border: 2px solid #ffffff;
+    border-radius: 8px;
+    font-family: 'Comfortaa', cursive;
+    font-size: 24px;
+    color: #ffffff;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+    cursor: pointer;
+    box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.3); 
+    transition: background 0.3s ease, box-shadow 0.3s ease;
+    z-index: 4;
+   }
+   
+   .map-btn:hover {
+    background: rgba(171, 144, 239, 0.9); 
+    box-shadow: inset 0 0 15px rgba(0, 0, 0, 0.5);
+   }
+   
+   #level-iframe {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border: none;
+    z-index: 10; 
+    transition: opacity 1s ease; /* 'aatrn hfccndjhtybz */
+   }
+   
+   #level-iframe.hidden {
+    opacity: 0;
+    pointer-events: none; /* Запрещаю действовать, когда скрыто */
+   }
