@@ -1,0 +1,99 @@
+.calculator {
+    padding: 20px; /* ширина в рамке */
+    display: flex;
+    flex-direction: column;
+    gap: 10px; /* промежутки (верх-низ) */
+}
+
+.Calc-name2 {
+    font-family: 'Comfortaa', cursive; 
+    font-size: 1.5em;
+    color: #ffffff; 
+    text-align: center;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3); 
+    margin-bottom: 50px; /* Отступ снизу */
+}
+
+.Calc-name {
+    font-family: 'Comfortaa', cursive; 
+    font-size: 2.8em;
+    color: #ffffff; 
+    text-align: center;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3); 
+    margin-bottom: 5px; /* Отступ снизу */
+}
+
+.calc-display { /* поле для просмотра нашего ввода */
+    width: 100%;
+    height: 30px;
+    background: rgba(200, 200, 200, 0.8);
+    border: 1px solid #ffffff;
+    font-family: 'Comfortaa', cursive;
+    font-size: 16px;
+    text-align: right;
+    padding: 5px 10px; /* выравнивание текста */
+    box-sizing: border-box;
+    color: #333;
+    overflow: hidden;
+    white-space: nowrap; /* обрезает слишком длинный текст, не перенося его */
+}
+
+.calc-input {
+    width: 100%;
+    height: 50px;
+    background: rgba(255, 255, 255, 0.9);
+    border: 2px solid #ffffff;
+    font-family: 'Comfortaa', cursive;
+    font-size: 24px;
+    text-align: right;
+    padding: 0 10px;
+    box-sizing: border-box;
+    color: #333;
+    white-space: nowrap;
+}
+
+.calc-buttons {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+}
+
+.calc-btn {
+    width: 100%;
+    height: 50px;
+    background: rgba(255, 255, 255, 0.7);
+    border: 1px solid #ffffff;
+    font-family: 'Comfortaa', cursive;
+    font-size: 18px;
+    color: #333;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+.calc-btn:hover {
+    background: rgba(255, 255, 255, 1);
+}
+
+.calc-btn.operator {
+    background: rgba(200, 200, 255, 0.7);
+}
+
+.calc-btn.operator:hover {
+    background: rgba(200, 200, 255, 1);
+}
+
+.calc-btn.clear {
+    background: rgba(233, 166, 249, 0.7);
+}
+
+.calc-btn.clear:hover {
+    background: rgba(255, 200, 200, 1);
+}
+
+.error-message {
+    display: none; /* По умолчанию скрыто */
+    color: rgb(255, 255, 255);
+    margin-left: 10px;
+    font-size: 14px;
+    font-family: 'Comfortaa', cursive;
+}
