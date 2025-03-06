@@ -4,11 +4,38 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="main.css">
+    <link rel="stylesheet" href="calculator.css">
     <link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@400&display=swap" rel="stylesheet">
 </head>
 <body>
     <div id="calc-window" class="slide-window">
-        <!-- КАЛЬКУЛЯТОР -->
+        <div class="calculator">
+            <div class="Calc-name">Bool's calculater</div>
+            <div class="Calc-name2">(not now)</div>
+            <div id="calc-display" class="calc-display"></div>
+            <input type="text" id="calc-input" class="calc-input" placeholder="0">
+            <span id="error-message" class="error-message"></span> <!-- Сообщение об ошибке -->
+            <div class="calc-buttons">
+                <button class="calc-btn number" data-value="7">7</button>
+                <button class="calc-btn number" data-value="8">8</button>
+                <button class="calc-btn number" data-value="9">9</button>
+                <button class="calc-btn operator" data-value="/">/</button>
+                <button class="calc-btn number" data-value="4">4</button>
+                <button class="calc-btn number" data-value="5">5</button>
+                <button class="calc-btn number" data-value="6">6</button>
+                <button class="calc-btn operator" data-value="*">*</button>
+                <button class="calc-btn number" data-value="1">1</button>
+                <button class="calc-btn number" data-value="2">2</button>
+                <button class="calc-btn number" data-value="3">3</button>
+                <button class="calc-btn operator" data-value="-">-</button>
+                <button class="calc-btn operator" data-value=".">.</button>
+                <button class="calc-btn number" data-value="0">0</button>
+                <button class="calc-btn operator" data-value="%">%</button>
+                <button class="calc-btn operator" data-value="+">+</button>
+                <button class="calc-btn clear" data-value="C" id="clear">C</button>
+                <button class="calc-btn operator" data-value="=" id="equals">=</button>
+            </div>
+        </div>
         <button id="calc-toggle" class="toggle-btn">
             <img src="Photos/calculator.png" alt="Calculator" class="icon">
         </button>
@@ -34,7 +61,9 @@
             <img src="Photos/stars1.png" alt="Stars1" class="stars1">
             <img src="Photos/stars2.png" alt="Stars2" class="stars2">
         </div>
+    </div>
 
     <script src="main.js"></script>
+    <script src="calculator.js"></script> <!-- место для первой логики (Буль кальк) -->
 </body>
 </html>
