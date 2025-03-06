@@ -7,7 +7,7 @@ body {
     height: 100vh;
 }
 
-.slide-window {
+.slide-window { /* Выдвижные окна */
     position: fixed;
     top: 0;
     left: -300px; 
@@ -18,12 +18,12 @@ body {
     z-index: 5;
 }
 
-.slide-window.open {
-    left: 0; /* Полностью открыт */
+.slide-window.open { /* Полностью открыты */
+    left: 0; 
 }
 
-.slide-window.closed {
-    left: -300px; /* Только кнопки (выдвижные без окна) */
+.slide-window.closed { /* Только кнопки (выдвижные без окна) */
+    left: -300px; 
 }
 
 .toggle-btn {
