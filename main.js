@@ -19,32 +19,42 @@ document.addEventListener('DOMContentLoaded', () => {
         const toggleBtn = document.getElementById(window.btnId);
 
         if (toggleBtn && slideWindow) {
-            //if сущ-ет, добавляется обработчик события
             toggleBtn.addEventListener('click', () => {
                 const isOpen = slideWindow.classList.contains('open');
-                const isFirstClick = firstClickStates[window.btnId]; //состояние клика для текущей кнопки
+                const isClosed = slideWindow.classList.contains('closed');
 
-                //переключеник классов в зависимости от состояния объекта
-                slideWindow.classList.toggle('open');
-                slideWindow.classList.toggle('closed', !isOpen && !isFirstClick);
-
-                //обработчик для других окон в проецесс совершения действия над "главным" окном
-                windows.forEach(otherWindow => {
-                    const otherBtn = document.getElementById(otherWindow.btnId);
-                    if (slideWindow.classList.contains('open')) {
-                        otherBtn.classList.toggle('hidden', otherWindow.btnId !== window.btnId);
-                    } 
-                    else {
-                        otherBtn.classList.remove('hidden');
+                if (isOpen) {
+                    slideWindow.classList.remove('open');
+                    slideWindow.classList.add('closed');
+                    windows.forEach(otherWindow => {
+                        document.getElementById(otherWindow.btnId).classList.remove('hidden');
+                    });
+                } 
+                else {
+                    slideWindow.classList.remove('closed');
+                    slideWindow.classList.add('open');
+                    if (firstClickStates[window.btnId]) {
+                        firstClickStates[window.btnId] = false;
                     }
-                });
+                    windows.forEach(otherWindow => {
+                        if (otherWindow.btnId !== window.btnId) {
+                            document.getElementById(otherWindow.btnId).classList.add('hidden');
+                        }
+                    });
+                }
 
-                //обновление состояния 1-го клика
-                firstClickStates[window.btnId] = false;
-
-                //Логировние - нужно, чтобы в конце, обработчик знал что, как и где происходит
-                console.log(`${window.btnId} clicked, window state:`, 
-                    slideWindow.classList.contains('open') ? 'open' : slideWindow.classList.contains('closed') ? 'closed' : 'hidden');
+                // тернарные опреаторы это, конечно, супер, но я опять в них запуталась
+                let state;
+                if (slideWindow.classList.contains('open')) {
+                    state = 'open';
+                }
+                else if (slideWindow.classList.contains('closed')) {
+                    state = 'closed';
+                }  
+                else {
+                    state = 'hidden';
+                }
+                console.log(`${window.btnId} clicked, window state: ${state}`);
             });
         } 
         else {
