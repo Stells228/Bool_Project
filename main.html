@@ -2,38 +2,128 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <title>Bool-helper</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="main.css">
     <link rel="stylesheet" href="calculator.css">
     <link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@400&display=swap" rel="stylesheet">
 </head>
-<body>
-    <div id="calc-window" class="slide-window">
+<body> 
+    <!-- Выдвижное окно с калькулятором -->
+    <!-- Задания: 1,2,3,8,9 -->
+    <div id="calc-window" class="slide-window"> 
         <div class="calculator">
-            <div class="Calc-name">Bool's calculater</div>
-            <div class="Calc-name2">(not now)</div>
-            <div id="calc-display" class="calc-display"></div>
-            <input type="text" id="calc-input" class="calc-input" placeholder="0">
-            <span id="error-message" class="error-message"></span> <!-- Сообщение об ошибке -->
-            <div class="calc-buttons">
-                <button class="calc-btn number" data-value="7">7</button>
-                <button class="calc-btn number" data-value="8">8</button>
-                <button class="calc-btn number" data-value="9">9</button>
-                <button class="calc-btn operator" data-value="/">/</button>
-                <button class="calc-btn number" data-value="4">4</button>
-                <button class="calc-btn number" data-value="5">5</button>
-                <button class="calc-btn number" data-value="6">6</button>
-                <button class="calc-btn operator" data-value="*">*</button>
-                <button class="calc-btn number" data-value="1">1</button>
-                <button class="calc-btn number" data-value="2">2</button>
-                <button class="calc-btn number" data-value="3">3</button>
-                <button class="calc-btn operator" data-value="-">-</button>
-                <button class="calc-btn operator" data-value=".">.</button>
-                <button class="calc-btn number" data-value="0">0</button>
-                <button class="calc-btn operator" data-value="%">%</button>
-                <button class="calc-btn operator" data-value="+">+</button>
-                <button class="calc-btn clear" data-value="C" id="clear">C</button>
-                <button class="calc-btn operator" data-value="=" id="equals">=</button>
+            <div class="Calc-name">Bool's Calculator</div>
+            <div class="Calc-name2">Boolean Functions</div>
+            <!-- Выбор задания -->
+            <div class="mode-selection">
+                <select id="mode-select" class="mode-dropdown">
+                    <option value="random">Рандом функция</option>
+                    <option value="residual">Остаточная ф-я</option>
+                    <option value="reconstruct">Реконструкция ф-и</option>
+                    <option value="sdnf">СДНФ</option>
+                    <option value="sknf">СКНФ</option>
+                </select>
+            </div>
+            <!-- Блок рандомной функции (кнопки и внутрянка) -->
+            <!-- Задание 1 -->
+            <div class="calc-mode" id="random-mode">
+                <div class="calc-input-group">
+                    <label for="arg-count" class="calc-label">Число аргументов (n):</label>
+                    <input type="number" id="arg-count" class="calc-input" min="1" max="6" placeholder="Введите n от 1 до 6">
+                </div>
+                <div id="calc-display-random" class="calc-display"></div>
+                <div class="calc-buttons">
+                    <button class="calc-btn generate" id="generate">Построить</button>
+                    <button class="calc-btn clear" id="clear-random">C</button>
+                </div>
+            </div>
+            <!-- Остаточная функция -->
+            <!-- Задание 2 -->
+            <div class="calc-mode" id="residual-mode" style="display: none;">
+                <div class="calc-input-group">
+                    <label for="func-vector" class="calc-label">Вектор функции (0 и 1):</label>
+                    <input type="text" id="func-vector" class="calc-input" placeholder="например, 10110010">
+                </div>
+                <div class="calc-input-group">
+                    <label for="arg-count-residual" class="calc-label">Число аргументов (n):</label>
+                    <input type="number" id="arg-count-residual" class="calc-input" min="1" max="6" placeholder="Введите n от 1 до 6">
+                </div>
+                <div class="calc-input-group">
+                    <label for="fix-arg" class="calc-label">Номер аргумента (например, 1 для x1):</label>
+                    <input type="number" id="fix-arg" class="calc-input" min="1" placeholder="Номер аргумента">
+                </div>
+                <div class="calc-input-group">
+                    <label for="fix-value" class="calc-label">Значение аргумента (0 или 1):</label>
+                    <select id="fix-value" class="calc-input">
+                        <option value="0">0</option>
+                        <option value="1">1</option>
+                    </select>
+                </div>
+                <div id="calc-display-residual" class="calc-display"></div>
+                <div class="calc-buttons">
+                    <button class="calc-btn compute" id="compute-residual">Вычислить</button>
+                    <button class="calc-btn clear" id="clear-residual">C</button>
+                </div>
+            </div>
+            <!-- Реконструкция функции -->
+            <!-- Задание 3 --> 
+            <div class="calc-mode" id="reconstruct-mode" style="display: none;">
+                <div class="calc-input-group">
+                    <label for="vector0" class="calc-label">Нулевая остаточная (x_k = 0):</label>
+                    <input type="text" id="vector0" class="calc-input" placeholder="например, 0101">
+                </div>
+                <div class="calc-input-group">
+                    <label for="vector1" class="calc-label">Еденичная остаточная (x_k = 1):</label>
+                    <input type="text" id="vector1" class="calc-input" placeholder="например, 1010">
+                </div>
+                <div class="calc-input-group">
+                    <label for="arg-count-reconstruct" class="calc-label">Число аргументов (n):</label>
+                    <input type="number" id="arg-count-reconstruct" class="calc-input" min="1" max="6" placeholder="Введите n от 1 до 6">
+                </div>
+                <div class="calc-input-group">
+                    <label for="fixed-arg" class="calc-label">Номер аргумента (например, 1 для x1):</label>
+                    <input type="number" id="fixed-arg" class="calc-input" min="1" placeholder="Номер аргумента">
+                </div>
+                <div id="calc-display-reconstruct" class="calc-display"></div>
+                <div class="calc-buttons">
+                    <button class="calc-btn reconstruct" id="reconstruct">Реконструкция</button>
+                    <button class="calc-btn clear" id="clear-reconstruct">C</button>
+                </div>
+            </div>
+            <!-- СДНФ -->
+            <!-- Задание 8 -->
+            <div class="calc-mode" id="sdnf-mode" style="display: none;">
+                <div class="calc-input-group">
+                    <label for="func-vector-sdnf" class="calc-label">Вектор функции (0 и 1):</label>
+                    <input type="text" id="func-vector-sdnf" class="calc-input" placeholder="например, 01011010">
+                </div>
+                <div class="calc-input-group">
+                    <label for="arg-count-sdnf" class="calc-label">Число аргументов (n):</label>
+                    <input type="number" id="arg-count-sdnf" class="calc-input" min="1" max="6" placeholder="Введите n от 1 до 6">
+                </div>
+                <div id="calc-display-sdnf" class="calc-display"></div>
+                <div class="calc-buttons">
+                    <button class="calc-btn build" id="build-sdnf">Построить СДНФ</button>
+                    <button class="calc-btn clear" id="clear-sdnf">C</button>
+                </div>
+            </div>
+            <!-- СКНФ -->
+            <!-- Задание 9 -->
+            <div class="calc-mode" id="sknf-mode" style="display: none;">
+                <div class="calc-input-group">
+                    <label for="func-vector-sknf" class="calc-label">Вектор функции (0 и 1):</label>
+                    <input type="text" id="func-vector-sknf" class="calc-input" placeholder="например, 01011010">
+                </div>
+                <div class="calc-input-group">
+                    <label for="arg-count-sknf" class="calc-label">Число аргументов (n):</label>
+                    <input type="number" id="arg-count-sknf" class="calc-input" min="1" max="6" placeholder="Введите n от 1 до 6">
+                </div>
+                <div id="calc-display-sknf" class="calc-display"></div>
+                <div class="calc-buttons">
+                    <button class="calc-btn build" id="build-sknf">Построить СКНФ</button>
+                    <button class="calc-btn clear" id="clear-sknf">C</button>
+                </div>
             </div>
         </div>
         <button id="calc-toggle" class="toggle-btn">
@@ -66,6 +156,6 @@
     <iframe id="level-iframe" src="map.html" style="display: none;"></iframe>
 
     <script src="main.js"></script>
-    <script src="calculator.js"></script> <!-- место для первой логики (Буль кальк) -->
+    <script src="calculator.js"></script>
 </body>
 </html>
