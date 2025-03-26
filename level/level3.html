@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Уровень 3 - ДНФ</title>
+    <link rel="stylesheet" href="../level/lvl3.css">
+    <link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@400&display=swap" rel="stylesheet">
+</head>
+<body>
+    <img src="../Photos/stars1.png" alt="Stars" class="stars stars1">
+    <img src="../Photos/stars2.png" alt="Stars" class="stars stars2">
+    <img src="../Photos/moon.png" alt="Moon" class="moon">
+    <img src="../Photos/cloudmoon1.png" alt="Cloud" class="cloud cloud1">
+    <img src="../Photos/cloudmoon2.png" alt="Cloud" class="cloud cloud2">
+    <img src="../Photos/cloudmoon3.png" alt="Cloud" class="cloud cloud3">
+    <img src="../Photos/cloudmoon4.png" alt="Cloud" class="cloud cloud4">
+    <img src="../Photos/cloudmoon5.png" alt="Cloud" class="cloud cloud5">
+    <img src="../Photos/cloudmoon6.png" alt="Cloud" class="cloud cloud6">
+    <img src="../Photos/comet.png" alt="Comet 1" class="comet1">
+    <img src="../Photos/comet.png" alt="Comet 2" class="comet2">
+    <img src="../Photos/comet.png" alt="Comet 3" class="comet3">
+    <img src="../Photos/comet.png" alt="Comet 4" class="comet4">
+
+    <div class="level-container">
+        <div class="nav-buttons">
+            <button class="nav-icon-btn" id="back-to-level-menu">
+                <img src="../Photos/list.png" alt="Menu" class="nav-icon">
+            </button>
+            <button class="nav-icon-btn" id="prev-level">
+                <img src="../Photos/left.png" alt="Prev" class="nav-icon">
+            </button>
+            <button class="nav-icon-btn" id="next-level">
+                <img src="../Photos/right.png" alt="Next" class="nav-icon">
+            </button>
+        </div>
+
+        <h1>Уровень 3</h1>
+        <p class="task-description">
+            Определите дизъюнктивную нормальную форму (ДНФ) булевой функции, заданной вектором функции. Введите ДНФ в формате <code>(¬x1 ∧ x2) ∨ (x1 ∧ ¬x2)</code>. Если функция всегда равна 0, введите «0»
+        </p>
+
+        <div class="variable-select-container">
+            <label for="variable-select">Количество переменных:</label>
+            <select id="variable-select">
+                <option value="" disabled selected>Выберите кол-во переменных</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+            </select>
+        </div>
+
+        <div class="content-wrapper">
+            <div class="left-panel">
+                <div class="function-vector" id="function-vector"></div>
+                <div class="truth-table-wrapper">
+                    <div class="truth-table-container" id="truth-table-container"></div>
+                </div>
+            </div>
+            
+            <div class="right-panel">
+                <div class="dnf-input-container">
+                    <label for="dnf-input">Введите ДНФ:</label>
+                    <input type="text" id="dnf-input" placeholder="Введите ДНФ">
+                    <div class="symbol-buttons">
+                        <button class="symbol-btn" data-symbol="¬">¬</button>
+                        <button class="symbol-btn" data-symbol="∧">∧</button>
+                        <button class="symbol-btn" data-symbol="∨">∨</button>
+                        <button class="symbol-btn" data-symbol="(">(</button>
+                        <button class="symbol-btn" data-symbol=")">)</button>
+                        <button class="symbol-btn" data-symbol="x1">x1</button>
+                        <button class="symbol-btn" data-symbol="x2">x2</button>
+                        <button class="symbol-btn" data-symbol="x3">x3</button>
+                        <button class="symbol-btn" data-symbol="x4">x4</button>
+                        <button class="symbol-btn delete-btn" id="delete-btn">С</button>
+                    </div>
+                </div>
+                
+                <div class="button-group">
+                    <button class="submit-btn" id="submit-btn">Найти</button>
+                    <button class="try-again-btn" id="try-again-btn" style="display: none;">Ещё раз</button>
+                </div>
+                
+                <div class="feedback" id="feedback"></div>
+            </div>
+        </div>
+    </div>
+    <script src="../level/lvl3.js"></script>
+</body>
+</html> 
