@@ -1,0 +1,251 @@
+body {
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+    background: linear-gradient(to bottom, #416190, #776f98);
+    height: 100vh;
+    overflow: hidden;
+}
+
+/*блоки с уровнями*/
+.map-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 88vh;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+.map-title {
+    font-family: 'Comfortaa', cursive;
+    font-size: 3em;
+    color: #ffffff;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+    margin-bottom: 40px;
+}
+
+/*hf,jnf c ,kjrfvb */
+.level-scroll {
+    display: flex;
+    overflow-x: auto;
+    scroll-behavior: smooth;
+    gap: 20px;
+    width: 80%;
+    padding: 10px;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    align-items: flex-start; /*выравнивание */
+}
+
+.level-block-link {
+    text-decoration: none; /*чтоб не подчёркивалась, зараза*/
+}
+
+.level-block {
+    flex: 0 0 344px; /* Жёстко фиксируем ширину */
+    height: 344px;
+    min-width: 344px; 
+    max-width: 344px; 
+    background: rgba(97, 60, 192, 0.6);
+    border: 2px solid #ffffff;
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    box-sizing: border-box;
+    transition: transform 0.3s ease, background 0.3s ease;
+    cursor: pointer;
+    text-align: center; /* Центрируем текст */
+}
+
+.level-block p {
+    font-family: 'Comfortaa', cursive;
+    font-size: 1.2em;
+    color: #ffffff;
+    margin: 0;
+    padding: 0 10px;
+    width: 100%; /* Занимает всю ширину */
+    display: block;
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+.level-block:hover {
+    transform: scale(1.05); /*анимация увелечения */
+    background: rgba(171, 144, 239, 0.6);
+}
+
+.level-title {
+    font-family: 'Comfortaa', cursive;
+    font-size: 2.2em;
+    font-weight: bold;
+    color: #ffffff;
+    margin-bottom: 15px;
+    width: 100%; /* Занимает всю ширину */
+}
+
+.scroll-btn {
+    position: absolute;
+    top: 60%;
+    transform: translateY(-50%);
+    background: rgba(97, 60, 192, 0.9);
+    border: 2px solid #ffffff;
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    font-size: 1.7em;
+    color: #ffffff;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+.scroll-btn:hover {
+    background: rgba(171, 144, 239, 0.9);
+} 
+
+.scroll-btn.left {
+    left: 5%;
+}
+
+.scroll-btn.right {
+    right: 5%;
+}
+
+.main-menu-btn {
+    position: absolute;
+    margin-bottom: -2%;
+    bottom: 20px;
+    background: rgba(97, 60, 192, 0.9);
+    border: 2px solid #ffffff;
+    border-radius: 8px;
+    padding: 10px 20px;
+    font-family: 'Comfortaa', cursive;
+    font-size: 1em;
+    color: #ffffff;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.2s ease;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.main-menu-btn:hover {
+    background: rgba(171, 144, 239, 0.9);
+    transform: scale(1.05);
+}
+
+.home-icon {
+    width: 20px;
+    height: 20px;
+    transition: transform 0.2s ease;
+    color: #ffffff;
+}
+
+.main-menu-btn:hover {
+    background: rgba(171, 144, 239, 0.9);
+    transform: scale(1.05);
+}
+
+.stars {
+    position: fixed;
+    z-index: -1;
+    opacity: 0.8;
+}
+
+.stars1 {
+    top: 5%;
+    left: 1%;
+    width: 800px;
+    animation: float 55s infinite linear reverse;
+}
+
+.stars2 {
+    bottom: 10%;
+    right: 1%;
+    width: 600px;
+    animation: float 50s infinite linear reverse;
+}
+
+.moon {
+    position: fixed;
+    top: 9%;
+    right: 64%;
+    width: 100px;
+    z-index: -1;
+}
+
+.cloud {
+    position: fixed;
+    z-index: -1;
+    opacity: 1;
+}
+
+.cloud1 {
+    top: 17%;
+    left: 3%;
+    width: 230px;
+    animation: float 12s infinite linear;
+    z-index: 5;
+}
+
+.cloud2 {
+    top: 5%;
+    right: 10%;
+    width: 200px;
+    animation: float 18s infinite linear reverse;
+}
+
+.cloud3 {
+    top: 8%;
+    right: 20%;
+    width: 250px;
+    animation: float 18s infinite linear reverse;
+}
+
+.cloud4 {
+    top: 11%;
+    right: 60%;
+    width: 250px;
+    animation: float 18s infinite linear reverse;
+}
+
+.cloud5 {
+    top: 28%;
+    right: 21%;
+    width: 250px;
+    animation: float 12s infinite linear reverse;
+}
+
+.cloud6 {
+    top: 78%;
+    right: 35%;
+    width: 250px;
+    animation: float 18s infinite linear reverse;
+    z-index: 5;
+}
+
+/*траектория полёта*/
+@keyframes float {
+    0%, 100% {
+        transform: translateY(0) translateX(0);
+    }
+    25% {
+        transform: translateY(-6px) translateX(6px);
+    }
+    50% {
+        transform: translateY(5px) translateX(-5px);
+    }
+    75% {
+        transform: translateY(6px) translateX(5px);
+    }
+}
+
+/*вот эту штуку вот вообще никому не трогать!!!*/
+.map-container {
+    position: relative;
+    z-index: 1;
+}
