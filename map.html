@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Level Selection</title>
+    <link rel="stylesheet" href="map.css">
+    <link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@400&display=swap" rel="stylesheet">
+</head>
+<body>
+    <img src="Photos/stars1.png" alt="Stars" class="stars stars1">
+    <img src="Photos/stars2.png" alt="Stars" class="stars stars2">
+    <img src="Photos/moon.png" alt="Moon" class="moon">
+    <img src="Photos/cloudmoon1.png" alt="Cloud" class="cloud cloud1">
+    <img src="Photos/cloudmoon2.png" alt="Cloud" class="cloud cloud2">
+    <img src="Photos/cloudmoon3.png" alt="Cloud" class="cloud cloud3">
+    <img src="Photos/cloudmoon4.png" alt="Cloud" class="cloud cloud4">
+    <img src="Photos/cloudmoon5.png" alt="Cloud" class="cloud cloud5">
+    <img src="Photos/cloudmoon6.png" alt="Cloud" class="cloud cloud6">
+
+    <div class="map-container">
+        <h1 class="map-title">Выбор уровня</h1>
+        <div class="level-scroll">
+            <a href="level/level1.html" target="_parent" class="level-block-link">
+                <div class="level-block" data-level="1">
+                    <span class="level-title">Уровень 1</span>
+                    <p>Нахождение имени ф-ии <br>с 2 аргументами</br></p>
+                </div>
+            </a>
+            <a href="level/level2.html" target="_parent" class="level-block-link">
+                <div class="level-block" data-level="2">
+                    <span class="level-title">Уровень 2</span>
+                    <p>Существенные и фиктивные переменные</p>
+                </div>
+            </a>
+            <a href="level/level3.html" target="_parent" class="level-block-link">
+                <div class="level-block" data-level="3">
+                    <span class="level-title">Уровень 3</span>
+                    <p>ДНФ</p>
+                </div>
+            </a> 
+            <a href="level/level4.html" target="_parent" class="level-block-link">
+                <div class="level-block" data-level="4">
+                    <span class="level-title">Уровень 4</span>
+                    <p>КНФ</p>
+                </div>
+            </a>
+            <a href="level/level5.html" target="_parent" class="level-block-link">
+                <div class="level-block" data-level="5">
+                    <span class="level-title">Уровень 5</span>
+                    <p>Предполные классы булевой ф-ии</p>
+                </div>
+            </a>
+            <a href="level/level6.html" target="_parent" class="level-block-link">
+                <div class="level-block" data-level="6">
+                    <span class="level-title">Уровень 6</span>
+                    <p>Полные системы булевой <br>ф-ии</br></p>
+                </div>
+            </a>
+        </div>
+        <button class="scroll-btn left" id="scroll-left">←</button>
+        <button class="scroll-btn right" id="scroll-right">→</button>
+        <button class="main-menu-btn" id="main-menu-btn">
+            <img src="Photos/home.png" alt="Home" class="home-icon">
+            В главное меню
+        </button>
+    </div>
+    <script src="map.js"></script>
+</body>
+</html>
