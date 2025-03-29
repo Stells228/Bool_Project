@@ -1,0 +1,102 @@
+.settings-container {
+    padding: 20px;
+    color: #ffffff;
+    font-family: 'Comfortaa', cursive;
+    text-align: center;
+}
+
+.settings-title {
+    font-size: 2em;
+    margin-bottom: 20px;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.mode-toggle {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    margin-bottom: 20px;
+}
+
+.mode-btn {
+    padding: 10px 20px;
+    background: rgba(97, 60, 192, 0.9);
+    border: 2px solid #ffffff;
+    border-radius: 8px;
+    font-size: 1.2em;
+    color: #ffffff;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.2s ease;
+}
+
+.mode-btn:hover {
+    background: rgba(171, 144, 239, 0.9);
+    transform: scale(1.05);
+}
+
+.mode-btn.active {
+    background: rgba(46, 204, 113, 0.8);
+}
+
+.new-game-btn {
+    margin-top: 30px;
+    padding: 10px 20px;
+    background: rgba(97, 60, 192, 0.9);
+    border: 2px solid #ffffff;
+    border-radius: 8px;
+    font-family: 'Comfortaa', cursive;
+    font-size: 1.2em;
+    color: #ffffff;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    width: 80%;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.new-game-btn:hover {
+    background: rgba(171, 144, 239, 0.9);
+    transform: scale(1.05);
+}
+
+.reset-icon {
+    width: 20px;
+    height: 20px;
+}
+
+.custom-notification {
+    position: fixed;
+    bottom: 30px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 1000;
+    transition: all 0.3s ease;
+}
+
+.custom-notification.hidden {
+    opacity: 0;
+    visibility: hidden;
+    transform: translateX(-50%) translateY(20px);
+}
+
+.notification-content {
+    background: rgba(97, 60, 192, 0.95);
+    color: white;
+    padding: 15px 25px;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    font-family: 'Comfortaa', cursive;
+    font-size: 1em;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 2px solid rgba(255, 255, 255, 0.2);
+}
+
+.notification-message {
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+}
