@@ -1,12 +1,12 @@
 document.addEventListener('DOMContentLoaded', () => {
-    // создала массив объектов со св-ами
+    // Массив объектов для выдвижных окон
     const windows = [
         { id: 'calc-window', btnId: 'calc-toggle' },
         { id: 'gear-window', btnId: 'gear-toggle' },
         { id: 'cup-window', btnId: 'cup-toggle' }
     ];
 
-    // Храню состояние нажатия кнопок
+    // Храним состояние первого клика для кнопок
     const firstClickStates = {
         'calc-toggle': true,
         'gear-toggle': true,
@@ -14,7 +14,6 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     windows.forEach(window => {
-        //получаю данные об эл-ах
         const slideWindow = document.getElementById(window.id);
         const toggleBtn = document.getElementById(window.btnId);
 
@@ -43,14 +42,13 @@ document.addEventListener('DOMContentLoaded', () => {
                     });
                 }
 
-                // тернарные опреаторы это, конечно, супер, но я опять в них запуталась
                 let state;
                 if (slideWindow.classList.contains('open')) {
                     state = 'open';
-                }
+                } 
                 else if (slideWindow.classList.contains('closed')) {
                     state = 'closed';
-                }  
+                } 
                 else {
                     state = 'hidden';
                 }
@@ -62,26 +60,53 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // Логика кнопки для "Play"
-    const mapBtn = document.getElementById('map-btn');
+    // Логика кнопки "Play"
+     const mapBtn = document.getElementById('map-btn');
     const mainScreen = document.getElementById('main-screen');
     const levelIframe = document.getElementById('level-iframe');
 
     if (mapBtn && mainScreen && levelIframe) {
         mapBtn.addEventListener('click', () => {
-            mainScreen.classList.add('hidden'); // Скрыть основной экран
-            levelIframe.classList.remove('hidden');  // Показать карту уровней
+            const gameMode = mapBtn.dataset.mode;
+            mainScreen.classList.add('hidden');
+            
+            // чистим iframe src 
+            levelIframe.src = '';
             setTimeout(() => {
-                levelIframe.style.opacity = '1'; //чтоб всё плавненько показывалось
-                windows.forEach(window => {
-                    document.getElementById(window.id).style.display = 'none';  // Скрыть все окна
-                });
-                mapBtn.style.display = 'none'; 
-            }, 100); // задержка для плавности перехода
-            console.log('Map button clicked, transitioning to level map');
+                levelIframe.src = `map.html?mode=${gameMode}`;
+                levelIframe.classList.remove('hidden');
+                levelIframe.style.display = 'block';
+                
+                setTimeout(() => {
+                    levelIframe.style.opacity = '1';
+                    
+                    windows.forEach(window => {
+                        const slideWindow = document.getElementById(window.id);
+                        slideWindow.classList.remove('open');
+                        slideWindow.classList.add('closed');
+                        document.getElementById(window.btnId).classList.remove('hidden');
+                    });
+                    
+                    mapBtn.style.display = 'none';
+                }, 100);
+            }, 50);
         });
-    } 
-    else {
-    console.error('Map elements not found:', { mapBtn, mainScreen, levelIframe });
     }
+
+    window.addEventListener('message', (event) => {
+        console.log('Received message:', event.data);
+        
+        if (event.data && event.data.type === 'return-to-main') {
+            console.log('Returning to main menu');
+            mainScreen.classList.remove('hidden');
+            levelIframe.classList.add('hidden');
+            levelIframe.style.display = 'none';
+            mapBtn.style.display = 'block';
+            
+            // сброс айфрейма
+            setTimeout(() => {
+                levelIframe.src = 'about:blank';
+            }, 100);
+        }
+    });
 });
