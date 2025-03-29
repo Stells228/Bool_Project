@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="main.css">
     <link rel="stylesheet" href="calculator.css">
+    <link rel="stylesheet" href="settings.css">
     <link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@400&display=swap" rel="stylesheet">
 </head>
 <body> 
@@ -131,7 +132,18 @@
         </button>
     </div>
     <div id="gear-window" class="slide-window">
-        <!-- НАСТРОЙКИ -->
+        <div class="settings-container">
+            <h2 class="settings-title">Настройки</h2>
+            <div class="mode-toggle">
+                <button class="mode-btn" id="normal-mode">Свободный</button>
+                <button class="mode-btn" id="passing-mode">Прохождение</button>
+            </div>
+            <button id="new-game-btn" class="new-game-btn">
+                <img src="Photos/restart.png" alt="New Game" class="reset-icon">
+                Новая игра
+            </button>
+        </div>
+        <!-- Настройки -->
         <button id="gear-toggle" class="toggle-btn">
             <img src="Photos/gear.png" alt="Gear" class="icon">
         </button>
@@ -151,11 +163,12 @@
             <img src="Photos/stars1.png" alt="Stars1" class="stars1">
             <img src="Photos/stars2.png" alt="Stars2" class="stars2">
         </div>
-        <button id="map-btn" class="map-btn">Play</button>
+        <button id="map-btn" class="map-btn" data-mode="normal">Play</button>
     </div>
     <iframe id="level-iframe" src="map.html" style="display: none;"></iframe>
 
     <script src="main.js"></script>
+    <script src="settings.js"></script>
     <script src="calculator.js"></script>
 </body>
 </html>
