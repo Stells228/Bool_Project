@@ -14,18 +14,32 @@ document.addEventListener('DOMContentLoaded', () => {
 
     updateLevelAvailability();
 
+    // Центрируем первый блок при загрузке
+    const firstBlock = levelScroll.querySelector('.level-block');
+    if (firstBlock) {
+        const blockWidth = firstBlock.offsetWidth;
+        const containerWidth = levelScroll.offsetWidth;
+        const scrollPosition = firstBlock.offsetLeft - (containerWidth - blockWidth) / 2;
+        levelScroll.scrollTo({ left: scrollPosition, behavior: 'smooth' });
+    }
+
     // Обработка нажатия кнопки главного меню
     mainMenuBtn.addEventListener('click', () => {
         console.log('Main menu button clicked');
         try {
             if (window.parent !== window) {
-                // отправка сообщения родителю
-                window.parent.postMessage({ type: 'return-to-main' }, '*');
+                document.body.style.transition = 'opacity 0.5s ease-in-out';
+                document.body.style.opacity = '0';
+                
+                setTimeout(() => {
+                    window.postMessage({ type: 'return-to-main' }, '*');
+                }, 500);
             } 
             else {
                 window.location.href = 'main.html';
             }
-        } catch (error) {
+        } 
+        catch (error) {
             console.error('Error handling main menu click:', error);
             window.location.href = 'main.html';
         }
@@ -82,4 +96,11 @@ document.addEventListener('DOMContentLoaded', () => {
     scrollRightBtn.addEventListener('click', () => {
         levelScroll.scrollBy({ left: scrollAmount, behavior: 'smooth' });
     });
+
+    // Плавное появление страницы
+    document.body.style.opacity = '0';
+    setTimeout(() => {
+        document.body.style.transition = 'opacity 0.5s ease-in-out';
+        document.body.style.opacity = '1';
+    }, 100);
 });
