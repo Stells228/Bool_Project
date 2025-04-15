@@ -20,262 +20,532 @@ body {
     cursor: pointer;
 }
 
-/* штука, чтоб окно при клике вверх уходило */
 #welcome-screen.hidden {
     transform: translateY(-100%);
 }
 
 .image-container {
     position: relative;
-    width: 500px;
-    height: 500px;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
 }
 
-.moon {
+/* База для всех элементов */
+.moon, .cloudmoon, .cloudmoon2, .cloudmoon3, .cloudmoon4, .cloudmoon5, 
+.stars1, .stars2, .comet1, .comet2, .comet3, .comet4, .continue-btn {
     position: absolute;
-    top: 60%;
-    left: -25%;
-    transform: translate(-50%, -50%);
-    z-index: 2;
-    width: 600px; 
-    animation: moonMove 6s infinite alternate;
 }
 
-.cloudmoon { /* cloud with moon */
-    position: absolute;
-    top: 90%;
-    left: -35%;
-    transform: translate(-50%, -50%);
+/* Кометы всегда сверху */
+.comet1, .comet2, .comet3, .comet4 {
+    width: 25vmin;
     z-index: 3;
-    width: 700px; 
-    animation: cloudmoon1Move 7s infinite alternate;
 }
-
-.cloudmoon2 { /* Top left */
-    position: absolute;
-    top: 15%; 
-    left: -65%;
-    transform: translate(-50%, -50%);
-    z-index: 3;
-    width: 450px; 
-    animation: cloudMove 7s infinite alternate;
-}
-
-.cloudmoon3 { /* Bottom right */
-    position: absolute;
-    top: 100%; 
-    left: 175%;
-    transform: translate(-50%, -50%);
-    z-index: 3;
-    width: 350px;
-    animation: cloudMove 8s infinite alternate;
-}
-
-.cloudmoon4 { /* Top center */
-    position: absolute;
-    top: 15%; 
-    left: 50%;
-    transform: translate(-50%, -50%);
-    z-index: 3;
-    width: 450px; 
-    animation: cloudMove 8s infinite alternate;
-}
-
-.cloudmoon5 { /* Top right */
-    position: absolute;
-    top: 3%; 
-    left: 180%;
-    transform: translate(-50%, -50%);
-    z-index: 3;
-    width: 250px;
-    animation: cloudMove 8s infinite alternate;
-}
-
-.stars1 {
-    position: absolute;
-    top: 50%; 
-    left: -25%;
-    transform: translate(-50%, -50%);
-    z-index: 1;
-    width: 700px;
-}
-
-.stars2 {
-    position: absolute;
-    top: 50%; 
-    left: 140%;
-    transform: translate(-50%, -50%);
-    z-index: 1;
-    width: 800px;
-}
-
-.comet1 {
-    position: absolute;
-    top: -45%;
-    left: 200%;
-    width: 200px;
-    z-index: 3;
-    animation: cometFly1 9s infinite linear 3s; 
-}
-
-.comet2 {
-    position: absolute;
-    top: -45%;
-    left: 100%;
-    width: 200px;
-    z-index: 3;
-    animation: cometFly2 9s infinite linear 16s; 
-}
-
-.comet3 {
-    position: absolute;
-    top: -45%;
-    left: 10%;
-    width: 200px;
-    z-index: 3;
-    animation: cometFly3 9s infinite linear 21s; 
-}
-
-.comet4 {
-    position: absolute;
-    top: -40%;
-    left: -50%;
-    width: 200px;
-    z-index: 3;
-    animation: cometFly4 9s infinite linear 32s; 
-}
-
+.comet1 { top: -20%; left: 80%; animation: cometFly1 9s infinite linear 3s; }
+.comet2 { top: -20%; left: 60%; animation: cometFly2 9s infinite linear 16s; }
+.comet3 { top: -20%; left: 40%; animation: cometFly3 9s infinite linear 21s; }
+.comet4 { top: -20%; left: 20%; animation: cometFly4 9s infinite linear 32s; }
 
 .welcome-text {
     position: absolute;
-    top: 59%; 
-    left: 63%;
     transform: translate(-50%, -50%);
-    z-index: 4; /* будет выше all png */
-    font-family: 'Comfortaa', cursive; 
-    font-size: 7.5em;
-    color: #ffffff; 
+    z-index: 4;
+    font-family: 'Comfortaa', cursive;
+    color: #ffffff;
     text-align: center;
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3); /* для глубины, добавила тени */
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
 }
 
-.continue-btn {
-    position: absolute;
-    top: 86%; 
-    left: 64%;
-    transform: translate(-50%, -50%);
-    width: 95px;
-    z-index: 4; 
-    animation: continuePulse 2s infinite alternate; 
+/* Мобильные устройства (до 507px) */
+@media (max-width: 507px) {
+    .stars1, .stars2 {
+        width: 90%;
+        height: 100%;
+        object-fit: cover;
+        z-index: -1;
+    }
+    .stars1 { top: -5%; left: -10%; }
+    .stars2 { top: 25%; left: 40%; }
+
+    .moon {
+        top: 20%;
+        left: 50%;
+        width: 55vmin;
+        z-index: 2;
+        animation: moonMove 6s infinite alternate;
+    }
+    .cloudmoon {
+        top: 70%;
+        left: 50%;
+        width: 55vmin;
+        z-index: 1;
+        animation: cloudmoon1Move 7s infinite alternate;
+    }
+    .cloudmoon2 {
+        top: 45%;
+        left: 30%;
+        width: 40vmin;
+        z-index: 3;
+        animation: cloudMove 7s infinite alternate;
+    }
+    .cloudmoon3 {
+        top: 15%;
+        left: 55%;
+        width: 50vmin;
+        z-index: 1;
+        animation: cloudMove 8s infinite alternate;
+    }
+    .cloudmoon4 {
+        top: 28%;
+        left: 45%;
+        width: 85vmin;
+        z-index: 3;
+        animation: cloudMove 8s infinite alternate;
+    }
+    .cloudmoon5 {
+        top: 10%;
+        left: 15%;
+        width: 55vmin;
+        z-index: 3;
+        animation: cloudMove 8s infinite alternate;
+    }
+
+    .welcome-text {
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        max-width: 90%;
+        white-space: nowrap;
+        font-size: 4.5vmax;
+    }
+
+    .continue-btn {
+        top: 60%;
+        left: 50%;
+        width: 25vmin;
+        z-index: 4;
+        animation: continuePulse 2s infinite alternate;
+        transform: translate(-50%, -50%);
+    }
+
+    .comet1, .comet2, .comet3, .comet4 {
+        width: 20vmin;
+    }
 }
 
+/* Мобильные устройства (508px–754px) */
+@media (min-width: 508px) and (max-width: 755px) {
+    .stars1, .stars2 {
+        width: 85%;
+        height: 100%;
+        object-fit: cover;
+        z-index: -1;
+    }
+    .stars1 { top: -5%; left: -5%; }
+    .stars2 { top: 15%; left: 50%; }
 
+    .moon {
+        top: 25%;
+        left: 51%;
+        width: 50vmin;
+        z-index: 2;
+        animation: moonMove 6s infinite alternate;
+    }
+    .cloudmoon {
+        top: 73%;
+        left: 50%;
+        width: 50vmin;
+        z-index: 1;
+        animation: cloudmoon1Move 7s infinite alternate;
+    }
+    .cloudmoon2 {
+        top: 48%;
+        left: 35%;
+        width: 35vmin;
+        z-index: 3;
+        animation: cloudMove 7s infinite alternate;
+    }
+    .cloudmoon3 {
+        top: 17%;
+        left: 57%;
+        width: 45vmin;
+        z-index: 1;
+        animation: cloudMove 8s infinite alternate;
+    }
+    .cloudmoon4 {
+        top: 35%;
+        left: 48%;
+        width: 80vmin;
+        z-index: 3;
+        animation: cloudMove 8s infinite alternate;
+    }
+    .cloudmoon5 {
+        top: 10%;
+        left: 20%;
+        width: 50vmin;
+        z-index: 3;
+        animation: cloudMove 8s infinite alternate;
+    }
+
+    .welcome-text {
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        max-width: 80%;
+        white-space: nowrap;
+        font-size: 5vmax;
+    }
+
+    .continue-btn {
+        top: 59%;
+        left: 50%;
+        width: 20vmin;
+        z-index: 4;
+        animation: continuePulse 2s infinite alternate;
+        transform: translate(-50%, -50%);
+    }
+
+    .comet1, .comet2, .comet3, .comet4 {
+        width: 22vmin;
+    }
+}
+
+/* Планшеты (755px–1024px) */
+@media (min-width: 755px) and (max-width: 1024px) {
+    .stars1, .stars2 {
+        width: 80%;
+        height: 110%;
+        object-fit: cover;
+        z-index: -1;
+    }
+    .stars1 { top: 25%; left: 0%; }
+    .stars2 { top: 5%; left: 30%; }
+
+    .moon {
+        top: 25%;
+        left: 51%;
+        width: 30vmin;
+        z-index: 2;
+        animation: moonMove 6s infinite alternate;
+    }
+    .cloudmoon {
+        top: 80%;
+        left: 50%;
+        width: 50vmin;
+        z-index: 1;
+        animation: cloudmoon1Move 7s infinite alternate;
+    }
+    .cloudmoon2 {
+        top: 47%;
+        left: 37%;
+        width: 35vmin;
+        z-index: 3;
+        animation: cloudMove 7s infinite alternate;
+    }
+    .cloudmoon3 {
+        top: 17%;
+        left: 57%;
+        width: 35vmin;
+        z-index: 1;
+        animation: cloudMove 8s infinite alternate;
+    }
+    .cloudmoon4 {
+        top: 32%;
+        left: 48%;
+        width: 50vmin;
+        z-index: 3;
+        animation: cloudMove 8s infinite alternate;
+    }
+    .cloudmoon5 {
+        top: 10%;
+        left: 20%;
+        width: 40vmin;
+        z-index: 3;
+        animation: cloudMove 8s infinite alternate;
+    }
+
+    .welcome-text {
+        top: 50%;
+        left: 48%;
+        transform: translate(-50%, -50%);
+        max-width: 60%;
+        white-space: nowrap;
+        font-size: 7vmax;
+    }
+
+    .continue-btn {
+        top: 59%;
+        left: 50%;
+        width: 15vmin;
+        z-index: 4;
+        animation: continuePulse 2s infinite alternate;
+        transform: translate(-50%, -50%);
+    }
+}
+
+/* Ноутбуки и ПК (1025px–1360px) */
+@media (min-width: 1025px) and (max-width: 1360px) {
+    .stars1, .stars2 {
+        width: 80%;
+        height: 80%;
+        object-fit: cover;
+        z-index: -1;
+    }
+    .stars1 { top: -10%; left: 0%; }
+    .stars2 { top: 35%; left: 10%; }
+
+    .moon {
+        top: 57%;
+        left: 28%;
+        width: 50vmin;
+        z-index: 2;
+        animation: moonMove 6s infinite alternate;
+    }
+    .cloudmoon {
+        top: 25%;
+        left: 35%;
+        width: 40vmin;
+        z-index: 1;
+        animation: cloudmoon1Move 7s infinite alternate;
+    }
+    .cloudmoon2 {
+        top: 15%;
+        left: 10%;
+        width: 30vmin;
+        z-index: 3;
+        animation: cloudMove 7s infinite alternate;
+    }
+    .cloudmoon3 {
+        top: 90%;
+        left: 80%;
+        width: 60vmin;
+        z-index: 1;
+        animation: cloudMove 8s infinite alternate;
+    }
+    .cloudmoon4 {
+        top: 72%;
+        left: 28%;
+        width: 70vmin;
+        z-index: 3;
+        animation: cloudMove 8s infinite alternate;
+    }
+    .cloudmoon5 {
+        top: 15%;
+        left: 90%;
+        width: 25vmin;
+        z-index: 3;
+        animation: cloudMove 8s infinite alternate;
+    }
+
+    .welcome-text {
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        max-width: 50%;
+        white-space: nowrap;
+        font-size: 7.5vmax;
+    }
+
+    .continue-btn {
+        top: 60%;
+        left: 60%;
+        width: 15vmin;
+        z-index: 4;
+        animation: continuePulse 2s infinite alternate;
+        transform: translate(-50%, -50%);
+    }
+}
+
+/* Большие экраны (1361px и выше) */
+@media (min-width: 1361px) {
+    .stars1, .stars2 {
+        width: 70%;
+        height: 80%;
+        object-fit: cover;
+        z-index: -1;
+    }
+    .stars1 { top: -10%; left: 0%; }
+    .stars2 { top: 35%; left: 20%; }
+
+    .moon {
+        top: 57%;
+        left: 28%;
+        width: 47vmin;
+        z-index: 2;
+        animation: moonMove 6s infinite alternate;
+    }
+    .cloudmoon {
+        top: 25%;
+        left: 35%;
+        width: 40vmin;
+        z-index: 1;
+        animation: cloudmoon1Move 7s infinite alternate;
+    }
+    .cloudmoon2 {
+        top: 15%;
+        left: 10%;
+        width: 25vmin;
+        z-index: 3;
+        animation: cloudMove 7s infinite alternate;
+    }
+    .cloudmoon3 {
+        top: 90%;
+        left: 80%;
+        width: 65vmin;
+        z-index: 1;
+        animation: cloudMove 8s infinite alternate;
+    }
+    .cloudmoon4 {
+        top: 75%;
+        left: 26%;
+        width: 70vmin;
+        z-index: 3;
+        animation: cloudMove 8s infinite alternate;
+    }
+    .cloudmoon5 {
+        top: 15%;
+        left: 90%;
+        width: 20vmin;
+        z-index: 3;
+        animation: cloudMove 8s infinite alternate;
+    }
+
+    .welcome-text {
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        max-width: 40%;
+        white-space: nowrap;
+        font-size: 6vmax;
+    }
+
+    .continue-btn {
+        top: 52%;
+        left: 75%;
+        width: 12vmin;
+        z-index: 4;
+        animation: continuePulse 2s infinite alternate;
+        transform: translate(-50%, -50%);
+    }
+}
+
+/* Очень большие экраны (1700px и выше) */
+@media (min-width: 1700px) {
+    .stars1, .stars2 {
+        width: 60%;
+        height: 80%;
+        object-fit: cover;
+        z-index: -1;
+    }
+    .stars1 { top: -10%; left: 0%; }
+    .stars2 { top: 15%; left: 50%; }
+
+    .moon {
+        top: 57%;
+        left: 28%;
+        width: 45vmin;
+        z-index: 2;
+        animation: moonMove 6s infinite alternate;
+    }
+    .cloudmoon {
+        top: 25%;
+        left: 35%;
+        width: 35vmin;
+        z-index: 1;
+        animation: cloudmoon1Move 7s infinite alternate;
+    }
+    .cloudmoon2 {
+        top: 15%;
+        left: 10%;
+        width: 20vmin;
+        z-index: 3;
+        animation: cloudMove 7s infinite alternate;
+    }
+    .cloudmoon3 {
+        top: 90%;
+        left: 80%;
+        width: 60vmin;
+        z-index: 1;
+        animation: cloudMove 8s infinite alternate;
+    }
+    .cloudmoon4 {
+        top: 75%;
+        left: 26%;
+        width: 70vmin;
+        z-index: 3;
+        animation: cloudMove 8s infinite alternate;
+    }
+    .cloudmoon5 {
+        top: 15%;
+        left: 90%;
+        width: 15vmin;
+        z-index: 3;
+        animation: cloudMove 8s infinite alternate;
+    }
+
+    .welcome-text {
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        max-width: 30%;
+        white-space: nowrap;
+        font-size: 5vmax;
+    }
+
+    .continue-btn {
+        top: 60%;
+        left: 50%;
+        width: 10vmin;
+        z-index: 4;
+        animation: continuePulse 2s infinite alternate;
+        transform: translate(-50%, -50%);
+    }
+}
+
+/* Анимации */
 @keyframes moonMove {
-    0% {
-        transform: translate(-50%, -50%) translateY(0);
-    }
-    100% {
-        transform: translate(-50%, -50%) translateY(-25px);
-    }
+    0% { transform: translate(-50%, -50%) translateY(0); }
+    100% { transform: translate(-50%, -50%) translateY(-2vmin); }
 }
 
 @keyframes cloudmoon1Move {
-    0% {
-        transform: translate(-50%, -50%) translateX(40px);
-    }
-    100% {
-        transform: translate(-50%, -50%) translateY(-5px);
-    }
+    0% { transform: translate(-50%, -50%) translateX(2vmin); }
+    100% { transform: translate(-50%, -50%) translateY(-0.5vmin); }
 }
 
 @keyframes cloudMove {
-    0% {
-        transform: translate(-50%, -50%) translateX(-15px);
-    }
-    100% {
-        transform: translate(-50%, -50%) translateX(15px);
-    }
+    0% { transform: translate(-50%, -50%) translateX(-1vmin); }
+    100% { transform: translate(-50%, -50%) translateX(1vmin); }
 }
 
 @keyframes cometFly1 {
-    0% {
-        top: -40%;
-        left: 200%;
-        opacity: 1;
-    }
-    50% {
-        top: 50%;
-        left: 50%; 
-        opacity: 0;
-    }
-    100% {
-        top: 100%;
-        left: 0%; 
-        opacity: 0;
-    }
+    0% { top: -10%; left: 80%; opacity: 1; }
+    50% { top: 50%; left: 40%; opacity: 0; }
+    100% { top: 100%; left: 0%; opacity: 0; }
 }
 
 @keyframes cometFly2 {
-    0% {
-        top: -40%;
-        left: 100%;
-        opacity: 1;
-    }
-    50% {
-        top: 50%;
-        left: 0%; 
-        opacity: 0;
-    }
-    100% {
-        top: 100%;
-        left: -80%; 
-        opacity: 0;
-    }
+    0% { top: -10%; left: 60%; opacity: 1; }
+    50% { top: 50%; left: 20%; opacity: 0; }
+    100% { top: 100%; left: -20%; opacity: 0; }
 }
 
 @keyframes cometFly3 {
-    0% {
-        top: -30%;
-        left: 10%;
-        opacity: 1;
-    }
-    50% {
-        top: 50%;
-        left: -50%; 
-        opacity: 0;
-    }
-    100% {
-        top: 100%;
-        left: -100%; 
-        opacity: 0;
-    }
+    0% { top: -10%; left: 40%; opacity: 1; }
+    50% { top: 50%; left: 0%; opacity: 0; }
+    100% { top: 100%; left: -40%; opacity: 0; }
 }
 
 @keyframes cometFly4 {
-    0% {
-        top: -30%;
-        left: -50%;
-        opacity: 1;
-    }
-    50% {
-        top: 50%;
-        left: -150%; 
-        opacity: 0;
-    }
-    100% {
-        top: 100%;
-        left: -200%; 
-        opacity: 0;
-    }
+    0% { top: -10%; left: 20%; opacity: 1; }
+    50% { top: 50%; left: -20%; opacity: 0; }
+    100% { top: 100%; left: -60%; opacity: 0; }
 }
 
 @keyframes continuePulse {
-    0% {
-        transform: translate(-50%, -50%) scale(1) rotate(8deg);
-    }
-    100% {
-        transform: translate(-50%, -50%) scale(1.05) rotate(-4deg); 
-    }
+    0% { transform: translate(-50%, -50%) scale(1) rotate(8deg); }
+    100% { transform: translate(-50%, -50%) scale(1.05) rotate(-4deg); }
 }
 
 #main-iframe {
@@ -283,4 +553,4 @@ body {
     height: 100vh;
     border: none;
     display: block;
-}
+} 
