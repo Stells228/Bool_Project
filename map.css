@@ -5,9 +5,10 @@ body {
     background: linear-gradient(to bottom, #416190, #776f98);
     height: 100vh;
     overflow: hidden;
+    opacity: 1;
+    transition: opacity 0.5s ease-in-out;
 }
 
-/*блоки с уровнями*/
 .map-container {
     display: flex;
     flex-direction: column;
@@ -16,38 +17,44 @@ body {
     height: 88vh;
     padding: 20px;
     box-sizing: border-box;
+    position: relative;
+    z-index: 1;
+}
+
+@keyframes cloudMove {
+    0% {
+        transform: translate(-50%, -50%) translateX(-15px);
+    }
+    100% {
+        transform: translate(-50%, -50%) translateX(15px);
+    }
 }
 
 .map-title {
     font-family: 'Comfortaa', cursive;
-    font-size: 3em;
     color: #ffffff;
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
     margin-bottom: 40px;
+    text-align: center;
 }
 
-/*hf,jnf c ,kjrfvb */
 .level-scroll {
     display: flex;
     overflow-x: auto;
     scroll-behavior: smooth;
     gap: 20px;
-    width: 80%;
+    width: 90%;
     padding: 10px;
     scrollbar-width: none;
     -ms-overflow-style: none;
-    align-items: flex-start; /*выравнивание */
+    align-items: flex-start;
 }
 
 .level-block-link {
-    text-decoration: none; /*чтоб не подчёркивалась, зараза*/
+    text-decoration: none;
 }
 
 .level-block {
-    flex: 0 0 344px; /* Жёстко фиксируем ширину */
-    height: 344px;
-    min-width: 344px; 
-    max-width: 344px; 
     background: rgba(97, 60, 192, 0.6);
     border: 2px solid #ffffff;
     border-radius: 10px;
@@ -57,35 +64,30 @@ body {
     justify-content: center;
     padding: 20px;
     box-sizing: border-box;
-    transition: transform 0.3s ease, background 0.3s ease;
     cursor: pointer;
-    text-align: center; /* Центрируем текст */
+    text-align: center;
 }
 
 .level-block p {
     font-family: 'Comfortaa', cursive;
-    font-size: 1.2em;
     color: #ffffff;
     margin: 0;
     padding: 0 10px;
-    width: 100%; /* Занимает всю ширину */
+    width: 100%;
     display: block;
-    white-space: nowrap;
-    overflow: hidden;
+    white-space: normal; /* Разрешаем перенос текста */
 }
 
 .level-block:hover {
-    transform: scale(1.05); /*анимация увелечения */
     background: rgba(171, 144, 239, 0.6);
 }
 
 .level-title {
     font-family: 'Comfortaa', cursive;
-    font-size: 2.2em;
     font-weight: bold;
     color: #ffffff;
     margin-bottom: 15px;
-    width: 100%; /* Занимает всю ширину */
+    width: 100%;
 }
 
 .scroll-btn {
@@ -100,164 +102,69 @@ body {
     font-size: 1.7em;
     color: #ffffff;
     cursor: pointer;
-    transition: background 0.3s ease;
+    z-index: 10;
+    display: none;
 }
 
 .scroll-btn:hover {
     background: rgba(171, 144, 239, 0.9);
-} 
+}
 
 .scroll-btn.left {
-    left: 5%;
+    left: 2%;
 }
 
 .scroll-btn.right {
-    right: 5%;
+    right: 2%;
 }
 
 .main-menu-btn {
     position: absolute;
-    margin-bottom: -2%;
     bottom: 20px;
     background: rgba(97, 60, 192, 0.9);
     border: 2px solid #ffffff;
     border-radius: 8px;
     padding: 10px 20px;
     font-family: 'Comfortaa', cursive;
-    font-size: 1em;
     color: #ffffff;
     cursor: pointer;
-    transition: background 0.3s ease, transform 0.2s ease;
     display: flex;
     align-items: center;
     gap: 10px;
+    z-index: 10;
 }
 
 .main-menu-btn:hover {
     background: rgba(171, 144, 239, 0.9);
-    transform: scale(1.05);
 }
 
 .home-icon {
     width: 20px;
     height: 20px;
-    transition: transform 0.2s ease;
     color: #ffffff;
-}
-
-.main-menu-btn:hover {
-    background: rgba(171, 144, 239, 0.9);
-    transform: scale(1.05);
 }
 
 .stars {
     position: fixed;
     z-index: -1;
     opacity: 0.8;
-}
-
-.stars1 {
-    top: 5%;
-    left: 1%;
-    width: 800px;
-    animation: float 55s infinite linear reverse;
-}
-
-.stars2 {
-    bottom: 10%;
-    right: 1%;
-    width: 600px;
-    animation: float 50s infinite linear reverse;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    pointer-events: none;
 }
 
 .moon {
     position: fixed;
-    top: 9%;
-    right: 64%;
-    width: 100px;
     z-index: -1;
+    pointer-events: none;
 }
 
 .cloud {
     position: fixed;
     z-index: -1;
     opacity: 1;
-}
-
-.cloud1 {
-    top: 17%;
-    left: 3%;
-    width: 230px;
-    animation: float 12s infinite linear;
-    z-index: 5;
-}
-
-.cloud2 {
-    top: 5%;
-    right: 10%;
-    width: 200px;
-    animation: float 18s infinite linear reverse;
-}
-
-.cloud3 {
-    top: 8%;
-    right: 20%;
-    width: 250px;
-    animation: float 18s infinite linear reverse;
-}
-
-.cloud4 {
-    top: 11%;
-    right: 60%;
-    width: 250px;
-    animation: float 18s infinite linear reverse;
-}
-
-.cloud5 {
-    top: 28%;
-    right: 21%;
-    width: 250px;
-    animation: float 12s infinite linear reverse;
-}
-
-.cloud6 {
-    top: 78%;
-    right: 35%;
-    width: 250px;
-    animation: float 18s infinite linear reverse;
-    z-index: 5;
-}
-
-/*траектория полёта*/
-@keyframes float {
-    0%, 100% {
-        transform: translateY(0) translateX(0);
-    }
-    25% {
-        transform: translateY(-6px) translateX(6px);
-    }
-    50% {
-        transform: translateY(5px) translateX(-5px);
-    }
-    75% {
-        transform: translateY(6px) translateX(5px);
-    }
-}
-
-/*вот эту штуку вот вообще никому не трогать!!!*/
-.map-container {
-    position: relative;
-    z-index: 1;
-}
-
-.level-block-link.disabled .level-block {
-    opacity: 0.5;
-    cursor: not-allowed;
-    background: rgba(100, 100, 100, 0.6);
-}
-.level-block-link.disabled:hover .level-block {
-    transform: none;
-    background: rgba(100, 100, 100, 0.6);
+    pointer-events: none;
 }
 
 .level-block-link.disabled .level-block {
@@ -268,7 +175,7 @@ body {
 }
 
 .level-block-link.disabled .level-block::after {
-    content: '🔒'; 
+    content: '🔒';
     position: absolute;
     top: 10px;
     right: 10px;
@@ -278,8 +185,13 @@ body {
 }
 
 .level-block-link.disabled:hover .level-block {
-    transform: none;
     background: rgba(100, 100, 100, 0.6);
+}
+
+.level-block-link.disabled {
+    pointer-events: none;
+    opacity: 0.6;
+    cursor: not-allowed;
 }
 
 .new-game-btn {
@@ -291,22 +203,585 @@ body {
     border-radius: 8px;
     padding: 10px 20px;
     font-family: 'Comfortaa', cursive;
-    font-size: 1em;
     color: #ffffff;
     cursor: pointer;
-    transition: background 0.3s ease, transform 0.2s ease;
     display: flex;
     align-items: center;
     gap: 10px;
+    z-index: 10;
 }
 
 .new-game-btn:hover {
     background: rgba(171, 144, 239, 0.9);
-    transform: scale(1.05);
 }
 
-.level-block-link.disabled {
+.transition-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: black;
+    opacity: 0;
+    z-index: 9999;
     pointer-events: none;
-    opacity: 0.6;
-    cursor: not-allowed;
+    transition: opacity 0.3s ease-out;
+}
+
+.transition-overlay.active {
+    opacity: 0.7;
+}
+
+/* Очень маленькие экраны (до 507px) */
+@media (max-width: 507px) {
+    .map-title {
+        font-size: clamp(1.5rem, 5vw, 1.8rem);
+        margin-bottom: 15px;
+    }
+
+    .level-scroll {
+        width: 100%;
+        padding: 5px;
+        gap: 10px;
+    }
+
+    .level-block {
+        flex: 0 0 240px;
+        height: 240px;
+        min-width: 240px;
+        max-width: 240px;
+        padding: 15px;
+    }
+
+    .level-title {
+        font-size: clamp(1.2rem, 4vw, 1.5rem);
+        margin-bottom: 10px;
+    }
+
+    .level-block p {
+        font-size: clamp(0.8rem, 3vw, 1rem);
+        line-height: 1.2;
+    }
+
+    .moon {
+        top: 5%;
+        left: 38%;
+        width: 100px;
+    }
+
+    .stars1 { top: -15%; left: 0%; width: 90%; height: 100%; }
+    .stars2 { top: 35%; left: 0%; width: 90%; height: 100%; }
+
+    .cloud1, .cloud2, .cloud3, .cloud4, .cloud5 {
+        display: block;
+    }
+
+    .cloud1 {
+        top: 55%;
+        left: 72%;
+        width: 150px;
+        animation: cloudMove 7s infinite alternate;
+    }
+
+    .cloud2 {
+        top: 11%;
+        left: 80%;
+        width: 300px;
+        animation: cloudMove 7s infinite alternate;
+    }
+
+    .cloud3 {
+        top: 78%;
+        left: 50%;
+        width: 250px;
+        animation: cloudMove 8s infinite alternate;
+    }
+
+    .cloud4 {
+        top: 17%;
+        left: 47%;
+        width: 200px;
+        animation: cloudMove 8s infinite alternate;
+    }
+
+    .cloud5 {
+        top: 41%;
+        left: 27%;
+        width: 150px;
+        animation: cloudMove 8s infinite alternate;
+    }
+
+    .main-menu-btn {
+        font-size: clamp(0.8rem, 2.5vw, 0.9rem);
+        padding: 6px 12px;
+        bottom: 10px;
+    }
+
+    .new-game-btn {
+        font-size: clamp(0.8rem, 2.5vw, 0.9rem);
+        padding: 6px 12px;
+        bottom: 10px;
+        right: 10px;
+    }
+}
+
+/* Мобильные устройства (508px–754px) */
+@media (min-width: 507px) and (max-width: 754px) {
+    .map-title {
+        font-size: clamp(1.8rem, 5vw, 2em);
+        margin-bottom: 20px;
+    }
+
+    .level-scroll {
+        width: 100%;
+        padding: 5px;
+        gap: 15px;
+    }
+
+    .level-block {
+        flex: 0 0 260px;
+        height: 260px;
+        min-width: 260px;
+        max-width: 260px;
+        padding: 15px;
+    }
+
+    .level-title {
+        font-size: clamp(1.5rem, 4vw, 1.8rem);
+        margin-bottom: 12px;
+    }
+
+    .level-block p {
+        font-size: clamp(0.9rem, 3vw, 1rem);
+        line-height: 1.3;
+    }
+
+    .moon {
+        top: 6%;
+        left: 35%;
+        width: 120px;
+    }
+
+    .stars1 { top: -15%; left: 0%; width: 85%; height: 80%; }
+    .stars2 { top: 35%; left: 5%; width: 85%; height: 80%; }
+
+    .cloud1, .cloud2, .cloud3, .cloud4, .cloud5 {
+        display: block;
+    }
+
+    .cloud1 {
+        top: 55%;
+        left: 75%;
+        width: 150px;
+        animation: cloudMove 7s infinite alternate;
+    }
+
+    .cloud2 {
+        top: 12%;
+        left: 70%;
+        width: 250px;
+        animation: cloudMove 7s infinite alternate;
+    }
+
+    .cloud3 {
+        top: 75%;
+        left: 49%;
+        width: 350px;
+        animation: cloudMove 8s infinite alternate;
+    }
+
+    .cloud4 {
+        top: 20%;
+        left: 50%;
+        width: 240px;
+        animation: cloudMove 8s infinite alternate;
+    }
+
+    .cloud5 {
+        top: 40%;
+        left: 30%;
+        width: 180px;
+        animation: cloudMove 8s infinite alternate;
+    }
+
+    .main-menu-btn {
+        font-size: clamp(0.9rem, 2.5vw, 1rem);
+        padding: 8px 15px;
+        bottom: 15px;
+    }
+}
+
+/* Планшеты (755px–1024px) */
+@media (min-width: 755px) and (max-width: 1024px) {
+    .map-title {
+        font-size: clamp(2rem, 5vw, 2.5rem);
+        margin-bottom: 25px;
+    }
+
+    .level-scroll {
+        width: 95%;
+        padding: 10px;
+        gap: 20px;
+    }
+
+    .level-block {
+        flex: 0 0 300px;
+        height: 300px;
+        min-width: 300px;
+        max-width: 300px;
+        padding: 20px;
+    }
+
+    .level-title {
+        font-size: clamp(1.6rem, 4vw, 2rem);
+        margin-bottom: 15px;
+    }
+
+    .level-block p {
+        font-size: clamp(1rem, 3vw, 1.2rem);
+        line-height: 1.4;
+    }
+
+    .moon {
+        top: 2%;
+        left: 15%;
+        width: 150px;
+    }
+
+    .stars1 { top: -5%; left: 20%; width: 80%; height: 80%; }
+    .stars2 { top: 45%; left: 10%; width: 80%; height: 80%; }
+
+    .cloud1, .cloud2, .cloud3, .cloud4 , .cloud5{
+        display: block;
+    }
+    
+    .cloud1 {
+        top: 45%;
+        left: 75%;
+        width: 200px;
+        animation: cloudMove 7s infinite alternate;
+    }
+
+    .cloud2 {
+        top: 15%;
+        left: 80%;
+        width: 350px;
+        animation: cloudMove 7s infinite alternate;
+    }
+
+    .cloud3 {
+        top: 75%;
+        left: 52%;
+        width: 450px;
+        animation: cloudMove 8s infinite alternate;
+    }
+
+    .cloud4 {
+        top: 25%;
+        left: 23%;
+        width: 310px;
+        animation: cloudMove 8s infinite alternate;
+    }
+
+    .cloud5 {
+        top: 40%;
+        left: 27%;
+        width: 200px;
+        animation: cloudMove 8s infinite alternate;
+    }
+
+    .main-menu-btn {
+        font-size: clamp(1rem, 2.5vw, 1.2rem);
+        padding: 10px 20px;
+        bottom: 20px;
+    }
+
+    .new-game-btn {
+        font-size: clamp(1rem, 2.5vw, 1.2rem);
+        padding: 10px 20px;
+        bottom: 20px;
+        right: 20px;
+    }
+}
+
+/* Ноутбуки и ПК (1025px–1360px) */
+@media (min-width: 1025px) and (max-width: 1360px) {
+    .map-title {
+        font-size: clamp(2.2rem, 5vw, 2.8rem);
+        margin-bottom: 30px;
+    }
+
+    .level-scroll {
+        width: 90%;
+        padding: 10px;
+        gap: 20px;
+    }
+
+    .level-block {
+        flex: 0 0 320px;
+        height: 320px;
+        min-width: 320px;
+        max-width: 320px;
+        padding: 20px;
+    }
+
+    .level-title {
+        font-size: clamp(1.8rem, 4vw, 2.2rem);
+        margin-bottom: 15px;
+    }
+
+    .level-block p {
+        font-size: clamp(1.1rem, 3vw, 1.3rem);
+        line-height: 1.4;
+    }
+
+    .moon {
+        top: 3%;
+        left: 15%;
+        width: 200px;
+    }
+
+    .stars1 { top: -3%; left: 27%; width: 80%; height: 80%; }
+    .stars2 { top: 35%; left: 10%; width: 80%; height: 80%; }
+
+    .cloud1, .cloud2, .cloud3, .cloud4, .cloud5 {
+        display: block;
+    }
+
+    .cloud1 {
+        top: 45%;
+        left: 75%;
+        width: 250px;
+        animation: cloudMove 7s infinite alternate;
+    }
+
+    .cloud2 {
+        top: 15%;
+        left: 80%;
+        width: 400px;
+        animation: cloudMove 7s infinite alternate;
+    }
+
+    .cloud3 {
+        top: 75%;
+        left: 52%;
+        width: 470px;
+        animation: cloudMove 8s infinite alternate;
+    }
+
+    .cloud4 {
+        top: 23%;
+        left: 23%;
+        width: 350px;
+        animation: cloudMove 8s infinite alternate;
+    }
+
+    .cloud5 {
+        top: 40%;
+        left: 23%;
+        width: 200px;
+        animation: cloudMove 8s infinite alternate;
+    }
+
+    .main-menu-btn {
+        font-size: clamp(1rem, 2vw, 1.2rem);
+        padding: 10px 20px;
+        bottom: 20px;
+    }
+}
+
+/* Большие экраны (1361px–1699px) */
+@media (min-width: 1361px) and (max-width: 1699px) {
+    .map-title {
+        font-size: clamp(2.5rem, 5vw, 3rem);
+        margin-bottom: 35px;
+    }
+
+    .level-scroll {
+        width: 80%;
+        padding: 10px;
+        gap: 20px;
+    }
+
+    .level-block {
+        flex: 0 0 340px;
+        height: 340px;
+        min-width: 340px;
+        max-width: 340px;
+        padding: 20px;
+    }
+
+    .level-title {
+        font-size: clamp(1.9rem, 4vw, 2.3rem);
+        margin-bottom: 15px;
+    }
+
+    .level-block p {
+        font-size: clamp(1.2rem, 3vw, 1.4rem);
+        line-height: 1.4;
+    }
+
+    .moon {
+        top: 4%;
+        left: 15%;
+        width: 200px;
+    }
+
+    .stars1 { top: -3%; left: 27%; width: 70%; height: 80%; }
+    .stars2 { top: 15%; left: 10%; width: 70%; height: 80%; }
+
+    .cloud {
+        display: block;
+    }
+
+    .cloud1 {
+        top: 50%;
+        left: 65%;
+        width: 250px;
+        animation: cloudMove 7s infinite alternate;
+    }
+
+    .cloud2 {
+        top: 15%;
+        left: 75%;
+        width: 450px;
+        animation: cloudMove 7s infinite alternate;
+    }
+
+    .cloud3 {
+        top: 75%;
+        left: 52%;
+        width: 470px;
+        animation: cloudMove 8s infinite alternate;
+    }
+
+    .cloud4 {
+        top: 23%;
+        left: 20%;
+        width: 350px;
+        animation: cloudMove 8s infinite alternate;
+    }
+
+    .cloud5 {
+        top: 40%;
+        left: 24%;
+        width: 250px;
+        animation: cloudMove 8s infinite alternate;
+    }
+
+    .scroll-btn {
+        display: block;
+    }
+
+    .scroll-btn.left {
+        left: 5%;
+    }
+
+    .scroll-btn.right {
+        right: 5%;
+    }
+
+    .main-menu-btn {
+        font-size: clamp(1.1rem, 2vw, 1.3rem);
+        padding: 12px 24px;
+        bottom: 25px;
+    }
+}
+
+/* Очень большие экраны (1700px и выше) */
+@media (min-width: 1700px) {
+    .map-title {
+        font-size: clamp(2.8rem, 5vw, 3.2rem);
+        margin-bottom: 40px;
+    }
+
+    .level-scroll {
+        width: 70%;
+        padding: 15px;
+        gap: 25px;
+    }
+
+    .level-block {
+        flex: 0 0 370px;
+        height: 370px;
+        min-width: 370px;
+        max-width: 370px;
+        padding: 25px;
+    }
+
+    .level-title {
+        font-size: clamp(2rem, 4vw, 2.5rem);
+        margin-bottom: 20px;
+    }
+
+    .level-block p {
+        font-size: clamp(1.3rem, 3vw, 1.5rem);
+        line-height: 1.5;
+    }
+
+    .moon {
+        top: 4%;
+        left: 10%;
+        width: 250px;
+    }
+
+    .stars1 { top: -3%; left: 27%; width: 60%; height: 80%; }
+    .stars2 { top: 15%; left: 10%; width: 60%; height: 80%; }
+
+    .cloud {
+        display: block;
+    }
+
+    .cloud1 {
+        top: 50%;
+        left: 55%;
+        width: 250px;
+        animation: cloudMove 7s infinite alternate;
+    }
+
+    .cloud2 {
+        top: 12%;
+        left: 75%;
+        width: 450px;
+        animation: cloudMove 7s infinite alternate;
+    }
+
+    .cloud3 {
+        top: 76%;
+        left: 50%;
+        width: 450px;
+        animation: cloudMove 8s infinite alternate;
+    }
+
+    .cloud4 {
+        top: 25%;
+        left: 16%;
+        width: 450px;
+        animation: cloudMove 8s infinite alternate;
+    }
+
+    .cloud5 {
+        top: 39%;
+        left: 27%;
+        width: 250px;
+        animation: cloudMove 8s infinite alternate;
+    }
+
+    .scroll-btn {
+        display: block;
+    }
+
+    .scroll-btn.left {
+        left: 10%;
+    }
+
+    .scroll-btn.right {
+        right: 10%;
+    }
+
+    .main-menu-btn {
+        font-size: clamp(1.2rem, 2vw, 1.4rem);
+        padding: 14px 28px;
+        bottom: 30px;
+    }
 }
