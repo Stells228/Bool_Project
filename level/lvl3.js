@@ -1,5 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => {
     const elements = {
+        // Keep all other elements
         variableSelect: document.getElementById('variable-select'),
         functionVector: document.getElementById('function-vector'),
         truthTableContainer: document.getElementById('truth-table-container'),
@@ -10,13 +11,17 @@ document.addEventListener('DOMContentLoaded', () => {
         backToLevelMenuBtn: document.getElementById('back-to-level-menu'),
         prevLevelBtn: document.getElementById('prev-level'),
         nextLevelBtn: document.getElementById('next-level'),
-        deleteBtn: document.getElementById('delete-btn')
+        deleteBtn: document.getElementById('delete-btn'),
+        rightPanel: document.querySelector('.right-panel'),
+        levelContainer: document.querySelector('.level-container'),
+        inputContainer: document.querySelector('.input-container')
     };
 
     let n = 0;
     let currentFunctionVector = '';
     let correctDNF = '';
     let completedLevels = JSON.parse(localStorage.getItem('completedLevels')) || [];
+    let competitionScores = JSON.parse(localStorage.getItem('competitionScores')) || {};
     let hasWon = false;
     const urlParams = new URLSearchParams(window.location.search);
     const gameMode = urlParams.get('mode') || 'normal';
@@ -26,6 +31,32 @@ document.addEventListener('DOMContentLoaded', () => {
         elements.nextLevelBtn.style.opacity = completedLevels.includes(3) ? '1' : '0.5';
         elements.nextLevelBtn.style.cursor = completedLevels.includes(3) ? 'pointer' : 'not-allowed';
         elements.prevLevelBtn.disabled = false;
+    } else if (gameMode === 'competition') {
+        elements.nextLevelBtn.disabled = false;
+        elements.nextLevelBtn.style.opacity = '1';
+        elements.nextLevelBtn.style.cursor = 'pointer';
+        addScoreDisplay();
+    }
+
+    function addScoreDisplay() {
+        const scoreDisplay = document.createElement('div');
+        scoreDisplay.id = 'score-display';
+        scoreDisplay.textContent = `Счёт: ${competitionScores[3] || 0}`;
+        elements.rightPanel.insertBefore(scoreDisplay, elements.inputContainer);
+    }
+
+    function updateScore(points) {
+        const currentPlayer = localStorage.getItem('currentPlayer') || 'Anonymous';
+        let allPlayersData = JSON.parse(localStorage.getItem('allPlayersData')) || {};
+        if (!allPlayersData[currentPlayer]) allPlayersData[currentPlayer] = { scores: {} };
+        allPlayersData[currentPlayer].scores[3] = {
+            points: (allPlayersData[currentPlayer].scores[3]?.points || 0) + points
+        };
+        localStorage.setItem('allPlayersData', JSON.stringify(allPlayersData));
+        if (gameMode === 'competition') {
+            document.getElementById('score-display').textContent = `Счёт: ${allPlayersData[currentPlayer].scores[3].points}`;
+        }
+        window.parent.postMessage({ type: 'updateScore', level: 3, points }, '*');
     }
 
     document.querySelectorAll('.symbol-btn').forEach(button => {
@@ -178,7 +209,27 @@ document.addEventListener('DOMContentLoaded', () => {
         elements.dnfInput.value = '';
         elements.feedback.classList.remove('show', 'correct', 'incorrect', 'error');
         elements.submitBtn.style.display = 'inline-block';
+        elements.submitBtn.disabled = false;
+        elements.submitBtn.style.opacity = '1';
+        elements.submitBtn.style.cursor = 'pointer';
         elements.tryAgainBtn.style.display = 'none';
+        elements.tryAgainBtn.disabled = false;
+        elements.tryAgainBtn.style.opacity = '1';
+        elements.tryAgainBtn.style.cursor = 'pointer';
+        elements.deleteBtn.disabled = false;
+        elements.deleteBtn.style.opacity = '1';
+        elements.deleteBtn.style.cursor = 'pointer';
+        elements.variableSelect.disabled = false;
+        elements.variableSelect.style.opacity = '1';
+        elements.variableSelect.style.cursor = 'pointer';
+        document.querySelectorAll('.symbol-btn').forEach(btn => {
+            btn.disabled = false;
+            btn.style.opacity = '1';
+            btn.style.cursor = 'pointer';
+        });
+        elements.dnfInput.disabled = false;
+        elements.dnfInput.style.opacity = '1';
+        elements.dnfInput.style.cursor = 'text';
     }
 
     function showFeedback(message, type) {
@@ -186,16 +237,32 @@ document.addEventListener('DOMContentLoaded', () => {
         elements.feedback.className = `feedback ${type} show`;
         elements.submitBtn.style.display = 'none';
         elements.tryAgainBtn.style.display = 'inline-block';
-        if (type === 'correct' && gameMode === 'passing' && !hasWon) {
+        if (gameMode === 'competition') {
+            if (type === 'correct') {
+                updateScore(10);
+            } else if (type === 'incorrect') {
+                updateScore(-10);
+            }
+        } else if (type === 'correct' && gameMode === 'passing' && !hasWon) {
             hasWon = true;
             if (!completedLevels.includes(3)) {
                 completedLevels.push(3);
                 localStorage.setItem('completedLevels', JSON.stringify(completedLevels));
                 window.parent.postMessage({ type: 'levelCompleted', level: 3 }, '*');
             }
-            elements.nextLevelBtn.disabled = false;
-            elements.nextLevelBtn.style.opacity = '1';
-            elements.nextLevelBtn.style.cursor = 'pointer';
+        }
+        if (type === 'correct' && gameMode === 'competition') {
+            window.parent.postMessage({ 
+                type: 'updateScore',
+                level: 3,
+                points: 10
+            }, '*');
+        } else if (type === 'incorrect' && gameMode === 'competition') {
+            window.parent.postMessage({ 
+                type: 'updateScore',
+                level: 3,
+                points: -10
+            }, '*');
         }
     }
 
@@ -225,6 +292,7 @@ document.addEventListener('DOMContentLoaded', () => {
             generateNewVector();
             resetUI();
             hasWon = completedLevels.includes(3);
+            // Убрали перезапуск таймера
         }
     });
 
@@ -233,7 +301,9 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     elements.prevLevelBtn.addEventListener('click', () => {
-        window.location.href = `level2.html?mode=${gameMode}`;
+        if (!elements.prevLevelBtn.disabled) {
+            window.location.href = `level2.html?mode=${gameMode}`;
+        }
     });
 
     elements.nextLevelBtn.addEventListener('click', () => {
