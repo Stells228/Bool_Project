@@ -7,7 +7,14 @@
     <link rel="stylesheet" href="main.css">
     <link rel="stylesheet" href="calculator.css">
     <link rel="stylesheet" href="settings.css">
+    <link rel="stylesheet" href="rating.css">
     <link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@400&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/png" href="favicon/favicon-96x96.png" sizes="96x96">
+    <link rel="icon" href="favicon/favicon.ico" type="image/x-icon">
+    <link rel="apple-touch-icon" href="favicon/apple-touch-icon.png" sizes="180x180">
+    <link rel="manifest" href="favicon/site.webmanifest">
+    <link rel="icon" href="favicon/web-app-manifest-192x192.png" type="image/png" sizes="192x192">
+    <link rel="icon" href="favicon/web-app-manifest-512x512.png" type="image/png" sizes="512x512">
 </head>
 <body> 
     <!-- Выдвижное окно с калькулятором -->
@@ -137,6 +144,7 @@
             <div class="mode-toggle">
                 <button class="mode-btn" id="normal-mode">Свободный</button>
                 <button class="mode-btn" id="passing-mode">Прохождение</button>
+                <button class="mode-btn" id="competition-mode">Соревнование</button>
             </div>
             <button id="new-game-btn" class="new-game-btn">
                 <img src="Photos/restart.png" alt="New Game" class="reset-icon">
@@ -149,9 +157,28 @@
         </button>
     </div>
     <div id="cup-window" class="slide-window">
-        <!-- РЕЙТИНГ -->
+        <div class="rating-container">
+            <h2 class="rating-title">Рейтинг</h2>
+            <div class="rating-summary">
+                <span id="total-score">Общий счёт: 0</span>
+            </div>
+            <div class="rating-details">
+                <ul id="level-scores" class="level-scores"></ul>
+            </div>
+        </div>
         <button id="cup-toggle" class="toggle-btn">
             <img src="Photos/cup.png" alt="Cup" class="icon">
+        </button>
+    </div>
+
+    <!-- 12 задание -->
+    <div id="construction-window" class="slide-window">
+        <div class="construction-container">
+            <h2 class="construction-title">Конструктор</h2>
+            <p>Что?</p>
+        </div>
+        <button id="construction-toggle" class="toggle-btn">
+            <img src="Photos/table.png" alt="Table" class="icon">
         </button>
     </div>
     <div class="Title">Bool-helper</div>
@@ -159,9 +186,13 @@
         <div class="image-container">
             <img src="Photos/moonre.png" alt="Moonre" class="moonre">
             <img src="Photos/cloudmoon3.png" alt="Cloud Moon 3" class="cloudmoon3">
-            <img src="Photos/cloudmoon6.png" alt="Cloud Moon 6" class="cloudmoon6">
             <img src="Photos/stars1.png" alt="Stars1" class="stars1">
             <img src="Photos/stars2.png" alt="Stars2" class="stars2">
+            <img src="Photos/cloudmoon1.png" alt="Cloud Moon 1" class="cloudmoon">
+            <img src="Photos/cloudmoon2.png" alt="Cloud Moon 2" class="cloudmoon2">
+            <img src="Photos/cloudmoon4.png" alt="Cloud Moon 4" class="cloudmoon4">
+            <img src="Photos/cloudmoon5.png" alt="Cloud Moon 5" class="cloudmoon5">
+
         </div>
         <button id="map-btn" class="map-btn" data-mode="normal">Play</button>
     </div>
@@ -170,5 +201,6 @@
     <script src="main.js"></script>
     <script src="settings.js"></script>
     <script src="calculator.js"></script>
+    <script src="rating.js"></script>
 </body>
 </html>
