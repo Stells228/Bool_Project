@@ -1,5 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => {
     const elements = {
+        // Keep all other elements
         variableSelect: document.getElementById('variable-select'),
         functionVector: document.getElementById('function-vector'),
         truthTableContainer: document.getElementById('truth-table-container'),
@@ -10,7 +11,10 @@ document.addEventListener('DOMContentLoaded', () => {
         feedback: document.getElementById('feedback'),
         backToLevelMenuBtn: document.getElementById('back-to-level-menu'),
         prevLevelBtn: document.getElementById('prev-level'),
-        nextLevelBtn: document.getElementById('next-level')
+        nextLevelBtn: document.getElementById('next-level'),
+        rightPanel: document.querySelector('.right-panel'),
+        levelContainer: document.querySelector('.level-container'),
+        variableInputContainer: document.querySelector('.variable-input-container')
     };
 
     let n = 0;
@@ -18,6 +22,7 @@ document.addEventListener('DOMContentLoaded', () => {
     let correctDummyVars = '';
     let correctEssentialVars = '';
     let completedLevels = JSON.parse(localStorage.getItem('completedLevels')) || [];
+    let competitionScores = JSON.parse(localStorage.getItem('competitionScores')) || {};
     let hasWon = false;
     const urlParams = new URLSearchParams(window.location.search);
     const gameMode = urlParams.get('mode') || 'normal';
@@ -27,6 +32,32 @@ document.addEventListener('DOMContentLoaded', () => {
         elements.nextLevelBtn.style.opacity = completedLevels.includes(2) ? '1' : '0.5';
         elements.nextLevelBtn.style.cursor = completedLevels.includes(2) ? 'pointer' : 'not-allowed';
         elements.prevLevelBtn.disabled = false;
+    } else if (gameMode === 'competition') {
+        elements.nextLevelBtn.disabled = false;
+        elements.nextLevelBtn.style.opacity = '1';
+        elements.nextLevelBtn.style.cursor = 'pointer';
+        addScoreDisplay();
+    }
+
+    function addScoreDisplay() {
+        const scoreDisplay = document.createElement('div');
+        scoreDisplay.id = 'score-display';
+        scoreDisplay.textContent = `Счёт: ${competitionScores[2] || 0}`;
+        elements.rightPanel.insertBefore(scoreDisplay, elements.variableInputContainer);
+    }
+
+    function updateScore(points) {
+        const currentPlayer = localStorage.getItem('currentPlayer') || 'Anonymous';
+        let allPlayersData = JSON.parse(localStorage.getItem('allPlayersData')) || {};
+        if (!allPlayersData[currentPlayer]) allPlayersData[currentPlayer] = { scores: {} };
+        allPlayersData[currentPlayer].scores[2] = {
+            points: (allPlayersData[currentPlayer].scores[2]?.points || 0) + points
+        };
+        localStorage.setItem('allPlayersData', JSON.stringify(allPlayersData));
+        if (gameMode === 'competition') {
+            document.getElementById('score-display').textContent = `Счёт: ${allPlayersData[currentPlayer].scores[2].points}`;
+        }
+        window.parent.postMessage({ type: 'updateScore', level: 2, points }, '*');
     }
 
     elements.variableSelect.addEventListener('change', () => {
@@ -131,6 +162,13 @@ document.addEventListener('DOMContentLoaded', () => {
         elements.feedback.classList.remove('show', 'correct', 'incorrect', 'error');
         elements.submitBtn.style.display = 'inline-block';
         elements.tryAgainBtn.style.display = 'none';
+        elements.submitBtn.disabled = false;
+        elements.submitBtn.style.opacity = '1';
+        elements.submitBtn.style.cursor = 'pointer';
+        elements.tryAgainBtn.disabled = false;
+        elements.tryAgainBtn.style.opacity = '1';
+        elements.tryAgainBtn.style.cursor = 'pointer';
+        elements.variableInputContainer.style.pointerEvents = 'auto';
     }
 
     function showFeedback(message, type) {
@@ -138,16 +176,33 @@ document.addEventListener('DOMContentLoaded', () => {
         elements.feedback.className = `feedback ${type} show`;
         elements.submitBtn.style.display = 'none';
         elements.tryAgainBtn.style.display = 'inline-block';
-        if (type === 'correct' && gameMode === 'passing' && !hasWon) {
+        if (gameMode === 'competition') {
+            if (type === 'correct') {
+                updateScore(10);
+            } else if (type === 'incorrect') {
+                updateScore(-10);
+            }
+        } else if (type === 'correct' && gameMode === 'passing' && !hasWon) {
             hasWon = true;
             if (!completedLevels.includes(2)) {
                 completedLevels.push(2);
                 localStorage.setItem('completedLevels', JSON.stringify(completedLevels));
                 window.parent.postMessage({ type: 'levelCompleted', level: 2 }, '*');
             }
-            elements.nextLevelBtn.disabled = false;
-            elements.nextLevelBtn.style.opacity = '1';
-            elements.nextLevelBtn.style.cursor = 'pointer';
+        }
+        if (type === 'correct' && gameMode === 'competition') {
+            window.parent.postMessage({ 
+                type: 'updateScore',
+                level: 2,
+                points: 10
+            }, '*');
+        } 
+        else if (type === 'incorrect' && gameMode === 'competition') {
+            window.parent.postMessage({ 
+                type: 'updateScore',
+                level: 2,
+                points: -10
+            }, '*');
         }
     }
 
@@ -182,7 +237,9 @@ document.addEventListener('DOMContentLoaded', () => {
         const userEssential = essentialIndices.sort().join('');
         if (userDummy === correctDummyVars && userEssential === correctEssentialVars) {
             showFeedback('Правильно! Так держать!', 'correct');
-        } else {
+            // Убрали остановку таймера и разблокировку кнопок здесь
+        } 
+        else {
             showFeedback(`Неправильно. \nФиктивные переменные: ${correctDummyVars || 'none'}; \nСущественные переменные: ${correctEssentialVars || 'none'}`, 'incorrect');
         }
     });
@@ -196,11 +253,15 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     elements.backToLevelMenuBtn.addEventListener('click', () => {
-        window.location.href = `../map.html?mode=${gameMode}`;
+        if (!elements.backToLevelMenuBtn.disabled) {
+            window.location.href = `../map.html?mode=${gameMode}`;
+        }
     });
 
     elements.prevLevelBtn.addEventListener('click', () => {
-        window.location.href = `level1.html?mode=${gameMode}`;
+        if (!elements.prevLevelBtn.disabled) {
+            window.location.href = `level1.html?mode=${gameMode}`;
+        }
     });
 
     elements.nextLevelBtn.addEventListener('click', () => {
