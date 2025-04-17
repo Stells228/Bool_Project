@@ -55,20 +55,49 @@ document.addEventListener('DOMContentLoaded', () => {
         tryAgainBtn: document.getElementById('try-again-btn'),
         feedback: document.getElementById('feedback'),
         backToLevelMenuBtn: document.getElementById('back-to-level-menu'),
-        nextLevelBtn: document.getElementById('next-level')
+        nextLevelBtn: document.getElementById('next-level'),
+        rightPanel: document.querySelector('.right-panel'),
+        levelContainer: document.querySelector('.level-container'),
+        functionSelectContainer: document.querySelector('.function-select-container')
     };
 
     let currentFunctionVector = '';
     let completedLevels = JSON.parse(localStorage.getItem('completedLevels')) || [];
+    let competitionScores = JSON.parse(localStorage.getItem('competitionScores')) || {};
     let hasWon = false;
     const urlParams = new URLSearchParams(window.location.search);
     const gameMode = urlParams.get('mode') || 'normal';
-
 
     if (gameMode === 'passing') {
         elements.nextLevelBtn.disabled = !completedLevels.includes(1);
         elements.nextLevelBtn.style.opacity = completedLevels.includes(1) ? '1' : '0.5';
         elements.nextLevelBtn.style.cursor = completedLevels.includes(1) ? 'pointer' : 'not-allowed';
+    } else if (gameMode === 'competition') {
+        elements.nextLevelBtn.disabled = false;
+        elements.nextLevelBtn.style.opacity = '1';
+        elements.nextLevelBtn.style.cursor = 'pointer';
+        addScoreDisplay();
+    }
+
+    function addScoreDisplay() {
+        const scoreDisplay = document.createElement('div');
+        scoreDisplay.id = 'score-display';
+        scoreDisplay.textContent = `Счёт: ${competitionScores[1] || 0}`;
+        elements.rightPanel.appendChild(scoreDisplay);
+    }
+
+    function updateScore(points) {
+        const currentPlayer = localStorage.getItem('currentPlayer') || 'Anonymous';
+        let allPlayersData = JSON.parse(localStorage.getItem('allPlayersData')) || {};
+        if (!allPlayersData[currentPlayer]) allPlayersData[currentPlayer] = { scores: {} };
+        allPlayersData[currentPlayer].scores[1] = {
+            points: (allPlayersData[currentPlayer].scores[1]?.points || 0) + points,
+        };
+        localStorage.setItem('allPlayersData', JSON.stringify(allPlayersData));
+        if (gameMode === 'competition') {
+            document.getElementById('score-display').textContent = `Счёт: ${allPlayersData[currentPlayer].scores[1].points}`;
+        }
+        window.parent.postMessage({ type: 'updateScore', level: 1, points }, '*');
     }
 
     function generateFunctionVector() {
@@ -107,11 +136,18 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function resetUI() {
         nativeSelect.value = '';
-        selectHeader.querySelector('span:first-child').textContent = 'Выбор функции'; 
+        selectHeader.querySelector('span:first-child').textContent = 'Выбор функции';
         elements.feedback.style.display = 'none';
         elements.feedback.className = 'feedback';
         elements.submitBtn.style.display = 'inline-block';
         elements.tryAgainBtn.style.display = 'none';
+        elements.submitBtn.disabled = false;
+        elements.submitBtn.style.opacity = '1';
+        elements.submitBtn.style.cursor = 'pointer';
+        elements.tryAgainBtn.disabled = false;
+        elements.tryAgainBtn.style.opacity = '1';
+        elements.tryAgainBtn.style.cursor = 'pointer';
+        elements.functionSelectContainer.style.pointerEvents = 'auto';
     }
 
     function showFeedback(message, type) {
@@ -121,7 +157,16 @@ document.addEventListener('DOMContentLoaded', () => {
         elements.submitBtn.style.display = 'none';
         elements.tryAgainBtn.style.display = 'inline-block';
 
-        if (type === 'correct' && gameMode === 'passing' && !hasWon) {
+        if (gameMode === 'competition') {
+            if (type === 'correct') {
+                updateScore(10);
+                elements.nextLevelBtn.disabled = false;
+                elements.nextLevelBtn.style.opacity = '1';
+                elements.nextLevelBtn.style.cursor = 'pointer';
+            } else if (type === 'incorrect') {
+                updateScore(-10);
+            }
+        } else if (type === 'correct' && gameMode === 'passing' && !hasWon) {
             hasWon = true;
             if (!completedLevels.includes(1)) {
                 completedLevels.push(1);
@@ -132,20 +177,32 @@ document.addEventListener('DOMContentLoaded', () => {
             elements.nextLevelBtn.style.opacity = '1';
             elements.nextLevelBtn.style.cursor = 'pointer';
         }
+
+        if (type === 'correct' && gameMode === 'competition') {
+            window.parent.postMessage({ 
+                type: 'updateScore',
+                level: 1,
+                points: 10,
+            }, '*');
+        } else if (type === 'incorrect' && gameMode === 'competition') {
+            window.parent.postMessage({ 
+                type: 'updateScore',
+                level: 1,
+                points: -10,
+            }, '*');
+        }
+        
     }
 
     elements.submitBtn.addEventListener('click', () => {
         const selectedFunction = nativeSelect.value;
-
         if (!selectedFunction) {
             showFeedback('Пожалуйста, выберите имя функции!', 'error');
             return;
         }
-
         if (boolF[selectedFunction] === currentFunctionVector) {
             showFeedback('Правильно! Так держать!', 'correct');
-        } 
-        else {
+        } else {
             const correctFunction = Object.keys(boolF).find(key => boolF[key] === currentFunctionVector);
             showFeedback(`Неправильно. Имя функции: ${correctFunction}`, 'incorrect');
         }
@@ -154,11 +211,13 @@ document.addEventListener('DOMContentLoaded', () => {
     elements.tryAgainBtn.addEventListener('click', () => {
         generateFunctionVector();
         resetUI();
-        hasWon = completedLevels.includes(1); //обновляем hasWon для сохр прогр
+        hasWon = completedLevels.includes(1);
     });
 
     elements.backToLevelMenuBtn.addEventListener('click', () => {
-        window.location.href = `../map.html?mode=${gameMode}`;
+        if (!elements.backToLevelMenuBtn.disabled) {
+            window.location.href = `../map.html?mode=${gameMode}`;
+        }
     });
 
     elements.nextLevelBtn.addEventListener('click', () => {
