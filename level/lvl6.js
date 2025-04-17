@@ -10,24 +10,46 @@ document.addEventListener('DOMContentLoaded', () => {
         feedback: document.getElementById('feedback'),
         backToLevelMenuBtn: document.getElementById('back-to-level-menu'),
         prevLevelBtn: document.getElementById('prev-level'),
-        nextLevelBtn: document.getElementById('next-level')
+        rightPanel: document.querySelector('.right-panel'),
+        levelContainer: document.querySelector('.level-container')
     };
 
     let vectors = [];
     let correctClosedClasses = '';
     let completedLevels = JSON.parse(localStorage.getItem('completedLevels')) || [];
+    let competitionScores = JSON.parse(localStorage.getItem('competitionScores')) || {};
     let hasWon = false;
     const urlParams = new URLSearchParams(window.location.search);
-    const gameMode = urlParams.get('mode') || 'Свободный    ';
+    const gameMode = urlParams.get('mode') || 'normal';
 
     if (gameMode === 'passing') {
-        elements.nextLevelBtn.disabled = !completedLevels.includes(6);
-        elements.nextLevelBtn.style.opacity = completedLevels.includes(6) ? '1' : '0.5';
-        elements.nextLevelBtn.style.cursor = completedLevels.includes(6) ? 'pointer' : 'not-allowed';
         elements.prevLevelBtn.disabled = false;
+    } else if (gameMode === 'competition') {
+        addScoreDisplay();
     }
 
     generateVectorSet();
+
+    function addScoreDisplay() {
+        const scoreDisplay = document.createElement('div');
+        scoreDisplay.id = 'score-display';
+        scoreDisplay.textContent = `Счёт: ${competitionScores[6] || 0}`;
+        elements.rightPanel.insertBefore(scoreDisplay, elements.classesContainer);
+    }
+
+    function updateScore(points) {
+        const currentPlayer = localStorage.getItem('currentPlayer') || 'Anonymous';
+        let allPlayersData = JSON.parse(localStorage.getItem('allPlayersData')) || {};
+        if (!allPlayersData[currentPlayer]) allPlayersData[currentPlayer] = { scores: {} };
+        allPlayersData[currentPlayer].scores[6] = {
+            points: (allPlayersData[currentPlayer].scores[6]?.points || 0) + points,
+        };
+        localStorage.setItem('allPlayersData', JSON.stringify(allPlayersData));
+        if (gameMode === 'competition') {
+            document.getElementById('score-display').textContent = `Счёт: ${allPlayersData[currentPlayer].scores[6].points}`;
+        }
+        window.parent.postMessage({ type: 'updateScore', level: 6, points }, '*');
+    }
 
     elements.isCompleteYes.addEventListener('change', () => {
         if (elements.isCompleteYes.checked) elements.isCompleteNo.checked = false;
@@ -140,12 +162,31 @@ document.addEventListener('DOMContentLoaded', () => {
         if (userIsCompleteYes) {
             if (isComplete) showFeedback('Правильно! Набор полный.', 'correct');
             else showFeedback(`Неправильно!\nНабор не полный.\nЗамкнутый класс: ${correctClosedClasses}`, 'incorrect');
-        } 
-        else if (userIsCompleteNo) {
+        } else if (userIsCompleteNo) {
             if (isComplete) showFeedback('Неправильно!\nНабор полный, замкнутых классов нет.', 'incorrect');
             else if (userClosedClasses === correctClosedClasses) showFeedback('Правильно! Замкнутый класс верный.', 'correct');
             else showFeedback(`Неправильно!\nПравильный замкнутый класс: ${correctClosedClasses}`, 'incorrect');
         }
+    }
+
+    function resetUI() {
+        elements.isCompleteYes.checked = false;
+        elements.isCompleteYes.disabled = false;
+        elements.isCompleteNo.checked = false;
+        elements.isCompleteNo.disabled = false;
+        elements.closedClasses.value = '';
+        elements.closedClasses.disabled = false;
+        elements.closedClasses.style.opacity = '1';
+        elements.closedClasses.style.cursor = 'text';
+        elements.feedback.classList.remove('show', 'correct', 'incorrect', 'error');
+        elements.submitBtn.style.display = 'inline-block';
+        elements.submitBtn.disabled = false;
+        elements.submitBtn.style.opacity = '1';
+        elements.submitBtn.style.cursor = 'pointer';
+        elements.tryAgainBtn.style.display = 'none';
+        elements.tryAgainBtn.disabled = false;
+        elements.tryAgainBtn.style.opacity = '1';
+        elements.tryAgainBtn.style.cursor = 'pointer';
     }
 
     function showFeedback(message, type) {
@@ -153,26 +194,33 @@ document.addEventListener('DOMContentLoaded', () => {
         elements.feedback.className = `feedback ${type} show`;
         elements.submitBtn.style.display = 'none';
         elements.tryAgainBtn.style.display = 'inline-block';
-        if (type === 'correct' && gameMode === 'passing' && !hasWon) {
+        if (gameMode === 'competition') {
+            if (type === 'correct') {
+                updateScore(10);
+            } else if (type === 'incorrect') {
+                updateScore(-10);
+            }
+        } else if (type === 'correct' && gameMode === 'passing' && !hasWon) {
             hasWon = true;
             if (!completedLevels.includes(6)) {
                 completedLevels.push(6);
                 localStorage.setItem('completedLevels', JSON.stringify(completedLevels));
                 window.parent.postMessage({ type: 'levelCompleted', level: 6 }, '*');
             }
-            elements.nextLevelBtn.disabled = false;
-            elements.nextLevelBtn.style.opacity = '1';
-            elements.nextLevelBtn.style.cursor = 'pointer';
         }
-    }
-
-    function resetUI() {
-        elements.isCompleteYes.checked = false;
-        elements.isCompleteNo.checked = false;
-        elements.closedClasses.value = '';
-        elements.feedback.classList.remove('show', 'correct', 'incorrect', 'error');
-        elements.submitBtn.style.display = 'inline-block';
-        elements.tryAgainBtn.style.display = 'none';
+        if (type === 'correct' && gameMode === 'competition') {
+            window.parent.postMessage({ 
+                type: 'updateScore',
+                level: 6,
+                points: 10,
+            }, '*');
+        } else if (type === 'incorrect' && gameMode === 'competition') {
+            window.parent.postMessage({ 
+                type: 'updateScore',
+                level: 6,
+                points: -10,
+            }, '*');
+        }
     }
 
     elements.submitBtn.addEventListener('click', () => {
@@ -190,13 +238,8 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     elements.prevLevelBtn.addEventListener('click', () => {
-        window.location.href = `level5.html?mode=${gameMode}`;
-    });
-
-    elements.nextLevelBtn.addEventListener('click', () => {
-        if (!elements.nextLevelBtn.disabled) {
-            window.location.href = `level6.html?mode=${gameMode}`; 
+        if (!elements.prevLevelBtn.disabled) {
+            window.location.href = `level5.html?mode=${gameMode}`;
         }
     });
-
 });
