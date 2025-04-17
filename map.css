@@ -264,9 +264,9 @@ body {
     }
 
     .moon {
-        top: 5%;
+        top: 9%;
         left: 38%;
-        width: 100px;
+        width: 150px;
     }
 
     .stars1 { top: -15%; left: 0%; width: 90%; height: 100%; }
@@ -298,9 +298,9 @@ body {
     }
 
     .cloud4 {
-        top: 17%;
-        left: 47%;
-        width: 200px;
+        top: 22%;
+        left: 48%;
+        width: 270px;
         animation: cloudMove 8s infinite alternate;
     }
 
@@ -326,7 +326,7 @@ body {
 }
 
 /* Мобильные устройства (508px–754px) */
-@media (min-width: 507px) and (max-width: 754px) {
+@media (min-width: 507px) and (max-width: 755px) {
     .map-title {
         font-size: clamp(1.8rem, 5vw, 2em);
         margin-bottom: 20px;
@@ -357,9 +357,9 @@ body {
     }
 
     .moon {
-        top: 6%;
+        top: 8%;
         left: 35%;
-        width: 120px;
+        width: 190px;
     }
 
     .stars1 { top: -15%; left: 0%; width: 85%; height: 80%; }
@@ -391,9 +391,9 @@ body {
     }
 
     .cloud4 {
-        top: 20%;
-        left: 50%;
-        width: 240px;
+        top: 22%;
+        left: 45%;
+        width: 320px;
         animation: cloudMove 8s infinite alternate;
     }
 
@@ -443,9 +443,9 @@ body {
     }
 
     .moon {
-        top: 2%;
+        top: 4%;
         left: 15%;
-        width: 150px;
+        width: 210px;
     }
 
     .stars1 { top: -5%; left: 20%; width: 80%; height: 80%; }
@@ -477,9 +477,9 @@ body {
     }
 
     .cloud4 {
-        top: 25%;
+        top: 21%;
         left: 23%;
-        width: 310px;
+        width: 360px;
         animation: cloudMove 8s infinite alternate;
     }
 
@@ -493,7 +493,7 @@ body {
     .main-menu-btn {
         font-size: clamp(1rem, 2.5vw, 1.2rem);
         padding: 10px 20px;
-        bottom: 20px;
+        bottom: 30px;
     }
 
     .new-game-btn {
@@ -538,7 +538,7 @@ body {
     .moon {
         top: 3%;
         left: 15%;
-        width: 200px;
+        width: 250px;
     }
 
     .stars1 { top: -3%; left: 27%; width: 80%; height: 80%; }
@@ -572,7 +572,7 @@ body {
     .cloud4 {
         top: 23%;
         left: 23%;
-        width: 350px;
+        width: 390px;
         animation: cloudMove 8s infinite alternate;
     }
 
@@ -591,7 +591,7 @@ body {
 }
 
 /* Большие экраны (1361px–1699px) */
-@media (min-width: 1361px) and (max-width: 1699px) {
+@media (min-width: 1361px) and (max-width: 1700px) {
     .map-title {
         font-size: clamp(2.5rem, 5vw, 3rem);
         margin-bottom: 35px;
@@ -622,9 +622,9 @@ body {
     }
 
     .moon {
-        top: 4%;
+        top: 3%;
         left: 15%;
-        width: 200px;
+        width: 140px;
     }
 
     .stars1 { top: -3%; left: 27%; width: 70%; height: 80%; }
@@ -635,7 +635,7 @@ body {
     }
 
     .cloud1 {
-        top: 50%;
+        top: 37%;
         left: 65%;
         width: 250px;
         animation: cloudMove 7s infinite alternate;
@@ -649,16 +649,16 @@ body {
     }
 
     .cloud3 {
-        top: 75%;
+        top: 70%;
         left: 52%;
         width: 470px;
         animation: cloudMove 8s infinite alternate;
     }
 
     .cloud4 {
-        top: 23%;
+        top: 20%;
         left: 20%;
-        width: 350px;
+        width: 320px;
         animation: cloudMove 8s infinite alternate;
     }
 
@@ -684,7 +684,7 @@ body {
     .main-menu-btn {
         font-size: clamp(1.1rem, 2vw, 1.3rem);
         padding: 12px 24px;
-        bottom: 25px;
+        bottom: 17px;
     }
 }
 
@@ -754,9 +754,9 @@ body {
     }
 
     .cloud4 {
-        top: 25%;
+        top: 23%;
         left: 16%;
-        width: 450px;
+        width: 470px;
         animation: cloudMove 8s infinite alternate;
     }
 
@@ -783,5 +783,6 @@ body {
         font-size: clamp(1.2rem, 2vw, 1.4rem);
         padding: 14px 28px;
         bottom: 30px;
+        gap: 20px;
     }
 }
