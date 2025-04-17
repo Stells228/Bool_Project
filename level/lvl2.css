@@ -1,16 +1,18 @@
 body {
     margin: 0;
-    padding: 0px;
+    padding: 0;
     font-family: 'Comfortaa', cursive;
     background: linear-gradient(to bottom, #416190, #776f98);
     height: 100vh;
+    width: 100vw;
     display: flex;
     justify-content: center;
     align-items: center;
     color: #ffffff;
+    overflow: hidden;
 }
 
-html, body{
+html, body {
     overflow: hidden;
 }
 
@@ -21,13 +23,14 @@ html, body{
     padding: 30px;
     width: 90%;
     max-width: 1000px;
-    height: auto; 
-    min-height: 600px;
+    height: auto;
+    min-height: 60vh;
     text-align: center;
     box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
     box-sizing: border-box;
     position: relative;
     overflow: hidden;
+    z-index: 10;
 }
 
 .nav-buttons {
@@ -35,8 +38,9 @@ html, body{
     top: 15px;
     left: 15px;
     display: flex;
-    flex-direction: column;
-    gap: 10px;
+    flex-direction: row;
+    gap: 15px;
+    z-index: 11;
 }
 
 h1 {
@@ -120,7 +124,7 @@ h1 {
 .truth-table-wrapper {
     width: 100%;
     max-height: 210px;
-    overflow-x: none;
+    overflow-x: hidden;
     overflow-y: auto;
     border: 2px solid #8a2be2;
     border-radius: 12px;
@@ -135,18 +139,16 @@ h1 {
     color: #333;
     background-color: #e8e5e9;
     border-radius: 12px;
-    table-layout: fixed; /* Фиксированная ширина столбцов */
+    table-layout: fixed;
 }
 
-/* th - заголовки*/ 
-/* td - ячейки */
 .truth-table th, .truth-table td {
     border: 1px solid #ccc;
     padding: 5px 8px;
     text-align: center;
-    white-space: nowrap; /* Текст не переносится */
-    overflow: hidden; /* Текст не выходит за пределы ячейки */
-    text-overflow: ellipsis; /* Добавляем многоточие, если текст не помещается */
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .truth-table th {
@@ -210,8 +212,8 @@ h1 {
     gap: 15px;
     margin-bottom: 20px;
     width: 100%;
-    position: relative; 
-    z-index: 4;
+    position: relative;
+    z-index: 11;
 }
 
 .submit-btn, .try-again-btn {
@@ -235,21 +237,21 @@ h1 {
 .feedback {
     position: absolute;
     bottom: 25px;
-    left: 50%; /* Центрируем по горизонтали */
+    left: 50%;
     transform: translateX(-50%);
     font-size: 1.2em;
     margin-top: 8px;
-    padding: 10px; /* Увеличиваем отступы */
+    padding: 10px;
     border-radius: 20px;
     width: 50%;
-    max-width: 600px; 
+    max-width: 600px;
     opacity: 1;
     transition: opacity 0.3s;
     display: none;
-    z-index: 3;
+    z-index: 11;
     font-size: 20px;
-    text-align: center; /* Центрируем текст */
-    box-sizing: border-box; /* Учитываем padding в ширине */
+    text-align: center;
+    box-sizing: border-box;
 }
 
 .feedback.show {
@@ -269,16 +271,6 @@ h1 {
 .feedback.error {
     background: rgba(241, 196, 15, 0.8);
     color: white;
-}
-
-.nav-buttons {
-    position: absolute;
-    top: 15px;
-    left: 15px;
-    display: flex;
-    flex-direction: row; 
-    gap: 15px;
-    z-index: 2;
 }
 
 .nav-icon-btn {
@@ -310,233 +302,10 @@ h1 {
     transform: scale(1.1);
 }
 
-.stars {
-    position: fixed;
-    z-index: -1;
-    opacity: 0.8;
-}
-
-.stars1 {
-    top: 5%;
-    left: 1%;
-    width: 700px;
-    animation: float 55s infinite linear reverse;
-}
-
-.stars2 {
-    bottom: 10%;
-    right: 1%;
-    width: 600px;
-    animation: float 50s infinite linear reverse;
-}
-
-.moon {
-    position: fixed;
-    top: 9%;
-    right: 84%;
-    width: 150px;
-    z-index: -1;
-}
-
-.cloud {
-    position: fixed;
-    z-index: -1;
-    opacity: 1;
-}
-
-.cloud1 {
-    top: 80%;
-    left: 10%;
-    width: 230px;
-    animation: float 12s infinite linear;
-    z-index: 5;
-}
-
-.cloud2 {
-    top: 5%;
-    right: 10%;
-    width: 200px;
-    animation: float 18s infinite linear reverse;
-    z-index: 6;
-}
-
-.cloud3 {
-    top: 8%;
-    right: 60%;
-    width: 250px;
-    animation: float 18s infinite linear reverse;
-}
-
-.cloud4 {
-    top: 15%;
-    right: 82%;
-    width: 250px;
-    animation: float 18s infinite linear reverse;
-}
-
-.cloud5 {
-    top: 28%;
-    right: 21%;
-    width: 250px;
-    animation: float 12s infinite linear reverse;
-}
-
-.cloud6 {
-    top: 70%;
-    right: 40%;
-    width: 250px;
-    animation: float 18s infinite linear reverse;
-}
-
-.comet1 {
-    position: absolute;
-    top: -45%;
-    left: 200%;
-    width: 200px;
-    z-index: 3;
-    animation: cometFly1 9s infinite linear 3s; 
-}
-
-.comet2 {
-    position: absolute;
-    top: -45%;
-    left: 100%;
-    width: 200px;
-    z-index: 3;
-    animation: cometFly2 9s infinite linear 16s; 
-}
-
-.comet3 {
-    position: absolute;
-    top: -45%;
-    left: 10%;
-    width: 200px;
-    z-index: 3;
-    animation: cometFly3 9s infinite linear 21s; 
-}
-
-.comet4 {
-    position: absolute;
-    top: -40%;
-    left: -50%;
-    width: 200px;
-    z-index: 3;
-    animation: cometFly4 9s infinite linear 32s; 
-}
-
-/*траектория полёта*/
-@keyframes float {
-    0%, 100% {
-        transform: translateY(0) translateX(0);
-    }
-    25% {
-        transform: translateY(-6px) translateX(6px);
-    }
-    50% {
-        transform: translateY(5px) translateX(-5px);
-    }
-    75% {
-        transform: translateY(6px) translateX(5px);
-    }
-}
-
-@keyframes cometFly1 {
-    0% {
-        top: -40%;
-        left: 200%;
-        opacity: 1;
-    }
-    50% {
-        top: 50%;
-        left: 50%; 
-        opacity: 0;
-    }
-    100% {
-        top: 100%;
-        left: 0%; 
-        opacity: 0;
-    }
-}
-
-@keyframes cometFly2 {
-    0% {
-        top: -40%;
-        left: 100%;
-        opacity: 1;
-    }
-    50% {
-        top: 50%;
-        left: 0%; 
-        opacity: 0;
-    }
-    100% {
-        top: 100%;
-        left: -80%; 
-        opacity: 0;
-    }
-}
-
-@keyframes cometFly3 {
-    0% {
-        top: -30%;
-        left: 10%;
-        opacity: 1;
-    }
-    50% {
-        top: 50%;
-        left: -50%; 
-        opacity: 0;
-    }
-    100% {
-        top: 100%;
-        left: -100%; 
-        opacity: 0;
-    }
-}
-
-@keyframes cometFly4 {
-    0% {
-        top: -30%;
-        left: -50%;
-        opacity: 1;
-    }
-    50% {
-        top: 50%;
-        left: -150%; 
-        opacity: 0;
-    }
-    100% {
-        top: 100%;
-        left: -200%; 
-        opacity: 0;
-    }
-}
-
-@media (max-width: 768px) {
-    .content-wrapper {
-        flex-direction: column;
-        gap: 20px;
-    }
-    
-    .left-panel, .right-panel {
-        width: 100%;
-    }
-    
-    .truth-table {
-        max-width: 100%;
-    }
-    
-    .nav-buttons {
-        position: static;
-        justify-content: center;
-        margin-bottom: 15px;
-    }
-}
-
 .info-panel {
     position: absolute;
     top: 50%;
-    right: -220px; /* Начальное положение за пределами */
+    right: -220px;
     transform: translateY(-50%);
     width: 200px;
     background: rgba(97, 60, 192, 0.7);
@@ -545,11 +314,11 @@ h1 {
     padding: 15px;
     box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
     transition: right 0.5s ease;
-    z-index: 10;
+    z-index: 11;
 }
 
 .info-panel:hover {
-    right: 15px; /* При наведении выезжает на экран */
+    right: 15px;
 }
 
 .info-content {
@@ -581,9 +350,282 @@ h1 {
     transform: translateY(-50%) scale(1.1);
 }
 
-/* Для мобильных устройств скрываем панель */
-@media (max-width: 1200px) {
+#score-display {
+    font-size: 1.2em;
+    margin-bottom: 15px;
+    background: rgba(255, 255, 255, 0.2);
+    padding: 8px;
+    border-radius: 8px;
+    width: 100%;
+    max-width: 280px;
+    text-align: center;
+}
+
+/* Background Elements */
+.stars {
+    position: fixed;
+    z-index: -1;
+    opacity: 0.8;
+}
+
+.moon {
+    position: fixed;
+    z-index: -1;
+    width: 15vw;
+    max-width: 150px;
+}
+
+.cloud {
+    position: fixed;
+    z-index: -1;
+    opacity: 1;
+}
+
+.comet1, .comet2, .comet3, .comet4 {
+    position: absolute;
+    width: 20vw;
+    max-width: 200px;
+    z-index: 3;
+}
+
+/* Default Positions (Laptops/PCs) */
+.stars1 {
+    top: 0;
+    left: 0;
+    width: 50vw;
+    height: 100vh;
+    object-fit: cover;
+    animation: float 55s infinite linear reverse;
+}
+
+.stars2 {
+    top: 0;
+    right: 0;
+    width: 50vw;
+    height: 100vh;
+    object-fit: cover;
+    animation: float 50s infinite linear reverse;
+}
+
+.moon {
+    top: 9vh;
+    right: 84vw;
+}
+
+.cloud1 {
+    top: 80vh;
+    left: 10vw;
+    width: 23vw;
+    max-width: 230px;
+    animation: float 12s infinite linear;
+}
+
+.cloud2 {
+    top: 5vh;
+    right: 10vw;
+    width: 20vw;
+    max-width: 200px;
+    animation: float 18s infinite linear reverse;
+}
+
+.cloud3 {
+    top: 8vh;
+    right: 60vw;
+    width: 25vw;
+    max-width: 250px;
+    animation: float 18s infinite linear reverse;
+}
+
+.cloud4 {
+    top: 15vh;
+    right: 82vw;
+    width: 25vw;
+    max-width: 250px;
+    animation: float 18s infinite linear reverse;
+}
+
+.cloud5 {
+    top: 28vh;
+    right: 21vw;
+    width: 25vw;
+    max-width: 250px;
+    animation: float 12s infinite linear reverse;
+}
+
+.cloud6 {
+    top: 70vh;
+    right: 40vw;
+    width: 25vw;
+    max-width: 250px;
+    animation: float 18s infinite linear reverse;
+}
+
+.comet1 {
+    top: -45vh;
+    left: 200vw;
+    animation: cometFly1 9s infinite linear 3s;
+}
+
+.comet2 {
+    top: -45vh;
+    left: 100vw;
+    animation: cometFly2 9s infinite linear 16s;
+}
+
+.comet3 {
+    top: -45vh;
+    left: 10vw;
+    animation: cometFly3 9s infinite linear 21s;
+}
+
+.comet4 {
+    top: -40vh;
+    left: -50vw;
+    animation: cometFly4 9s infinite linear 32s;
+}
+
+/* Animations */
+@keyframes float {
+    0%, 100% { transform: translateY(0) translateX(0); }
+    25% { transform: translateY(-6px) translateX(6px); }
+    50% { transform: translateY(5px) translateX(-5px); }
+    75% { transform: translateY(6px) translateX(5px); }
+}
+
+@keyframes cometFly1 {
+    0% { top: -40vh; left: 200vw; opacity: 1; }
+    50% { top: 50vh; left: 50vw; opacity: 0; }
+    100% { top: 100vh; left: 0vw; opacity: 0; }
+}
+
+@keyframes cometFly2 {
+    0% { top: -40vh; left: 100vw; opacity: 1; }
+    50% { top: 50vh; left: 0vw; opacity: 0; }
+    100% { top: 100vh; left: -80vw; opacity: 0; }
+}
+
+@keyframes cometFly3 {
+    0% { top: -30vh; left: 10vw; opacity: 1; }
+    50% { top: 50vh; left: -50vw; opacity: 0; }
+    100% { top: 100vh; left: -100vw; opacity: 0; }
+}
+
+@keyframes cometFly4 {
+    0% { top: -30vh; left: -50vw; opacity: 1; }
+    50% { top: 50vh; left: -150vw; opacity: 0; }
+    100% { top: 100vh; left: -200vw; opacity: 0; }
+}
+
+/* Media Queries */
+
+/* Phones (≤768px) */
+@media (max-width: 768px) {
+    .content-wrapper {
+        flex-direction: column;
+        gap: 20px;
+    }
+    
+    .left-panel, .right-panel {
+        width: 100%;
+        min-width: 0;
+    }
+    
+    .truth-table {
+        max-width: 100%;
+        font-size: 16px;
+    }
+    
+    .nav-buttons {
+        position: static;
+        justify-content: center;
+        margin-bottom: 15px;
+    }
+
     .info-panel {
         display: none;
+    }
+
+    /* Background Elements */
+    .stars1 {
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 50vh;
+    }
+
+    .stars2 {
+        top: 50vh;
+        left: 0;
+        width: 100vw;
+        height: 50vh;
+    }
+
+    .moon {
+        top: 10vh;
+        right: 50vw;
+        transform: translateX(50%);
+        width: 20vw;
+        max-width: 100px;
+    }
+
+    .cloud1 {
+        top: 75vh;
+        left: 5vw;
+        width: 30vw;
+        max-width: 200px;
+    }
+
+    .cloud2 {
+        top: 5vh;
+        right: 5vw;
+        width: 25vw;
+        max-width: 180px;
+    }
+
+    .cloud3 {
+        top: 20vh;
+        right: 60vw;
+        width: 28vw;
+        max-width: 190px;
+    }
+
+    .cloud4, .cloud5, .cloud6 {
+        display: none;
+    }
+}
+
+/* Tablets (769px–1024px) */
+@media (min-width: 769px) and (max-width: 1024px) {
+    .stars1, .stars2 {
+        width: 50vw;
+        height: 100vh;
+    }
+
+    .moon {
+        width: 18vw;
+        max-width: 130px;
+    }
+
+    .cloud1, .cloud2, .cloud3, .cloud4, .cloud5, .cloud6 {
+        width: 22vw;
+        max-width: 220px;
+    }
+}
+
+/* Laptops/PCs (>1024px) */
+@media (min-width: 1025px) {
+    .stars1, .stars2 {
+        width: 50vw;
+        height: 100vh;
+    }
+
+    .moon {
+        width: 15vw;
+        max-width: 150px;
+    }
+
+    .cloud1, .cloud2, .cloud3, .cloud4, .cloud5, .cloud6 {
+        width: 23vw;
+        max-width: 250px;
     }
 }
