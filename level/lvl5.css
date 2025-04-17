@@ -575,6 +575,22 @@ h1 {
     }
 }
 
+#score-display {
+    font-size: 1.2em;
+    margin-bottom: 15px;
+    background: rgba(255, 255, 255, 0.2);
+    padding: 8px;
+    border-radius: 8px;
+    width: 100%;
+    max-width: 280px;
+    text-align: center;
+}
+
+.level-container {
+    z-index: 1;
+}
+
+
 @media (max-width: 768px) {
     .content-wrapper {
         flex-direction: column;
