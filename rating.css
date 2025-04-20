@@ -1,3 +1,4 @@
+/* Основные стили */
 .rating-container {
     width: 100%;
     max-width: 90%;
@@ -121,19 +122,36 @@
     background: rgba(255,255,255,0.4);
 }
 
-@media (max-width: 768px) {
-    .rating-summary span {
-        display: none;
+/* Адаптивность для маленьких экранов */
+@media (max-width: 445px) {
+    /* Скрываем очки и показываем только имя игрока */
+    .player-score {
+        display: none; /* Скрываем очки */
     }
-    
-    .rating-summary::after {
-        content: attr(data-score);
-        font-size: clamp(1.2rem, 3.5vw, 1.5rem);
-        font-weight: bold;
-        display: block;
+
+    .player-name {
+        font-size: clamp(1.2rem, 4vw, 2rem); /* Уменьшаем размер имени, если нужно */
+    }
+
+    /* Скрываем очки в других местах */
+    .rating-summary .score-text .score{
+        display: inline;
     }
 }
 
+@media (max-width: 768px) {
+    .rating-summary .score-text {
+        display: none;
+    }
+ 
+    .rating-summary .score-number {
+        display: inline;
+        font-size: clamp(1.2rem, 3.5vw, 1.5rem);
+        font-weight: bold;
+    }
+}
+
+/* Ранее использованные стили для 610px */
 @media (max-width: 610px) {
     .player-name-container {
         width: 100%;
