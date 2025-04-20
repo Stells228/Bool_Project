@@ -22,14 +22,29 @@ document.addEventListener('DOMContentLoaded', () => {
 
     let allPlayersData = JSON.parse(localStorage.getItem('allPlayersData')) || {};
 
+    const currentPlayer = localStorage.getItem('currentPlayer') || 'Anonymous';
+    if (!allPlayersData[currentPlayer]) {
+        allPlayersData[currentPlayer] = { scores: {} };
+        localStorage.setItem('allPlayersData', JSON.stringify(allPlayersData));
+    }
+
+    updateScoreDisplay();
+    updateRating();
+
     function updateRating() {
+        const currentPlayer = localStorage.getItem('currentPlayer') || 'Anonymous';
+        if (!allPlayersData[currentPlayer]) {
+            allPlayersData[currentPlayer] = { scores: {} };
+            localStorage.setItem('allPlayersData', JSON.stringify(allPlayersData));
+        }
+        
         const sortedPlayers = Object.entries(allPlayersData)
-            .map(([name, data]) => ({
-                name,
-                totalScore: Object.values(data.scores || {}).reduce((sum, score) => sum + (score.points || 0), 0),
-                levelScores: data.scores || {}
-            }))
-            .sort((a, b) => b.totalScore - a.totalScore);
+        .map(([name, data]) => ({
+            name,
+            totalScore: Object.values(data.scores || {}).reduce((sum, score) => sum + (score.points || 0), 0),
+            levelScores: data.scores || {}
+        }))
+        .sort((a, b) => b.totalScore - a.totalScore);
 
         levelScoresList.innerHTML = '';
         sortedPlayers.forEach((player, index) => {
@@ -88,7 +103,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
 
         // Обновляем общий счет текущего игрока
-        const currentPlayer = localStorage.getItem('currentPlayer') || 'Anonymous';
         const currentPlayerData = allPlayersData[currentPlayer] || {};
         const totalScore = Object.values(currentPlayerData.scores || {}).reduce((sum, score) => sum + (score.points || 0), 0);
         totalScoreElement.textContent = `Общий счёт: ${totalScore}`;
@@ -126,23 +140,28 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Обновляем отображение рейтинга для мобильных устройств
     function updateScoreDisplay() {
-        const totalScoreElement = document.getElementById('total-score');
-        if (totalScoreElement) {
-            if (window.innerWidth <= 768) {
-                // Для мобильных - только число
-                totalScoreElement.textContent = totalScore.toString();
-            } 
-            else {
-                // Для десктопов - полный текст
-                totalScoreElement.textContent = `Общий счёт: ${totalScore}`;
-            }
+    const totalScoreElement = document.getElementById('total-score');
+    const currentPlayer = localStorage.getItem('currentPlayer') || 'Anonymous';
+    const allPlayersData = JSON.parse(localStorage.getItem('allPlayersData')) || {};
+    const currentPlayerData = allPlayersData[currentPlayer] || { scores: {} };
+    const totalScore = Object.values(currentPlayerData.scores).reduce((sum, score) => sum + (score.points || 0), 0);
+
+    if (totalScoreElement) {
+        if (window.innerWidth <= 768) {
+            totalScoreElement.textContent = totalScore.toString();
+        } 
+        else {
+            totalScoreElement.textContent = `Общий счёт: ${totalScore}`;
         }
     }
-
+}
+ 
     // Вызываем при загрузке и при изменении размера окна
     window.addEventListener('load', updateScoreDisplay);
     window.addEventListener('resize', updateScoreDisplay);
 
     updateRating();
     window.addEventListener('resize', updateScoreDisplay);
+
+    
 });
