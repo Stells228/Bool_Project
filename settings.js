@@ -5,7 +5,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const levelIframe = document.getElementById('level-iframe');
     const newGameBtn = document.getElementById('new-game-btn');
 
-    if (!gearWindow || !gearToggle || !mapBtn || !levelIframe || !newGameBtn) {
+    if (!gearWindow || !gearToggle || !mapBtn || !newGameBtn) {
         console.error('Required elements not found');
         return;
     }
@@ -62,6 +62,12 @@ document.addEventListener('DOMContentLoaded', () => {
         if (levelIframe.style.display !== 'none') {
             levelIframe.src = `map.html?mode=${mode}`;
         }
+    }
+
+    // Проверка, установлено ли имя игрока
+    if (!localStorage.getItem('currentPlayer')) {
+        localStorage.setItem('currentPlayer', 'Anonymous');
+        document.getElementById('player-name-input').value = 'Anonymous';
     }
 
     document.getElementById('normal-mode').addEventListener('click', () => {
