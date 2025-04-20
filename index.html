@@ -3,14 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bool-Helper</title>
+    <!-- Предзагрузка критических ресурсов -->
+    <link rel="preload" href="welcome.css" as="style">
+    <link rel="preload" href="Photos/moon.png" as="image">
+    <link rel="preload" href="Photos/push.png" as="image">
+    <link rel="preload" href="Photos/stars1.png" as="image">
+    <link rel="stylesheet" href="welcome.css">
+    <link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@400&display=swap" rel="stylesheet">
     <link rel="icon" type="image/png" href="favicon/favicon-96x96.png" sizes="96x96">
     <link rel="icon" href="favicon/favicon.ico" type="image/x-icon">
     <link rel="apple-touch-icon" href="favicon/apple-touch-icon.png" sizes="180x180">
     <link rel="manifest" href="favicon/site.webmanifest">
     <link rel="icon" href="favicon/web-app-manifest-192x192.png" type="image/png" sizes="192x192">
     <link rel="icon" href="favicon/web-app-manifest-512x512.png" type="image/png" sizes="512x512">
-    <link rel="stylesheet" href="welcome.css">
-    <link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@400&display=swap" rel="stylesheet">
 </head>
 <body>
     <div id="welcome-screen">
@@ -31,7 +37,7 @@
         <div class="welcome-text">Bool-Helper</div>
         <img src="Photos/push.png" alt="Push" class="continue-btn">
     </div>
-    <iframe id="main-iframe" src="main.html"></iframe>
+    <iframe id="main-iframe" data-src="main.html" style="display: none;"></iframe>
 
     <script src="welcome.js"></script>
 </body>
