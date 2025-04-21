@@ -72,7 +72,8 @@ document.addEventListener('DOMContentLoaded', () => {
         elements.nextLevelBtn.disabled = !completedLevels.includes(1);
         elements.nextLevelBtn.style.opacity = completedLevels.includes(1) ? '1' : '0.5';
         elements.nextLevelBtn.style.cursor = completedLevels.includes(1) ? 'pointer' : 'not-allowed';
-    } else if (gameMode === 'competition') {
+    } 
+    else if (gameMode === 'competition') {
         elements.nextLevelBtn.disabled = false;
         elements.nextLevelBtn.style.opacity = '1';
         elements.nextLevelBtn.style.cursor = 'pointer';
@@ -108,7 +109,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function generateTruthTable() {
-        elements.truthTableContainer.innerHTML = '';
+        const fragment = document.createDocumentFragment();
         const table = document.createElement('table');
         table.className = 'truth-table';
 
@@ -131,7 +132,9 @@ document.addEventListener('DOMContentLoaded', () => {
             table.appendChild(row);
         });
 
-        elements.truthTableContainer.appendChild(table);
+        fragment.appendChild(table);
+        elements.truthTableContainer.innerHTML = '';
+        elements.truthTableContainer.appendChild(fragment);
     }
 
     function resetUI() {
@@ -163,10 +166,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 elements.nextLevelBtn.disabled = false;
                 elements.nextLevelBtn.style.opacity = '1';
                 elements.nextLevelBtn.style.cursor = 'pointer';
-            } else if (type === 'incorrect') {
+            } 
+            else if (type === 'incorrect') {
                 updateScore(-10);
             }
-        } else if (type === 'correct' && gameMode === 'passing' && !hasWon) {
+        } 
+        else if (type === 'correct' && gameMode === 'passing' && !hasWon) {
             hasWon = true;
             if (!completedLevels.includes(1)) {
                 completedLevels.push(1);
@@ -184,14 +189,14 @@ document.addEventListener('DOMContentLoaded', () => {
                 level: 1,
                 points: 10,
             }, '*');
-        } else if (type === 'incorrect' && gameMode === 'competition') {
+        } 
+        else if (type === 'incorrect' && gameMode === 'competition') {
             window.parent.postMessage({ 
                 type: 'updateScore',
                 level: 1,
                 points: -10,
             }, '*');
         }
-        
     }
 
     elements.submitBtn.addEventListener('click', () => {
@@ -202,7 +207,8 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         if (boolF[selectedFunction] === currentFunctionVector) {
             showFeedback('Правильно! Так держать!', 'correct');
-        } else {
+        } 
+        else {
             const correctFunction = Object.keys(boolF).find(key => boolF[key] === currentFunctionVector);
             showFeedback(`Неправильно. Имя функции: ${correctFunction}`, 'incorrect');
         }
@@ -225,6 +231,15 @@ document.addEventListener('DOMContentLoaded', () => {
             window.location.href = `level2.html?mode=${gameMode}`;
         }
     });
+
+    // для анимаций
+    const animatedElements = document.querySelectorAll('.stars, .cloud, .comet, .moon');
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            entry.target.style.animationPlayState = entry.isIntersecting ? 'running' : 'paused';
+        });
+    }, { threshold: 0.1 });
+    animatedElements.forEach(el => observer.observe(el));
 
     generateFunctionVector();
 });
