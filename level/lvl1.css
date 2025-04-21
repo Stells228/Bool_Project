@@ -9,7 +9,7 @@ body {
     justify-content: center;
     align-items: center;
     color: #ffffff;
-    overflow: hidden; 
+    overflow: hidden;
 }
 
 .level-container {
@@ -36,7 +36,7 @@ body {
     display: flex;
     flex-direction: row;
     gap: 15px;
-    z-index: 11; 
+    z-index: 11;
 }
 
 .nav-icon-btn {
@@ -110,13 +110,13 @@ h1 {
 }
 
 .truth-table-container {
-    width: 100%; 
+    width: 100%;
     margin-top: 8%;
     display: flex;
     justify-content: center;
     border: 2px solid #8a2be2;
     border-radius: 8px;
-    overflow: auto; 
+    overflow: auto;
     background-color: #e8e5e9;
     box-shadow: 0 0 10px rgba(235, 235, 235, 0.2);
     box-sizing: border-box;
@@ -134,7 +134,8 @@ h1 {
     box-sizing: border-box;
 }
 
-.truth-table th, .truth-table td {
+.truth-table th,
+.truth-table td {
     border: 1px solid #ccc;
     padding: 5px 8px;
     text-align: center;
@@ -161,7 +162,7 @@ h1 {
     max-width: 280px;
     margin-bottom: 10px;
     position: relative;
-    z-index: 12; 
+    z-index: 12;
     box-sizing: border-box;
 }
 
@@ -257,7 +258,8 @@ h1 {
     box-sizing: border-box;
 }
 
-.submit-btn, .try-again-btn {
+.submit-btn,
+.try-again-btn {
     width: 120px;
     height: 40px;
     background: rgba(97, 60, 192, 0.9);
@@ -270,7 +272,8 @@ h1 {
     box-sizing: border-box;
 }
 
-.submit-btn:hover, .try-again-btn:hover {
+.submit-btn:hover,
+.try-again-btn:hover {
     background: rgba(171, 144, 239, 0.9);
 }
 
@@ -319,7 +322,7 @@ h1 {
 .moon {
     position: fixed;
     z-index: -1;
-    width: 15vw; 
+    width: 15vw;
     max-width: 150px;
 }
 
@@ -327,6 +330,8 @@ h1 {
     position: fixed;
     z-index: -1;
     opacity: 1;
+    will-change: transform;
+    animation: cloudMove 18s infinite alternate;
 }
 
 .stars1 {
@@ -396,19 +401,63 @@ h1 {
     max-width: 250px;
 }
 
-.comet1, .comet2, .comet3, .comet4 {
+.comet1,
+.comet2,
+.comet3,
+.comet4 {
     position: fixed;
     top: -45vh;
     width: 20vw;
     max-width: 200px;
     z-index: 3;
+    will-change: transform, opacity;
+    animation: cometMove 10s linear infinite;
 }
 
-.comet1 { left: 200vw; }
-.comet2 { left: 100vw; }
-.comet3 { left: 10vw; }
-.comet4 { left: -50vw; }
+.comet1 {
+    left: 200vw;
+    animation-delay: 0s;
+}
 
+.comet2 {
+    left: 100vw;
+    animation-delay: 2.5s;
+}
+
+.comet3 {
+    left: 10vw;
+    animation-delay: 5s;
+}
+
+.comet4 {
+    left: -50vw;
+    animation-delay: 7.5s;
+}
+
+@keyframes cloudMove {
+    0% {
+        transform: translateX(-15px);
+    }
+    100% {
+        transform: translateX(15px);
+    }
+}
+
+@keyframes cometMove {
+    0% {
+        top: -45vh;
+        opacity: 0;
+        transform: translateX(0);
+    }
+    10% {
+        opacity: 1;
+    }
+    100% {
+        top: 145vh;
+        opacity: 0;
+        transform: translateX(-100vw);
+    }
+}
 
 @media (max-width: 768px) {
     .content-wrapper {
@@ -416,13 +465,14 @@ h1 {
         gap: 20px;
     }
 
-    .left-panel, .right-panel {
+    .left-panel,
+    .right-panel {
         width: 100%;
         min-width: 0;
     }
 
     .truth-table-container {
-        width: 100%; 
+        width: 100%;
         margin-top: 15px;
     }
 
@@ -470,6 +520,7 @@ h1 {
         left: 5vw;
         width: 30vw;
         max-width: 200px;
+        animation: none;
     }
 
     .cloud2 {
@@ -477,6 +528,7 @@ h1 {
         right: 5vw;
         width: 25vw;
         max-width: 180px;
+        animation: none;
     }
 
     .cloud3 {
@@ -484,15 +536,28 @@ h1 {
         right: 60vw;
         width: 28vw;
         max-width: 190px;
+        animation: none;
     }
 
-    .cloud4, .cloud5, .cloud6 {
-        display: none; 
+    .cloud4,
+    .cloud5,
+    .cloud6 {
+        display: none;
+    }
+
+    .comet1,
+    .comet2,
+    .comet3,
+    .comet4 {
+        width: 25vw;
+        max-width: 150px;
+        animation: cometMove 8s linear infinite;
     }
 }
 
 @media (min-width: 769px) and (max-width: 1024px) {
-    .stars1, .stars2 {
+    .stars1,
+    .stars2 {
         width: 50vw;
         height: 100vh;
     }
@@ -502,14 +567,30 @@ h1 {
         max-width: 130px;
     }
 
-    .cloud1, .cloud2, .cloud3, .cloud4, .cloud5, .cloud6 {
+    .cloud1,
+    .cloud2,
+    .cloud3,
+    .cloud4,
+    .cloud5,
+    .cloud6 {
         width: 22vw;
         max-width: 220px;
+        animation: cloudMove 15s infinite alternate;
+    }
+
+    .comet1,
+    .comet2,
+    .comet3,
+    .comet4 {
+        width: 22vw;
+        max-width: 180px;
+        animation: cometMove 9s linear infinite;
     }
 }
 
 @media (min-width: 1025px) {
-    .stars1, .stars2 {
+    .stars1,
+    .stars2 {
         width: 50vw;
         height: 100vh;
     }
@@ -519,9 +600,23 @@ h1 {
         max-width: 150px;
     }
 
-    .cloud1, .cloud2, .cloud3, .cloud4, .cloud5, .cloud6 {
+    .cloud1,
+    .cloud2,
+    .cloud3,
+    .cloud4,
+    .cloud5,
+    .cloud6 {
         width: 23vw;
         max-width: 250px;
+        animation: cloudMove 18s infinite alternate;
+    }
+
+    .comet1,
+    .comet2,
+    .comet3,
+    .comet4 {
+        width: 20vw;
+        max-width: 200px;
+        animation: cometMove 10s linear infinite;
     }
 }
-
