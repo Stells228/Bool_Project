@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
+<head> 
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Level Selection</title>
@@ -14,15 +14,16 @@
     <link rel="icon" href="favicon/web-app-manifest-512x512.png" type="image/png" sizes="512x512">
 </head>
 <body>
-    <img src="Photos/stars1.png" alt="Stars" class="stars stars1">
-    <img src="Photos/stars2.png" alt="Stars" class="stars stars2">
-    <img src="Photos/moon.png" alt="Moon" class="moon">
-    <img src="Photos/cloudmoon1.png" alt="Cloud" class="cloud cloud1">
-    <img src="Photos/cloudmoon2.png" alt="Cloud" class="cloud cloud2">
-    <img src="Photos/cloudmoon3.png" alt="Cloud" class="cloud cloud3">
-    <img src="Photos/cloudmoon4.png" alt="Cloud" class="cloud cloud4">
-    <img src="Photos/cloudmoon5.png" alt="Cloud" class="cloud cloud5">
-
+    <div class="background">
+        <img src="Photos/stars1.png" alt="Stars" class="stars1" loading="lazy">
+        <img src="Photos/stars2.png" alt="Stars" class="stars2" loading="lazy">
+        <img src="Photos/moon.png" alt="Moon" class="moon" loading="lazy">
+        <img src="Photos/cloudmoon1.png" alt="Cloud" class="cloud1" loading="lazy">
+        <img src="Photos/cloudmoon2.png" alt="Cloud" class="cloud2" loading="lazy">
+        <img src="Photos/cloudmoon3.png" alt="Cloud" class="cloud3" loading="lazy">
+        <img src="Photos/cloudmoon4.png" alt="Cloud" class="cloud4" loading="lazy">
+        <img src="Photos/cloudmoon5.png" alt="Cloud" class="cloud5" loading="lazy">
+    </div>
     <div class="map-container">
         <h1 class="map-title">Выбор уровня</h1>
         <div class="level-scroll">
@@ -63,8 +64,6 @@
                 </div>
             </a>
         </div>
-        <button class="scroll-btn left" id="scroll-left">←</button>
-        <button class="scroll-btn right" id="scroll-right">→</button>
         <button class="main-menu-btn" id="main-menu-btn">
             <img src="Photos/home.png" alt="Home" class="home-icon">
             В главное меню
