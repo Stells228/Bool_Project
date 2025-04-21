@@ -1,21 +1,26 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Bool-helper</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="main.css">
-    <link rel="stylesheet" href="calculator.css">
-    <link rel="stylesheet" href="settings.css">
-    <link rel="stylesheet" href="rating.css">
-    <link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@400&display=swap" rel="stylesheet">
-    <link rel="icon" type="image/png" href="favicon/favicon-96x96.png" sizes="96x96">
-    <link rel="icon" href="favicon/favicon.ico" type="image/x-icon">
-    <link rel="apple-touch-icon" href="favicon/apple-touch-icon.png" sizes="180x180">
-    <link rel="manifest" href="favicon/site.webmanifest">
-    <link rel="icon" href="favicon/web-app-manifest-192x192.png" type="image/png" sizes="192x192">
-    <link rel="icon" href="favicon/web-app-manifest-512x512.png" type="image/png" sizes="512x512">
-</head>
+<html lang="en"> 
+    <head>
+        <meta charset="UTF-8">
+        <title>Bool-helper</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <!-- Предзагрузка CSS -->
+        <link rel="preload" href="main.css" as="style">
+        <link rel="stylesheet" href="main.css">
+        <link rel="stylesheet" href="calculator.css">
+        <link rel="stylesheet" href="settings.css">
+        <link rel="stylesheet" href="rating.css">
+        <link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@400&display=swap" rel="stylesheet">
+        <!-- Предзагрузка ключевых изображений -->
+        <link rel="preload" href="Photos/moonre.png" as="image">
+        <link rel="preload" href="Photos/stars1.png" as="image">
+        <link rel="icon" type="image/png" href="favicon/favicon-96x96.png" sizes="96x96">
+        <link rel="icon" href="favicon/favicon.ico" type="image/x-icon">
+        <link rel="apple-touch-icon" href="favicon/apple-touch-icon.png" sizes="180x180">
+        <link rel="manifest" href="favicon/site.webmanifest">
+        <link rel="icon" href="favicon/web-app-manifest-192x192.png" type="image/png" sizes="192x192">
+        <link rel="icon" href="favicon/web-app-manifest-512x512.png" type="image/png" sizes="512x512">
+    </head>
 <body> 
     <!-- Выдвижное окно с калькулятором -->
     <!-- Задания: 1,2,3,8,9 -->
@@ -184,20 +189,17 @@
     <div class="Title">Bool-helper</div>
     <div id="main-screen">
         <div class="image-container">
-            <img src="Photos/moonre.png" alt="Moonre" class="moonre">
-            <img src="Photos/cloudmoon3.png" alt="Cloud Moon 3" class="cloudmoon3">
-            <img src="Photos/stars1.png" alt="Stars1" class="stars1">
-            <img src="Photos/stars2.png" alt="Stars2" class="stars2">
-            <img src="Photos/cloudmoon1.png" alt="Cloud Moon 1" class="cloudmoon">
-            <img src="Photos/cloudmoon2.png" alt="Cloud Moon 2" class="cloudmoon2">
-            <img src="Photos/cloudmoon4.png" alt="Cloud Moon 4" class="cloudmoon4">
-            <img src="Photos/cloudmoon5.png" alt="Cloud Moon 5" class="cloudmoon5">
-
+            <img src="Photos/moonre.png" alt="Moonre" class="moonre" loading="lazy">
+            <img src="Photos/cloudmoon3.png" alt="Cloud Moon 3" class="cloudmoon3" loading="lazy">
+            <img src="Photos/stars1.png" alt="Stars1" class="stars1" loading="lazy">
+            <img src="Photos/stars2.png" alt="Stars2" class="stars2" loading="lazy">
+            <img src="Photos/cloudmoon1.png" alt="Cloud Moon 1" class="cloudmoon" loading="lazy">
+            <img src="Photos/cloudmoon2.png" alt="Cloud Moon 2" class="cloudmoon2" loading="lazy">
+            <img src="Photos/cloudmoon4.png" alt="Cloud Moon 4" class="cloudmoon4" loading="lazy">
+            <img src="Photos/cloudmoon5.png" alt="Cloud Moon 5" class="cloudmoon5" loading="lazy">
         </div>
         <button id="map-btn" class="map-btn" data-mode="normal">Play</button>
     </div>
-    <iframe id="level-iframe" src="map.html" style="display: none;"></iframe>
-
     <script src="main.js"></script>
     <script src="settings.js"></script>
     <script src="calculator.js"></script>
