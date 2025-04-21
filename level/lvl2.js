@@ -1,6 +1,5 @@
 document.addEventListener('DOMContentLoaded', () => {
     const elements = {
-        // Keep all other elements
         variableSelect: document.getElementById('variable-select'),
         functionVector: document.getElementById('function-vector'),
         truthTableContainer: document.getElementById('truth-table-container'),
@@ -32,7 +31,8 @@ document.addEventListener('DOMContentLoaded', () => {
         elements.nextLevelBtn.style.opacity = completedLevels.includes(2) ? '1' : '0.5';
         elements.nextLevelBtn.style.cursor = completedLevels.includes(2) ? 'pointer' : 'not-allowed';
         elements.prevLevelBtn.disabled = false;
-    } else if (gameMode === 'competition') {
+    } 
+    else if (gameMode === 'competition') {
         elements.nextLevelBtn.disabled = false;
         elements.nextLevelBtn.style.opacity = '1';
         elements.nextLevelBtn.style.cursor = 'pointer';
@@ -99,7 +99,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function generateTruthTable(n, vector) {
-        elements.truthTableContainer.innerHTML = '';
+        const fragment = document.createDocumentFragment();
         const table = document.createElement('table');
         table.className = 'truth-table';
         const headerRow = document.createElement('tr');
@@ -125,7 +125,9 @@ document.addEventListener('DOMContentLoaded', () => {
             row.appendChild(td);
             table.appendChild(row);
         }
-        elements.truthTableContainer.appendChild(table);
+        fragment.appendChild(table);
+        elements.truthTableContainer.innerHTML = '';
+        elements.truthTableContainer.appendChild(fragment);
     }
 
     function validateVariableInput(input, n, type) {
@@ -182,7 +184,8 @@ document.addEventListener('DOMContentLoaded', () => {
             } else if (type === 'incorrect') {
                 updateScore(-10);
             }
-        } else if (type === 'correct' && gameMode === 'passing' && !hasWon) {
+        } 
+        else if (type === 'correct' && gameMode === 'passing' && !hasWon) {
             hasWon = true;
             if (!completedLevels.includes(2)) {
                 completedLevels.push(2);
@@ -237,7 +240,6 @@ document.addEventListener('DOMContentLoaded', () => {
         const userEssential = essentialIndices.sort().join('');
         if (userDummy === correctDummyVars && userEssential === correctEssentialVars) {
             showFeedback('Правильно! Так держать!', 'correct');
-            // Убрали остановку таймера и разблокировку кнопок здесь
         } 
         else {
             showFeedback(`Неправильно. \nФиктивные переменные: ${correctDummyVars || 'none'}; \nСущественные переменные: ${correctEssentialVars || 'none'}`, 'incorrect');
@@ -269,4 +271,12 @@ document.addEventListener('DOMContentLoaded', () => {
             window.location.href = `level3.html?mode=${gameMode}`;
         }
     });
+
+    const animatedElements = document.querySelectorAll('.stars, .cloud, .comet, .moon');
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            entry.target.style.animationPlayState = entry.isIntersecting ? 'running' : 'paused';
+        });
+    }, { threshold: 0.1 });
+    animatedElements.forEach(el => observer.observe(el));
 });
