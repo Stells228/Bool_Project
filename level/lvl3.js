@@ -1,6 +1,5 @@
 document.addEventListener('DOMContentLoaded', () => {
     const elements = {
-        // Keep all other elements
         variableSelect: document.getElementById('variable-select'),
         functionVector: document.getElementById('function-vector'),
         truthTableContainer: document.getElementById('truth-table-container'),
@@ -13,8 +12,7 @@ document.addEventListener('DOMContentLoaded', () => {
         nextLevelBtn: document.getElementById('next-level'),
         deleteBtn: document.getElementById('delete-btn'),
         rightPanel: document.querySelector('.right-panel'),
-        levelContainer: document.querySelector('.level-container'),
-        inputContainer: document.querySelector('.input-container')
+        dnfInputContainer: document.querySelector('.dnf-input-container')
     };
 
     let n = 0;
@@ -31,7 +29,8 @@ document.addEventListener('DOMContentLoaded', () => {
         elements.nextLevelBtn.style.opacity = completedLevels.includes(3) ? '1' : '0.5';
         elements.nextLevelBtn.style.cursor = completedLevels.includes(3) ? 'pointer' : 'not-allowed';
         elements.prevLevelBtn.disabled = false;
-    } else if (gameMode === 'competition') {
+    } 
+    else if (gameMode === 'competition') {
         elements.nextLevelBtn.disabled = false;
         elements.nextLevelBtn.style.opacity = '1';
         elements.nextLevelBtn.style.cursor = 'pointer';
@@ -42,7 +41,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const scoreDisplay = document.createElement('div');
         scoreDisplay.id = 'score-display';
         scoreDisplay.textContent = `Счёт: ${competitionScores[3] || 0}`;
-        elements.rightPanel.insertBefore(scoreDisplay, elements.inputContainer);
+        elements.rightPanel.insertBefore(scoreDisplay, elements.dnfInputContainer);
     }
 
     function updateScore(points) {
@@ -120,7 +119,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function generateTruthTable(n, vector) {
-        elements.truthTableContainer.innerHTML = '';
+        const fragment = document.createDocumentFragment();
         const table = document.createElement('table');
         table.className = 'truth-table';
         const headerRow = document.createElement('tr');
@@ -146,7 +145,9 @@ document.addEventListener('DOMContentLoaded', () => {
             row.appendChild(td);
             table.appendChild(row);
         }
-        elements.truthTableContainer.appendChild(table);
+        fragment.appendChild(table);
+        elements.truthTableContainer.innerHTML = '';
+        elements.truthTableContainer.appendChild(fragment);
     }
 
     function normalizeDNF(dnf) {
@@ -243,7 +244,8 @@ document.addEventListener('DOMContentLoaded', () => {
             } else if (type === 'incorrect') {
                 updateScore(-10);
             }
-        } else if (type === 'correct' && gameMode === 'passing' && !hasWon) {
+        } 
+        else if (type === 'correct' && gameMode === 'passing' && !hasWon) {
             hasWon = true;
             if (!completedLevels.includes(3)) {
                 completedLevels.push(3);
@@ -257,7 +259,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 level: 3,
                 points: 10
             }, '*');
-        } else if (type === 'incorrect' && gameMode === 'competition') {
+        } 
+        else if (type === 'incorrect' && gameMode === 'competition') {
             window.parent.postMessage({ 
                 type: 'updateScore',
                 level: 3,
@@ -292,12 +295,13 @@ document.addEventListener('DOMContentLoaded', () => {
             generateNewVector();
             resetUI();
             hasWon = completedLevels.includes(3);
-            // Убрали перезапуск таймера
         }
     });
 
     elements.backToLevelMenuBtn.addEventListener('click', () => {
-        window.location.href = `../map.html?mode=${gameMode}`;
+        if (!elements.backToLevelMenuBtn.disabled) {
+            window.location.href = `../map.html?mode=${gameMode}`;
+        }
     });
 
     elements.prevLevelBtn.addEventListener('click', () => {
@@ -311,4 +315,12 @@ document.addEventListener('DOMContentLoaded', () => {
             window.location.href = `level4.html?mode=${gameMode}`;
         }
     });
+
+    const animatedElements = document.querySelectorAll('.stars, .cloud, .comet, .moon');
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            entry.target.style.animationPlayState = entry.isIntersecting ? 'running' : 'paused';
+        });
+    }, { threshold: 0.1 });
+    animatedElements.forEach(el => observer.observe(el));
 });
