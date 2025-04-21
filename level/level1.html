@@ -5,7 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Уровень 1 - узнай имя функции</title>
     <link rel="stylesheet" href="lvl1.css">
+    <link rel="preload" href="../Photos/moon.png" as="image">
     <link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@400&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/png" href="favicon/favicon-96x96.png" sizes="96x96">
+    <link rel="icon" href="favicon/favicon.ico" type="image/x-icon">
+    <link rel="apple-touch-icon" href="favicon/apple-touch-icon.png" sizes="180x180">
+    <link rel="manifest" href="favicon/site.webmanifest">
+    <link rel="icon" href="favicon/web-app-manifest-192x192.png" type="image/png" sizes="192x192">
+    <link rel="icon" href="favicon/web-app-manifest-512x512.png" type="image/png" sizes="512x512">
 </head>
 <body>
     <img src="../Photos/stars1.png" alt="Stars" class="stars stars1">
@@ -25,10 +32,10 @@
     <div class="level-container">
         <div class="nav-buttons">
             <button class="nav-icon-btn" id="back-to-level-menu">
-                <img src="../Photos/list.png" alt="Menu" class="nav-icon">
+                <img src="../Photos/list.png" alt="Menu" class="nav-icon" loading="lazy">
             </button>
             <button class="nav-icon-btn" id="next-level">
-                <img src="../Photos/right.png" alt="Next" class="nav-icon">
+                <img src="../Photos/right.png" alt="Next" class="nav-icon" loading="lazy">
             </button>
         </div>
 
@@ -98,6 +105,6 @@
         </div>
     </div>
 
-    <script src="lvl1.js"></script>
+    <script defer src="lvl1.js"></script>
 </body>
 </html>
