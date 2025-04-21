@@ -1,4 +1,3 @@
-/* Основные стили */
 .rating-container {
     width: 100%;
     max-width: 90%;
@@ -8,6 +7,7 @@
     font-family: 'Comfortaa', cursive;
     text-align: center;
     box-sizing: border-box;
+    min-height: 100%;
 }
 
 .rating-title {
@@ -122,19 +122,16 @@
     background: rgba(255,255,255,0.4);
 }
 
-/* Адаптивность для маленьких экранов */
 @media (max-width: 445px) {
-    /* Скрываем очки и показываем только имя игрока */
     .player-score {
-        display: none; /* Скрываем очки */
+        display: none;
     }
 
     .player-name {
-        font-size: clamp(1.2rem, 4vw, 2rem); /* Уменьшаем размер имени, если нужно */
+        font-size: clamp(1.2rem, 4vw, 2rem);
     }
 
-    /* Скрываем очки в других местах */
-    .rating-summary .score-text .score{
+    .rating-summary .score-text .score {
         display: inline;
     }
 }
@@ -151,7 +148,6 @@
     }
 }
 
-/* Ранее использованные стили для 610px */
 @media (max-width: 610px) {
     .player-name-container {
         width: 100%;
@@ -192,4 +188,9 @@
         max-width: 300px;
         margin-top: 15px;
     }
+}
+
+.rating-container {
+    overflow-y: auto;
+    max-height: 100vh;
 }
