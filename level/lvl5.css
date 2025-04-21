@@ -1,80 +1,122 @@
 body {
     margin: 0;
-    padding: 0px;
+    padding: 0;
     font-family: 'Comfortaa', cursive;
     background: linear-gradient(to bottom, #416190, #776f98);
     height: 100vh;
+    width: 100vw;
     display: flex;
     justify-content: center;
     align-items: center;
     color: #ffffff;
+    overflow-x: hidden;
+    overflow-y: auto; 
+    box-sizing: border-box;
 }
 
-html, body{
-    overflow: hidden;
+html, body {
+    overflow: hidden; 
 }
 
 .level-container {
     background: rgba(97, 60, 192, 0.6);
     border: 2px solid #ffffff;
     border-radius: 10px;
-    padding: 30px;
-    width: 90%;
-    max-width: 1000px;
+    padding: clamp(10px, 3vw, 20px); 
+    width: 100%;
+    max-width: clamp(300px, 95vw, 800px); 
     height: auto;
-    min-height: 600px;
+    min-height: clamp(400px, 80vh, 600px); 
     text-align: center;
-    box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
     box-sizing: border-box;
     position: relative;
-    overflow: hidden;
+    z-index: 1;
+    overflow: visible; 
 }
 
 .nav-buttons {
     position: absolute;
-    top: 15px;
-    left: 15px;
+    top: clamp(8px, 2vw, 12px);
+    left: clamp(8px, 2vw, 12px);
     display: flex;
-    flex-direction: column;
-    gap: 10px;
+    flex-direction: row; 
+    gap: clamp(8px, 2vw, 12px);
+    z-index: 2;
+}
+
+.nav-icon-btn {
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    width: clamp(24px, 4vw, 32px);
+    height: clamp(24px, 4vw, 32px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.3s;
+}
+
+.nav-icon-btn:hover {
+    transform: scale(1.2);
+}
+
+.nav-icon {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    filter: brightness(0) invert(1);
+    transition: transform 0.3s;
+}
+
+.nav-icon-btn:hover .nav-icon {
+    transform: scale(1.1);
 }
 
 h1 {
-    font-size: 2.3em;
-    margin-bottom: 15px;
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+    font-size: clamp(1.4rem, 5vw, 2rem); 
+    margin-bottom: clamp(10px, 2vh, 15px);
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
 }
 
 .task-description {
-    font-size: 1.2em;
-    margin-bottom: 25px;
+    font-size: clamp(0.9rem, 3vw, 1.1rem);
+    margin-bottom: clamp(15px, 3vh, 20px);
 }
 
 .task-description code {
     background: rgba(255, 255, 255, 0.2);
-    padding: 2px 5px;
+    padding: clamp(2px, 0.5vw, 4px) clamp(4px, 1vw, 6px);
     border-radius: 4px;
 }
 
 .variable-select-container {
-    margin-bottom: 20px;
+    margin-bottom: clamp(10px, 3vh, 15px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: clamp(5px, 2vw, 10px);
+    flex-wrap: wrap;
 }
 
 .variable-select-container label {
-    font-size: 1.1em;
-    margin-right: 10px;
+    font-size: clamp(0.8rem, 2.5vw, 1rem);
+    margin-right: clamp(5px, 1vw, 8px);
 }
 
 #variable-select {
     background: rgba(150, 150, 255, 0.7);
     border: 1px solid #ffffff;
     border-radius: 8px;
-    padding: 8px;
+    padding: clamp(6px, 1.5vw, 8px);
     font-family: 'Comfortaa', cursive;
-    font-size: 1em;
+    font-size: clamp(0.8rem, 2.5vw, 1rem);
     color: #ffffff;
     cursor: pointer;
     transition: background 0.3s, transform 0.2s;
+    width: 100%;
+    max-width: clamp(120px, 40vw, 200px); 
 }
 
 #variable-select:hover {
@@ -86,14 +128,14 @@ h1 {
     outline: none;
     background: rgba(150, 150, 255, 0.9);
     border: 2px solid #ffffff;
-    box-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
+    box-shadow: 0 0 8px rgba(255, 255, 255, 0.8);
 }
 
 .function-vector {
-    font-size: 1.3em;
-    margin-bottom: 25px;
+    font-size: clamp(0.9rem, 3vw, 1.2rem);
+    margin-bottom: clamp(15px, 3vh, 20px);
     background: rgba(255, 255, 255, 0.2);
-    padding: 12px;
+    padding: clamp(8px, 2vw, 12px);
     border-radius: 8px;
     display: inline-block;
 }
@@ -101,58 +143,58 @@ h1 {
 .content-wrapper {
     display: flex;
     justify-content: space-between;
-    gap: 30px;
+    gap: clamp(15px, 3vw, 20px);
     margin: 0 auto;
-    max-width: 800px;
+    width: 100%;
+    max-width: clamp(280px, 90vw, 600px);
+    box-sizing: border-box;
 }
 
-.left-panel {
+.left-panel, .right-panel {
     flex: 1;
-    min-width: 300px;
+    width: 100%;
+    min-width: 0; 
     display: flex;
     flex-direction: column;
     align-items: center;
+    box-sizing: border-box;
 }
 
 .right-panel {
-    flex: 1;
-    min-width: 300px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
     justify-content: center;
 }
 
 .truth-table-wrapper {
     width: 100%;
-    max-height: 250px; 
-    overflow-x: none;
+    max-height: clamp(150px, 25vh, 180px); 
+    overflow-x: auto; 
     overflow-y: auto;
     border: 2px solid #8a2be2;
     border-radius: 12px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 0 8px rgba(0, 0, 0, 0.2);
+    box-sizing: border-box;
 }
 
 .truth-table {
     width: 100%;
     border-collapse: collapse;
     font-family: 'Comfortaa', cursive;
-    font-size: 18px;
+    font-size: clamp(10px, 2.5vw, 14px); 
     color: #333;
     background-color: #e8e5e9;
     border-radius: 12px;
-    table-layout: fixed; /* Фиксированная ширина столбцов */
+    table-layout: auto; 
+    box-sizing: border-box;
 }
 
-/* th - заголовки*/ 
-/* td - ячейки */
 .truth-table th, .truth-table td {
     border: 1px solid #ccc;
-    padding: 5px 8px;
+    padding: clamp(3px, 1vw, 5px) clamp(4px, 1.5vw, 6px);
     text-align: center;
-    white-space: nowrap; /* Текст не переносится */
-    overflow: hidden; /* Текст не выходит за пределы ячейки */
-    text-overflow: ellipsis; /* Добавляем многоточие, если текст не помещается */
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    box-sizing: border-box;
 }
 
 .truth-table th {
@@ -170,26 +212,28 @@ h1 {
 
 .cnf-input-container {
     width: 100%;
-    max-width: 280px;
-    margin-bottom: 20px;
+    max-width: clamp(160px, 80vw, 240px); 
+    margin-bottom: clamp(10px, 3vh, 15px);
+    box-sizing: border-box;
 }
 
 .cnf-input-container label {
-    font-size: 1.1em;
+    font-size: clamp(0.8rem, 2.5vw, 1rem);
     display: block;
-    margin-bottom: 10px;
+    margin-bottom: clamp(5px, 1vh, 8px);
 }
 
 #cnf-input {
     width: 100%;
-    padding: 10px;
+    padding: clamp(6px, 2vw, 8px);
     background: rgba(150, 150, 255, 0.7);
     border: 1px solid #ffffff;
     border-radius: 8px;
     font-family: 'Comfortaa', cursive;
-    font-size: 1em;
+    font-size: clamp(0.8rem, 2.5vw, 1rem);
     color: #ffffff;
     transition: background 0.3s, transform 0.2s;
+    box-sizing: border-box;
 }
 
 #cnf-input:hover {
@@ -200,28 +244,29 @@ h1 {
     outline: none;
     background: rgba(150, 150, 255, 0.9);
     border: 2px solid #ffffff;
-    box-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
+    box-shadow: 0 0 8px rgba(255, 255, 255, 0.8);
 }
 
 .symbol-buttons {
     display: flex;
     flex-wrap: wrap;
-    gap: 8px;
-    margin-top: 10px;
+    gap: clamp(5px, 1vw, 8px);
+    margin-top: clamp(5px, 1vh, 10px);
     justify-content: center;
 }
 
 .symbol-btn {
-    width: 40px;
-    height: 40px;
+    width: clamp(30px, 8vw, 35px); 
+    height: clamp(30px, 8vw, 35px);
     background: rgba(97, 60, 192, 0.9);
     border: 1px solid #ffffff;
     border-radius: 8px;
     font-family: 'Comfortaa', cursive;
-    font-size: 1em;
+    font-size: clamp(0.7rem, 2.5vw, 0.9rem);
     color: #ffffff;
     cursor: pointer;
-    transition: all 0.3s;
+    transition: background 0.3s, transform 0.2s;
+    box-sizing: border-box;
 }
 
 .symbol-btn:hover {
@@ -230,7 +275,7 @@ h1 {
 }
 
 .delete-btn {
-    width: 60px;
+    width: clamp(50px, 12vw, 60px);
     background: rgba(231, 76, 60, 0.8);
 }
 
@@ -241,22 +286,25 @@ h1 {
 .button-group {
     display: flex;
     justify-content: center;
-    gap: 15px;
-    margin-bottom: 20px;
+    gap: clamp(10px, 2vw, 15px);
+    margin-bottom: clamp(15px, 3vh, 20px);
     width: 100%;
+    z-index: 2;
+    box-sizing: border-box;
 }
 
 .submit-btn, .try-again-btn {
-    width: 120px;
-    height: 40px;
+    width: clamp(90px, 30vw, 130px); 
+    height: clamp(30px, 8vw, 35px);
     background: rgba(97, 60, 192, 0.9);
     border: 2px solid #ffffff;
     border-radius: 8px;
     font-family: 'Comfortaa', cursive;
-    font-size: 1em;
+    font-size: clamp(0.8rem, 2.5vw, 1rem);
     color: #ffffff;
     cursor: pointer;
-    transition: all 0.3s;
+    transition: background 0.3s, transform 0.2s;
+    box-sizing: border-box;
 }
 
 .submit-btn:hover, .try-again-btn:hover {
@@ -265,27 +313,19 @@ h1 {
 }
 
 .feedback {
-    position: absolute;
-    bottom: 80px;
-    left: 71%; /* Центрируем по горизонтали */
-    transform: translateX(-50%);
-    font-size: 1.2em;
-    margin-top: 8px;
-    padding: 10px; /* Увеличиваем отступы */
-    border-radius: 20px;
-    width: 40%;
-    max-width: 600px; 
-    opacity: 1;
-    transition: opacity 0.3s;
+    position: relative; 
+    font-size: clamp(0.9rem, 3vw, 1.1rem);
+    margin-top: clamp(10px, 2vh, 15px);
+    padding: clamp(8px, 2vw, 10px);
+    border-radius: 8px;
+    width: 100%;
+    max-width: clamp(200px, 80vw, 280px); 
+    text-align: center;
     display: none;
     z-index: 3;
-    font-size: 20px;
-    text-align: center; /* Центрируем текст */
-    box-sizing: border-box; /* Учитываем padding в ширине */
-    white-space: pre-line; /* Сохраняем переносы строк */
-    text-align: center; 
-    padding: 15px 20px; /* Увеличиваем отступы */
-    line-height: 1.5; /* Увеличиваем межстрочный интервал */
+    box-sizing: border-box;
+    white-space: pre-line; 
+    line-height: 1.5;
 }
 
 .feedback.show {
@@ -307,307 +347,592 @@ h1 {
     color: white;
 }
 
-.nav-buttons {
-    position: absolute;
-    top: 15px;
-    left: 15px;
-    display: flex;
-    flex-direction: row; 
-    gap: 15px;
-    z-index: 2;
-}
-
-.nav-icon-btn {
-    background: none;
-    border: none;
-    padding: 0;
-    cursor: pointer;
-    transition: transform 0.3s;
-    width: 32px;
-    height: 32px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.nav-icon-btn:hover {
-    transform: scale(1.2);
-}
-
-.nav-icon {
-    width: 100%;
-    height: 100%;
-    object-fit: contain;
-    filter: brightness(0) invert(1);
-    transition: transform 0.3s;
-}
-
-.nav-icon-btn:hover .nav-icon {
-    transform: scale(1.1);
-}
-
 .class-select-container {
-    margin-top: 15px;
+    margin-top: clamp(10px, 2vh, 15px);
     display: flex;
     justify-content: center;
-    gap: 10px; 
-    flex-wrap: wrap; 
+    gap: clamp(5px, 2vw, 10px);
+    flex-wrap: wrap;
+    margin-bottom: clamp(15px, 3vh, 20px);
 }
 
 .class-checkbox {
-    width: 20px; 
-    height: 20px; 
+    width: clamp(16px, 4vw, 20px);
+    height: clamp(16px, 4vw, 20px);
     cursor: pointer;
-    transform: scale(1.2); 
-    margin-right: 5px; 
-    margin-bottom: 30px;
-    accent-color: rgba(150, 150, 255, 0.9); 
+    transform: scale(1.2);
+    margin-right: clamp(3px, 1vw, 5px);
+    accent-color: rgba(150, 150, 255, 0.9);
     vertical-align: middle;
 }
 
 .class-label {
-    font-size: 1.5em; 
+    font-size: clamp(0.9rem, 3vw, 1.2rem); 
     color: #ffffff;
     text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
     vertical-align: middle;
 }
 
+#score-display {
+    font-size: clamp(0.9rem, 3vw, 1.1rem);
+    margin-bottom: clamp(10px, 2vh, 15px);
+    background: rgba(255, 255, 255, 0.2);
+    padding: clamp(6px, 1.5vw, 8px);
+    border-radius: 8px;
+    width: 100%;
+    max-width: clamp(160px, 80vw, 240px); 
+    text-align: center;
+    box-sizing: border-box;
+}
 
-.stars {
+.stars, .moon, .cloud, .comet1, .comet2, .comet3, .comet4 {
     position: fixed;
     z-index: -1;
+    pointer-events: none;
+}
+
+.stars {
     opacity: 0.8;
-}
-
-.stars1 {
-    top: 5%;
-    left: 1%;
-    width: 700px;
-    animation: float 55s infinite linear reverse;
-}
-
-.stars2 {
-    bottom: 10%;
-    right: 1%;
-    width: 600px;
-    animation: float 50s infinite linear reverse;
+    object-fit: cover;
 }
 
 .moon {
     position: fixed;
-    top: 9%;
-    right: 84%;
-    width: 150px;
     z-index: -1;
+    width: 15vw; 
+    max-width: 150px;
 }
 
 .cloud {
-    position: fixed;
-    z-index: -1;
-    opacity: 1;
+    width: clamp(100px, 19vw, 200px); 
+    max-width: 220px;
+}
+
+.comet1, .comet2, .comet3, .comet4 {
+    width: clamp(80px, 15vw, 150px);
+    max-width: 150px;
+}
+
+.stars1 {
+    top: 0;
+    left: 0;
+    width: 50vw;
+    height: 100vh;
+    animation: float 55s infinite linear reverse;
+}
+
+.stars2 {
+    top: 0;
+    right: 0;
+    width: 50vw;
+    height: 100vh;
+    animation: float 50s infinite linear reverse;
+}
+
+.moon {
+    top: 9%;
+    left: 10%;
+    transform: translateX(-50%);
 }
 
 .cloud1 {
     top: 80%;
     left: 10%;
-    width: 230px;
+    transform: translateX(-50%);
     animation: float 12s infinite linear;
-    z-index: 5;
 }
 
 .cloud2 {
-    top: 5%;
-    right: 10%;
-    width: 200px;
+    top: 7%;
+    right: 4%;
+    transform: translateX(50%);
     animation: float 18s infinite linear reverse;
-    z-index: 6;
 }
 
 .cloud3 {
-    top: 8%;
-    right: 60%;
-    width: 250px;
+    top: 2%;
+    left: 43%;
+    transform: translateX(-50%);
     animation: float 18s infinite linear reverse;
 }
 
 .cloud4 {
-    top: 15%;
-    right: 82%;
-    width: 250px;
+    top: 17%;
+    left: 2%;
+    transform: translateX(-50%);
     animation: float 18s infinite linear reverse;
 }
 
 .cloud5 {
     top: 28%;
-    right: 21%;
-    width: 250px;
+    left: 72%;
+    transform: translateX(50%);
     animation: float 12s infinite linear reverse;
 }
 
 .cloud6 {
     top: 70%;
-    right: 40%;
-    width: 250px;
+    left: 60%;
+    transform: translateX(-50%);
     animation: float 18s infinite linear reverse;
 }
 
 .comet1 {
-    position: absolute;
-    top: -45%;
-    left: 200%;
-    width: 200px;
-    z-index: 3;
-    animation: cometFly1 9s infinite linear 3s; 
+    top: -10%;
+    left: 80%;
+    animation: cometFly1 9s infinite linear 3s;
 }
 
 .comet2 {
-    position: absolute;
-    top: -45%;
-    left: 100%;
-    width: 200px;
-    z-index: 3;
-    animation: cometFly2 9s infinite linear 16s; 
+    top: -15%;
+    left: 60%;
+    animation: cometFly1 9s infinite linear 16s; 
 }
 
 .comet3 {
-    position: absolute;
-    top: -45%;
-    left: 10%;
-    width: 200px;
-    z-index: 3;
-    animation: cometFly3 9s infinite linear 21s; 
+    top: -12%;
+    left: 40%;
+    animation: cometFly1 9s infinite linear 21s;
 }
 
 .comet4 {
-    position: absolute;
-    top: -40%;
-    left: -50%;
-    width: 200px;
-    z-index: 3;
-    animation: cometFly4 9s infinite linear 32s; 
+    top: -20%;
+    left: 20%;
+    animation: cometFly1 9s infinite linear 32s;
 }
 
-/*траектория полёта*/
 @keyframes float {
     0%, 100% {
         transform: translateY(0) translateX(0);
     }
     25% {
-        transform: translateY(-6px) translateX(6px);
+        transform: translateY(-4px) translateX(4px); 
     }
     50% {
-        transform: translateY(5px) translateX(-5px);
+        transform: translateY(4px) translateX(-4px);
     }
     75% {
-        transform: translateY(6px) translateX(5px);
+        transform: translateY(4px) translateX(4px);
     }
 }
 
 @keyframes cometFly1 {
     0% {
-        top: -40%;
-        left: 200%;
+        top: -10%;
         opacity: 1;
     }
     50% {
         top: 50%;
-        left: 50%; 
-        opacity: 0;
+        opacity: 0.5;
     }
     100% {
         top: 100%;
-        left: 0%; 
         opacity: 0;
     }
 }
 
-@keyframes cometFly2 {
-    0% {
-        top: -40%;
-        left: 100%;
-        opacity: 1;
+@media (max-width: 480px) {
+    .level-container {
+        width: 100%;
+        max-width: clamp(280px, 95vw, 360px);
+        min-height: clamp(500px, 90vh, 600px);
+        padding: clamp(8px, 2vw, 12px);
     }
-    50% {
-        top: 50%;
-        left: 0%; 
-        opacity: 0;
-    }
-    100% {
-        top: 100%;
-        left: -80%; 
-        opacity: 0;
-    }
-}
 
-@keyframes cometFly3 {
-    0% {
-        top: -30%;
-        left: 10%;
-        opacity: 1;
-    }
-    50% {
-        top: 50%;
-        left: -50%; 
-        opacity: 0;
-    }
-    100% {
-        top: 100%;
-        left: -100%; 
-        opacity: 0;
-    }
-}
-
-@keyframes cometFly4 {
-    0% {
-        top: -30%;
-        left: -50%;
-        opacity: 1;
-    }
-    50% {
-        top: 50%;
-        left: -150%; 
-        opacity: 0;
-    }
-    100% {
-        top: 100%;
-        left: -200%; 
-        opacity: 0;
-    }
-}
-
-#score-display {
-    font-size: 1.2em;
-    margin-bottom: 15px;
-    background: rgba(255, 255, 255, 0.2);
-    padding: 8px;
-    border-radius: 8px;
-    width: 100%;
-    max-width: 280px;
-    text-align: center;
-}
-
-.level-container {
-    z-index: 1;
-}
-
-
-@media (max-width: 768px) {
     .content-wrapper {
         flex-direction: column;
-        gap: 20px;
+        gap: clamp(10px, 2vh, 15px);
+        max-width: clamp(260px, 90vw, 340px);
     }
-    
+
     .left-panel, .right-panel {
         width: 100%;
+        min-width: 0;
     }
-    
+
+    h1 {
+        font-size: clamp(1.2rem, 5vw, 1.6rem);
+    }
+
+    .task-description, .function-vector, #score-display {
+        font-size: clamp(0.7rem, 3vw, 0.9rem);
+    }
+
+    .variable-select-container {
+        flex-direction: column;
+        gap: clamp(5px, 1vh, 8px);
+    }
+
+    #variable-select {
+        max-width: clamp(100px, 40vw, 160px);
+    }
+
     .truth-table {
-        max-width: 100%;
+        font-size: clamp(8px, 2.5vw, 10px);
     }
-    
+
+    .cnf-input-container {
+        max-width: clamp(140px, 80vw, 200px);
+    }
+
+    #cnf-input {
+        font-size: clamp(0.7rem, 2.5vw, 0.9rem);
+        padding: clamp(5px, 1.5vw, 7px);
+    }
+
+    .symbol-buttons {
+        gap: clamp(4px, 1vw, 6px);
+    }
+
+    .symbol-btn {
+        width: clamp(25px, 8vw, 30px);
+        height: clamp(25px, 8vw, 30px);
+        font-size: clamp(0.6rem, 2.5vw, 0.8rem);
+    }
+
+    .delete-btn {
+        width: clamp(40px, 12vw, 50px);
+    }
+
+    .submit-btn, .try-again-btn {
+        width: clamp(70px, 25vw, 90px);
+        height: clamp(28px, 8vw, 32px);
+        font-size: clamp(0.7rem, 2.5vw, 0.9rem);
+    }
+
+    .feedback {
+        max-width: clamp(140px, 80vw, 200px);
+        font-size: clamp(0.7rem, 3vw, 0.9rem);
+    }
+
+    .class-select-container {
+        gap: clamp(4px, 1vw, 8px);
+        margin-bottom: clamp(10px, 2vh, 15px);
+    }
+
+    .class-checkbox {
+        width: clamp(14px, 4vw, 18px);
+        height: clamp(14px, 4vw, 18px);
+        margin-right: clamp(2px, 1vw, 4px);
+    }
+
+    .class-label {
+        font-size: clamp(0.7rem, 3vw, 0.9rem);
+    }
+
     .nav-buttons {
         position: static;
         justify-content: center;
-        margin-bottom: 15px;
+        margin-bottom: clamp(10px, 2vh, 15px);
+        gap: clamp(6px, 2vw, 10px);
     }
+
+    .nav-icon-btn {
+        width: clamp(20px, 5vw, 28px);
+        height: clamp(20px, 5vw, 28px);
+    }
+
+    .stars1 {
+        top: 0;
+        left: 0;
+        width: clamp(200px, 50vw, 400px);
+    }
+
+    .stars2 {
+        bottom: 0;
+        right: 0;
+        width: clamp(200px, 50vw, 400px);
+    }
+
+    .moon {
+        top: 10%;
+        left: 50%;
+        transform: translateX(-50%);
+        width: clamp(50px, 15vw, 80px);
+        max-width: 80px;
+    }
+
+    .cloud1 {
+        top: 75%;
+        left: 5%;
+        width: clamp(80px, 20vw, 150px);
+        max-width: 150px;
+    }
+
+    .cloud2 {
+        top: 5%;
+        right: 5%;
+        width: clamp(70px, 18vw, 140px);
+        max-width: 140px;
+    }
+
+    .cloud3 {
+        top: 20%;
+        left: 40%;
+        width: clamp(80px, 20vw, 160px);
+        max-width: 160px;
+    }
+
+    .cloud4, .cloud5, .cloud6 {
+        display: none;
+    }
+
+    .comet3, .comet4 {
+        display: none; 
+    }
+}
+
+@media (min-width: 481px) and (max-width: 768px) {
+    .level-container {
+        width: 100%;
+        max-width: clamp(360px, 95vw, 500px);
+        min-height: clamp(450px, 85vh, 550px);
+        padding: clamp(10px, 2vw, 15px);
+    }
+
+    .content-wrapper {
+        flex-direction: column;
+        gap: clamp(15px, 3vh, 20px);
+        max-width: clamp(340px, 90vw, 480px);
+    }
+
+    .left-panel, .right-panel {
+        width: 100%;
+        min-width: 0;
+    }
+
+    h1 {
+        font-size: clamp(1.3rem, 4vw, 1.8rem);
+    }
+
+    .task-description, .function-vector, #score-display {
+        font-size: clamp(0.8rem, 2.5vw, 1rem);
+    }
+
+    .variable-select-container {
+        flex-direction: column;
+        gap: clamp(5px, 1vh, 8px);
+    }
+
+    #variable-select {
+        max-width: clamp(120px, 40vw, 180px);
+    }
+
+    .truth-table {
+        font-size: clamp(10px, 2vw, 12px);
+    }
+
+    .cnf-input-container {
+        max-width: clamp(160px, 80vw, 220px);
+    }
+
+    #cnf-input {
+        font-size: clamp(0.8rem, 2vw, 1rem);
+        padding: clamp(6px, 1.5vw, 8px);
+    }
+
+    .symbol-buttons {
+        gap: clamp(5px, 1vw, 8px);
+    }
+
+    .symbol-btn {
+        width: clamp(30px, 8vw, 35px);
+        height: clamp(30px, 8vw, 35px);
+        font-size: clamp(0.7rem, 2vw, 0.9rem);
+    }
+
+    .delete-btn {
+        width: clamp(50px, 12vw, 60px);
+    }
+
+    .submit-btn, .try-again-btn {
+        width: clamp(80px, 25vw, 100px);
+        height: clamp(30px, 8vw, 35px);
+        font-size: clamp(0.8rem, 2vw, 1rem);
+    }
+
+    .feedback {
+        max-width: clamp(160px, 80vw, 240px);
+        font-size: clamp(0.8rem, 2.5vw, 1rem);
+    }
+
+    .class-select-container {
+        gap: clamp(5px, 1vw, 10px);
+        margin-bottom: clamp(10px, 2vh, 15px);
+    }
+
+    .class-checkbox {
+        width: clamp(16px, 4vw, 20px);
+        height: clamp(16px, 4vw, 20px);
+        margin-right: clamp(3px, 1vw, 5px);
+    }
+
+    .class-label {
+        font-size: clamp(0.8rem, 2.5vw, 1rem);
+    }
+
+    .nav-buttons {
+        position: static;
+        justify-content: center;
+        margin-bottom: clamp(10px, 2vh, 15px);
+    }
+
+    .stars1 {
+        top: 0;
+        left: 0;
+        width: clamp(250px, 50vw, 500px);
+    }
+
+    .stars2 {
+        bottom: 0;
+        right: 0;
+        width: clamp(250px, 50vw, 500px);
+    }
+
+    .moon {
+        top: 10%;
+        left: 50%;
+        transform: translateX(-50%);
+        width: clamp(60px, 15vw, 100px);
+        max-width: 100px;
+    }
+
+    .cloud1 {
+        top: 75%;
+        left: 5%;
+        width: clamp(100px, 20vw, 180px);
+        max-width: 180px;
+    }
+
+    .cloud2 {
+        top: 5%;
+        right: 5%;
+        width: clamp(90px, 18vw, 160px);
+        max-width: 160px;
+    }
+
+    .cloud3 {
+        top: 20%;
+        left: 40%;
+        width: clamp(100px, 20vw, 180px);
+        max-width: 180px;
+    }
+
+    .cloud4, .cloud5, .cloud6 {
+        display: none;
+    }
+
+    .comet3, .comet4 {
+        display: none;
+    }
+}
+
+@media (min-width: 769px) and (max-width: 1024px) {
+    .level-container {
+        width: 95%;
+        max-width: clamp(600px, 90vw, 800px);
+        min-height: clamp(400px, 80vh, 500px);
+        padding: clamp(15px, 2.5vw, 20px);
+    }
+
+    .content-wrapper {
+        max-width: clamp(500px, 85vw, 700px);
+        gap: clamp(15px, 2vw, 20px);
+        flex-direction: row;
+    }
+
+    .left-panel, .right-panel {
+        min-width: clamp(200px, 45vw, 300px);
+    }
+
+    .truth-table {
+        font-size: clamp(12px, 1.8vw, 14px);
+    }
+
+    .stars1 {
+        width: clamp(400px, 45vw, 600px);
+    }
+
+    .stars2 {
+        width: clamp(350px, 40vw, 500px);
+    }
+
+    .moon {
+        width: clamp(80px, 10vw, 130px);
+        max-width: 130px;
+    }
+
+    .cloud1, .cloud2, .cloud3, .cloud4, .cloud5, .cloud6 {
+        width: clamp(100px, 15vw, 220px);
+        max-width: 220px;
+    }
+}
+
+@media (min-width: 1025px) and (max-width: 1919px) {
+    .level-container {
+        max-width: clamp(800px, 90vw, 1000px);
+    }
+
+    .content-wrapper {
+        max-width: clamp(700px, 85vw, 800px);
+        flex-direction: row;
+    }
+
+    .stars1 {
+        width: clamp(500px, 45vw, 700px);
+    }
+
+    .stars2 {
+        width: clamp(400px, 40vw, 600px);
+    }
+
+    .moon {
+        width: clamp(100px, 10vw, 150px);
+        max-width: 150px;
+    }
+
+    .cloud1, .cloud2, .cloud3, .cloud4, .cloud5, .cloud6 {
+        width: clamp(120px, 15vw, 250px);
+        max-width: 250px;
+    }
+}
+
+@media (min-width: 1920px) {
+    .level-container {
+        max-width: clamp(1000px, 90vw, 1200px);
+        padding: clamp(20px, 2vw, 30px);
+    }
+
+    .content-wrapper {
+        max-width: clamp(900px, 85vw, 1000px);
+        gap: clamp(20px, 2vw, 30px);
+        flex-direction: row;
+    }
+
+    h1 {
+        font-size: clamp(1.8rem, 3vw, 2.3rem);
+    }
+
+    .stars1 {
+        width: clamp(600px, 45vw, 800px);
+    }
+
+    .stars2 {
+        width: clamp(500px, 40vw, 700px);
+    }
+
+    .moon {
+        width: clamp(120px, 10vw, 150px);
+        max-width: 150px;
+    }
+
+    .cloud1, .cloud2, .cloud3, .cloud4, .cloud5, .cloud6 {
+        width: clamp(150px, 15vw, 250px);
+        max-width: 250px;
+    }
+}
+
+.level-container {
+    overflow-y: auto;
+    max-height: 100vh;
 }
