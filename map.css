@@ -47,8 +47,8 @@ body {
 
 .moon {
     top: 5vh;
-    left: 10vw;
-    width: clamp(120px, 12vw, 250px);
+    left: 30vw;
+    width: clamp(120px, 10vw, 250px);
     transform: translate(-50%, 0);
 }
 
@@ -71,7 +71,7 @@ body {
 }
 
 .cloud1, .cloud2, .cloud3, .cloud4, .cloud5 {
-    z-index: -1;
+    z-index: 1;
     animation: cloudMove 8s infinite alternate;
     transform: translate(-50%, -50%);
 }
@@ -83,26 +83,26 @@ body {
 }
 
 .cloud2 {
-    top: 12vh;
+    top: 15vh;
     left: 75vw;
     width: clamp(200px, 25vw, 450px);
 }
 
 .cloud3 {
-    top: 76vh;
-    left: 50vw;
+    top: 75vh;
+    left: 23vw;
     width: clamp(250px, 30vw, 470px);
 }
 
 .cloud4 {
-    top: 23vh;
-    left: 16vw;
-    width: clamp(250px, 25vw, 470px);
+    top: 25vh;
+    left: 30vw;
+    width: clamp(230px, 20vw, 460px);
 }
 
 .cloud5 {
     top: 39vh;
-    left: 27vw;
+    left: 17vw;
     width: clamp(150px, 20vw, 250px);
 }
 
@@ -116,7 +116,7 @@ body {
     flex-direction: column;
     align-items: center;
     justify-content: flex-start;
-    height: 88vh;
+    height: 100vh;
     padding: clamp(10px, 2vh, 20px);
     box-sizing: border-box;
     position: relative;
@@ -275,23 +275,69 @@ body {
 
 @media (max-width: 768px) {
     .moon {
-        top: 4vh;
-        left: 15vw;
+        top: 2vh;
+        left: 25vw;
     }
 
     .cloud3 {
         top: 80vh;
     }
 
+    .cloud4 {
+        top: 16vh;
+        left: 25vw;
+    }
+
     .cloud1,
     .cloud2,
-    .cloud4,
     .cloud5 {
         animation: none;
     }
 
-    .stars1,
-    .stars2 {
-        opacity: 0.6;
+}
+
+@media (min-width: 769px) and (max-width: 1024px) {
+    .moon {
+        top: 2vh;
+        left: 20vw;
     }
+
+    .cloud3 {
+        top: 80vh;
+    }
+
+    .cloud4 {
+        top: 17vh;
+        left: 20vw;
+    }
+
+    .cloud1,
+    .cloud2,
+    .cloud5 {
+        animation: none;
+    }
+
+}
+
+@media (min-width: 1025px) {
+    .moon {
+        top: 2vh;
+        left: 20vw;
+    }
+
+    .cloud3 {
+        top: 80vh;
+    }
+
+    .cloud4 {
+        top: 19vh;
+        left: 19vw;
+    }
+
+    .cloud1,
+    .cloud2,
+    .cloud5 {
+        animation: none;
+    }
+
 }
