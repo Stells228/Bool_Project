@@ -10,7 +10,8 @@ document.addEventListener('DOMContentLoaded', () => {
         feedback: document.getElementById('feedback'),
         backToLevelMenuBtn: document.getElementById('back-to-level-menu'),
         prevLevelBtn: document.getElementById('prev-level'),
-        rightPanel: document.querySelector('.right-panel')
+        rightPanel: document.querySelector('.right-panel'),
+        levelContainer: document.querySelector('.level-container')
     };
 
     let vectors = [];
@@ -23,8 +24,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (gameMode === 'passing') {
         elements.prevLevelBtn.disabled = false;
-    } 
-    else if (gameMode === 'competition') {
+    } else if (gameMode === 'competition') {
         addScoreDisplay();
     }
 
@@ -60,47 +60,45 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     function genVector() {
-        const rand2 = 2 ** Math.floor(Math.random() * 3 + 1);
-        return Array.from({ length: rand2 }, () => Math.floor(Math.random() * 2)).join('');
+        let vector = '';
+        let rand2 = 2 ** Math.floor(Math.random() * 3 + 1);
+        for (let j = 0; j < rand2; j++) {
+            vector += Math.floor(Math.random() * 2);
+        }
+        return vector;
     }
 
     function poln(vector) {
-        return `${T0(vector)}${T1(vector)}${S(vector)}${M(vector)}${L(vector)}`;
+        return "" + T0(vector) + T1(vector) + S(vector) + M(vector) + L(vector);
     }
 
     function T0(vector) {
-        return vector[0] === '0' ? 1 : 0;
+        return vector[0] === "0" ? 1 : 0;
     }
 
     function T1(vector) {
-        return vector[vector.length - 1] === '1' ? 1 : 0;
+        return vector[vector.length - 1] === "1" ? 1 : 0;
     }
 
     function S(vector) {
-        const len = vector.length;
-        for (let i = 0; i < len / 2; i++) {
-            if (vector[i] === vector[len - 1 - i]) return 0;
+        for (let i = 0; i <= vector.length / 2 - 1; i++) {
+            if (vector[i] === vector[vector.length - 1 - i]) return 0;
         }
         return 1;
     }
 
     function M(vector) {
-        const len = vector.length;
-        for (let i = 0; i < len - 1; i++) {
-            const binary1 = i.toString(2).padStart(Math.log2(len), '0');
-            for (let j = i + 1; j < len; j++) {
-                const binary2 = j.toString(2).padStart(Math.log2(len), '0');
+        for (let i = 0; i < vector.length - 1; i++) {
+            let binary1 = i.toString(2).padStart(Math.log2(vector.length), "0");
+            for (let j = i + 1; j < vector.length; j++) {
+                let binary2 = j.toString(2).padStart(Math.log2(vector.length), "0");
                 if (vector[parseInt(binary1, 2)] > vector[parseInt(binary2, 2)]) return 0;
             }
         }
         return 1;
     }
 
-    const memoL = new Map();
     function L(vector) {
-        const key = vector;
-        if (memoL.has(key)) return memoL.get(key);
-
         const n = vector.length;
         const vars = Math.log2(n);
         for (let a = 0; a < n; a++) {
@@ -116,42 +114,32 @@ document.addEventListener('DOMContentLoaded', () => {
                     break;
                 }
             }
-            if (match) {
-                memoL.set(key, 1);
-                return 1;
-            }
+            if (match) return 1;
         }
-        memoL.set(key, 0);
         return 0;
     }
 
     function generateVectorSet() {
-        const dlin = Math.floor(Math.random() * 3 + 2);
+        let dlin = Math.floor(Math.random() * 3 + 2);
         vectors = [];
         const naborK = [];
         for (let i = 0; i < dlin; i++) {
             vectors.push(genVector());
             naborK.push(poln(vectors[i]));
         }
-        const zam = ['T0', 'T1', 'S', 'M', 'L'];
-        correctClosedClasses = '';
+        let zam = "01SML";
+        correctClosedClasses = "";
         for (let i = 0; i < 5; i++) {
             let zat = 0;
             for (let j = 0; j < dlin; j++) {
                 zat += parseInt(naborK[j][i], 2);
             }
             if (zat === dlin) {
-                correctClosedClasses += zam[i];
+                if (i === 0 || i === 1) correctClosedClasses += "T" + zam[i];
+                else correctClosedClasses += zam[i];
             }
         }
-        const fragment = document.createDocumentFragment();
-        vectors.forEach((v, i) => {
-            const div = document.createElement('div');
-            div.textContent = `f${i + 1}: ${v}`;
-            fragment.appendChild(div);
-        });
-        elements.functionVectors.innerHTML = '';
-        elements.functionVectors.appendChild(fragment);
+        elements.functionVectors.innerHTML = vectors.map((v, i) => `f${i + 1}: ${v}`).join('<br>');
     }
 
     function validateAnswer() {
@@ -174,8 +162,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (userIsCompleteYes) {
             if (isComplete) showFeedback('Правильно! Набор полный.', 'correct');
             else showFeedback(`Неправильно!\nНабор не полный.\nЗамкнутый класс: ${correctClosedClasses}`, 'incorrect');
-        } 
-        else if (userIsCompleteNo) {
+        } else if (userIsCompleteNo) {
             if (isComplete) showFeedback('Неправильно!\nНабор полный, замкнутых классов нет.', 'incorrect');
             else if (userClosedClasses === correctClosedClasses) showFeedback('Правильно! Замкнутый класс верный.', 'correct');
             else showFeedback(`Неправильно!\nПравильный замкнутый класс: ${correctClosedClasses}`, 'incorrect');
@@ -213,8 +200,7 @@ document.addEventListener('DOMContentLoaded', () => {
             } else if (type === 'incorrect') {
                 updateScore(-10);
             }
-        } 
-        else if (type === 'correct' && gameMode === 'passing' && !hasWon) {
+        } else if (type === 'correct' && gameMode === 'passing' && !hasWon) {
             hasWon = true;
             if (!completedLevels.includes(6)) {
                 completedLevels.push(6);
@@ -228,8 +214,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 level: 6,
                 points: 10,
             }, '*');
-        } 
-        else if (type === 'incorrect' && gameMode === 'competition') {
+        } else if (type === 'incorrect' && gameMode === 'competition') {
             window.parent.postMessage({ 
                 type: 'updateScore',
                 level: 6,
@@ -249,9 +234,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     elements.backToLevelMenuBtn.addEventListener('click', () => {
-        if (!elements.backToLevelMenuBtn.disabled) {
-            window.location.href = `../map.html?mode=${gameMode}`;
-        }
+        window.location.href = `../map.html?mode=${gameMode}`;
     });
 
     elements.prevLevelBtn.addEventListener('click', () => {
@@ -259,12 +242,4 @@ document.addEventListener('DOMContentLoaded', () => {
             window.location.href = `level5.html?mode=${gameMode}`;
         }
     });
-
-    const animatedElements = document.querySelectorAll('.stars, .cloud, .comet, .moon');
-    const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            entry.target.style.animationPlayState = entry.isIntersecting ? 'running' : 'paused';
-        });
-    }, { threshold: 0.1 });
-    animatedElements.forEach(el => observer.observe(el));
 });
