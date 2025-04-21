@@ -1,75 +1,49 @@
 document.addEventListener('DOMContentLoaded', () => {
-    const levelScroll = document.querySelector('.level-scroll');
-    const scrollLeftBtn = document.getElementById('scroll-left');
-    const scrollRightBtn = document.getElementById('scroll-right');
+    // Кэшируем элементы DOM
+    const transitionOverlay = document.createElement('div');
+    transitionOverlay.className = 'transition-overlay';
+    document.body.appendChild(transitionOverlay);
+
     const mainMenuBtn = document.getElementById('main-menu-btn');
+    const levelScroll = document.querySelector('.level-scroll');
     const levelLinks = document.querySelectorAll('.level-block-link');
 
-    const scrollAmount = 344 + 20;
+    // Проверка наличия критических элементов
+    if (!mainMenuBtn || !levelScroll || !levelLinks.length) {
+        console.error('Critical elements missing:', { mainMenuBtn, levelScroll, levelLinks });
+        return;
+    }
+
+    // Сброс overlay
+    transitionOverlay.classList.remove('active');
+
+    // Обработчик кнопки главного меню
+    mainMenuBtn.addEventListener('click', () => {
+        // Отключаем анимации облаков для плавного перехода
+        document.querySelectorAll('.cloud1, .cloud2, .cloud3, .cloud4, .cloud5').forEach(el => {
+            el.style.animation = 'none';
+        });
+
+        transitionOverlay.classList.add('active');
+        setTimeout(() => {
+            window.location.href = 'main.html';
+        }, 300); // Уменьшили время для ускорения
+    });
+
+    // Получаем параметры URL и данные из localStorage
     const urlParams = new URLSearchParams(window.location.search);
     const gameMode = urlParams.get('mode') || 'normal';
-
     let completedLevels = JSON.parse(localStorage.getItem('completedLevels')) || [];
     if (!Array.isArray(completedLevels)) completedLevels = [];
 
-    updateLevelAvailability();
-
-    // Центрируем первый блок при загрузке
-    const firstBlock = levelScroll.querySelector('.level-block');
-    if (firstBlock) {
-        const blockWidth = firstBlock.offsetWidth;
-        const containerWidth = levelScroll.offsetWidth;
-        const scrollPosition = firstBlock.offsetLeft - (containerWidth - blockWidth) / 2;
-        levelScroll.scrollTo({ left: scrollPosition, behavior: 'smooth' });
-    }
-
-    // Обработка нажатия кнопки главного меню
-    mainMenuBtn.addEventListener('click', () => {
-        console.log('Main menu button clicked');
-        try {
-            if (window.parent !== window) {
-                document.body.style.transition = 'opacity 0.5s ease-in-out';
-                document.body.style.opacity = '0';
-                
-                setTimeout(() => {
-                    window.postMessage({ type: 'return-to-main' }, '*');
-                }, 500);
-            } 
-            else {
-                window.location.href = 'main.html';
-            }
-        } 
-        catch (error) {
-            console.error('Error handling main menu click:', error);
-            window.location.href = 'main.html';
-        }
-    });
-
-    window.addEventListener('message', (event) => {
-        if (event.data.type === 'resetGame') {
-            completedLevels = [];
-            localStorage.removeItem('completedLevels');
-            updateLevelAvailability();
-            levelScroll.scrollTo({ left: 0, behavior: 'smooth' });
-        }
-        
-        if (event.data.type === 'levelCompleted') {
-            const level = event.data.level;
-            if (!completedLevels.includes(level)) {
-                completedLevels.push(level);
-                completedLevels.sort((a, b) => a - b);
-                localStorage.setItem('completedLevels', JSON.stringify(completedLevels));
-                updateLevelAvailability();
-            }
-        }
-    });
-
+    // Обновление доступности уровней
     function updateLevelAvailability() {
         const highestCompleted = completedLevels.length > 0 ? Math.max(...completedLevels) : 0;
         const nextLevel = highestCompleted + 1;
 
         levelLinks.forEach(link => {
-            const level = parseInt(link.querySelector('.level-block').dataset.level);
+            const levelBlock = link.querySelector('.level-block');
+            const level = parseInt(levelBlock.dataset.level);
             const href = `level/level${level}.html?mode=${gameMode}`;
 
             if (gameMode === 'passing') {
@@ -89,18 +63,28 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    scrollLeftBtn.addEventListener('click', () => {
-        levelScroll.scrollBy({ left: -scrollAmount, behavior: 'smooth' });
-    });
+    // Вызываем обновление уровней
+    updateLevelAvailability();
 
-    scrollRightBtn.addEventListener('click', () => {
-        levelScroll.scrollBy({ left: scrollAmount, behavior: 'smooth' });
-    });
+    // Обработчик сообщений для сброса или завершения уровня
+    window.addEventListener('message', (event) => {
+        if (event.data.type === 'resetGame') {
+            completedLevels = [];
+            localStorage.removeItem('completedLevels');
+            updateLevelAvailability();
+            levelScroll.scrollTo({ left: 0, behavior: 'smooth' });
+        } 
+        else if (event.data.type === 'levelCompleted') {
+            const level = event.data.level;
+            if (!completedLevels.includes(level)) {
+                completedLevels.push(level);
+                completedLevels.sort((a, b) => a - b);
+                localStorage.setItem('completedLevels', JSON.stringify(completedLevels));
+                updateLevelAvailability();
+            }
+        }
+    }, { once: false }); // Оставляем постоянное прослушивание, так как уровни могут завершаться
 
     // Плавное появление страницы
-    document.body.style.opacity = '0';
-    setTimeout(() => {
-        document.body.style.transition = 'opacity 0.5s ease-in-out';
-        document.body.style.opacity = '1';
-    }, 100);
+    document.body.style.opacity = '1';
 });
