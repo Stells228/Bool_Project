@@ -10,7 +10,7 @@ document.addEventListener('DOMContentLoaded', () => {
         prevLevelBtn: document.getElementById('prev-level'),
         nextLevelBtn: document.getElementById('next-level'),
         rightPanel: document.querySelector('.right-panel'),
-        levelContainer: document.querySelector('.level-container')
+        classSelectContainer: document.querySelector('.class-select-container')
     };
 
     let n = 0;
@@ -37,7 +37,8 @@ document.addEventListener('DOMContentLoaded', () => {
         elements.nextLevelBtn.style.opacity = completedLevels.includes(5) ? '1' : '0.5';
         elements.nextLevelBtn.style.cursor = completedLevels.includes(5) ? 'pointer' : 'not-allowed';
         elements.prevLevelBtn.disabled = false;
-    } else if (gameMode === 'competition') {
+    } 
+    else if (gameMode === 'competition') {
         elements.nextLevelBtn.disabled = false;
         elements.nextLevelBtn.style.opacity = '1';
         elements.nextLevelBtn.style.cursor = 'pointer';
@@ -48,7 +49,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const scoreDisplay = document.createElement('div');
         scoreDisplay.id = 'score-display';
         scoreDisplay.textContent = `Счёт: ${competitionScores[5] || 0}`;
-        elements.rightPanel.insertBefore(scoreDisplay, document.querySelector('.class-select-container'));
+        elements.rightPanel.insertBefore(scoreDisplay, elements.classSelectContainer || elements.submitBtn.parentElement);
     }
 
     function updateScore(points) {
@@ -73,10 +74,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     function generateNewVector() {
-        vector = '';
-        for (let j = 0; j < 2 ** n; j++) {
-            vector += Math.floor(Math.random() * 2);
-        }
+        vector = Array.from({ length: 2 ** n }, () => Math.floor(Math.random() * 2)).join('');
         elements.functionVector.textContent = `Вектор функции: ${vector}`;
         correctClasses = computeClasses(vector);
         generateTruthTable(n, vector);
@@ -93,32 +91,38 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function T0(vector) {
-        return vector[0] === "0" ? 1 : 0;
+        return vector[0] === '0' ? 1 : 0;
     }
 
     function T1(vector) {
-        return vector[vector.length - 1] === "1" ? 1 : 0;
+        return vector[vector.length - 1] === '1' ? 1 : 0;
     }
 
     function S(vector) {
-        for (let i = 0; i <= vector.length / 2 - 1; i++) {
-            if (vector[i] === vector[vector.length - 1 - i]) return 0;
+        const len = vector.length;
+        for (let i = 0; i < len / 2; i++) {
+            if (vector[i] === vector[len - 1 - i]) return 0;
         }
         return 1;
     }
 
     function M(vector) {
-        for (let i = 0; i < vector.length - 1; i++) {
-            let binary1 = i.toString(2).padStart(Math.log2(vector.length), "0");
-            for (let j = i + 1; j < vector.length; j++) {
-                let binary2 = j.toString(2).padStart(Math.log2(vector.length), "0");
+        const len = vector.length;
+        for (let i = 0; i < len - 1; i++) {
+            const binary1 = i.toString(2).padStart(Math.log2(len), '0');
+            for (let j = i + 1; j < len; j++) {
+                const binary2 = j.toString(2).padStart(Math.log2(len), '0');
                 if (vector[parseInt(binary1, 2)] > vector[parseInt(binary2, 2)]) return 0;
             }
         }
         return 1;
     }
 
+    const memoL = new Map();
     function L(vector) {
+        const key = vector;
+        if (memoL.has(key)) return memoL.get(key);
+
         const n = vector.length;
         const vars = Math.log2(n);
         for (let a = 0; a < n; a++) {
@@ -134,12 +138,17 @@ document.addEventListener('DOMContentLoaded', () => {
                     break;
                 }
             }
-            if (match) return 1;
+            if (match) {
+                memoL.set(key, 1);
+                return 1;
+            }
         }
+        memoL.set(key, 0);
         return 0;
     }
 
     function setupCheckboxes(checkboxes) {
+        const fragment = document.createDocumentFragment();
         const container = document.createElement('div');
         container.className = 'class-select-container';
         for (const [key, input] of Object.entries(checkboxes)) {
@@ -150,14 +159,15 @@ document.addEventListener('DOMContentLoaded', () => {
             label.htmlFor = key;
             label.textContent = key;
             label.className = 'class-label';
-            container.appendChild(input);
-            container.appendChild(label);
+            fragment.appendChild(input);
+            fragment.appendChild(label);
         }
+        container.appendChild(fragment);
         elements.rightPanel.insertBefore(container, elements.submitBtn.parentElement);
     }
 
     function generateTruthTable(n, vector) {
-        elements.truthTableContainer.innerHTML = '';
+        const fragment = document.createDocumentFragment();
         const table = document.createElement('table');
         table.className = 'truth-table';
         const headerRow = document.createElement('tr');
@@ -183,7 +193,9 @@ document.addEventListener('DOMContentLoaded', () => {
             row.appendChild(td);
             table.appendChild(row);
         }
-        elements.truthTableContainer.appendChild(table);
+        fragment.appendChild(table);
+        elements.truthTableContainer.innerHTML = '';
+        elements.truthTableContainer.appendChild(fragment);
     }
 
     function validateSelection(checkboxes, correct) {
@@ -199,7 +211,8 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         if (shouldBeSelected.length === 0 && shouldNotBeSelected.length === 0) {
             showFeedback('Правильно! Отличная работа!', 'correct');
-        } else {
+        } 
+        else {
             let message = 'Неправильно!\n';
             if (shouldBeSelected.length > 0) message += `Должны быть выбраны: ${shouldBeSelected.join(', ')}\n`;
             if (shouldNotBeSelected.length > 0) message += `Не должны быть выбраны: ${shouldNotBeSelected.join(', ')}`;
@@ -240,7 +253,8 @@ document.addEventListener('DOMContentLoaded', () => {
             } else if (type === 'incorrect') {
                 updateScore(-10);
             }
-        } else if (type === 'correct' && gameMode === 'passing' && !hasWon) {
+        } 
+        else if (type === 'correct' && gameMode === 'passing' && !hasWon) {
             hasWon = true;
             if (!completedLevels.includes(5)) {
                 completedLevels.push(5);
@@ -257,7 +271,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 level: 5,
                 points: 10,
             }, '*');
-        } else if (type === 'incorrect' && gameMode === 'competition') {
+        } 
+        else if (type === 'incorrect' && gameMode === 'competition') {
             window.parent.postMessage({ 
                 type: 'updateScore',
                 level: 5,
@@ -283,7 +298,9 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     elements.backToLevelMenuBtn.addEventListener('click', () => {
-        window.location.href = `../map.html?mode=${gameMode}`;
+        if (!elements.backToLevelMenuBtn.disabled) {
+            window.location.href = `../map.html?mode=${gameMode}`;
+        }
     });
 
     elements.prevLevelBtn.addEventListener('click', () => {
@@ -297,4 +314,12 @@ document.addEventListener('DOMContentLoaded', () => {
             window.location.href = `level6.html?mode=${gameMode}`;
         }
     });
+
+    const animatedElements = document.querySelectorAll('.stars, .cloud, .comet, .moon');
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            entry.target.style.animationPlayState = entry.isIntersecting ? 'running' : 'paused';
+        });
+    }, { threshold: 0.1 });
+    animatedElements.forEach(el => observer.observe(el));
 });
