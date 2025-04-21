@@ -42,6 +42,11 @@ body {
     box-sizing: border-box;
 }
 
+.slide-window {
+    max-height: auto; 
+    padding-right: 8px; 
+}
+
 .slide-window.open {
     left: 0;
 }
