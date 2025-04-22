@@ -4,8 +4,18 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Level Selection</title>
+    <link rel="preload" href="map.css" as="style">
     <link rel="stylesheet" href="map.css">
     <link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@400&display=swap" rel="stylesheet">
+    <!-- Предзагрузка всех ключевых изображений -->
+    <link rel="preload" href="Photos/moon.png" as="image">
+    <link rel="preload" href="Photos/stars1.png" as="image">
+    <link rel="preload" href="Photos/stars2.png" as="image">
+    <link rel="preload" href="Photos/cloudmoon1.png" as="image">
+    <link rel="preload" href="Photos/cloudmoon2.png" as="image">
+    <link rel="preload" href="Photos/cloudmoon3.png" as="image">
+    <link rel="preload" href="Photos/cloudmoon4.png" as="image">
+    <link rel="preload" href="Photos/cloudmoon5.png" as="image">
     <link rel="icon" type="image/png" href="favicon/favicon-96x96.png" sizes="96x96">
     <link rel="icon" href="favicon/favicon.ico" type="image/x-icon">
     <link rel="apple-touch-icon" href="favicon/apple-touch-icon.png" sizes="180x180">
@@ -15,14 +25,14 @@
 </head>
 <body>
     <div class="background">
-        <img src="Photos/stars1.png" alt="Stars" class="stars1" loading="lazy">
-        <img src="Photos/stars2.png" alt="Stars" class="stars2" loading="lazy">
-        <img src="Photos/moon.png" alt="Moon" class="moon" loading="lazy">
-        <img src="Photos/cloudmoon1.png" alt="Cloud" class="cloud1" loading="lazy">
-        <img src="Photos/cloudmoon2.png" alt="Cloud" class="cloud2" loading="lazy">
-        <img src="Photos/cloudmoon3.png" alt="Cloud" class="cloud3" loading="lazy">
-        <img src="Photos/cloudmoon4.png" alt="Cloud" class="cloud4" loading="lazy">
-        <img src="Photos/cloudmoon5.png" alt="Cloud" class="cloud5" loading="lazy">
+        <img src="Photos/stars1.png" alt="Stars" class="stars1" loading="lazy" onload="this.classList.add('loaded')" onerror="this.classList.add('error')">
+        <img src="Photos/stars2.png" alt="Stars" class="stars2" loading="lazy" onload="this.classList.add('loaded')" onerror="this.classList.add('error')">
+        <img src="Photos/moon.png" alt="Moon" class="moon" onload="this.classList.add('loaded')" onerror="this.classList.add('error')">
+        <img src="Photos/cloudmoon1.png" alt="Cloud" class="cloud1" onload="this.classList.add('loaded')" onerror="this.classList.add('error')">
+        <img src="Photos/cloudmoon2.png" alt="Cloud" class="cloud2" onload="this.classList.add('loaded')" onerror="this.classList.add('error')">
+        <img src="Photos/cloudmoon3.png" alt="Cloud" class="cloud3" onload="this.classList.add('loaded')" onerror="this.classList.add('error')">
+        <img src="Photos/cloudmoon4.png" alt="Cloud" class="cloud4" onload="this.classList.add('loaded')" onerror="this.classList.add('error')">
+        <img src="Photos/cloudmoon5.png" alt="Cloud" class="cloud5" onload="this.classList.add('loaded')" onerror="this.classList.add('error')">
     </div>
     <div class="map-container">
         <h1 class="map-title">Выбор уровня</h1>
@@ -71,4 +81,4 @@
     </div>
     <script src="map.js"></script>
 </body>
-</html>  
+</html>
