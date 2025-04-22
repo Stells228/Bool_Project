@@ -12,9 +12,15 @@
         <link rel="stylesheet" href="rating.css">
         <link rel="stylesheet" href="cons.css">
         <link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@400&display=swap" rel="stylesheet">
-        <!-- Предзагрузка ключевых изображений -->
+        <!-- Предзагрузка всех ключевых изображений -->
         <link rel="preload" href="Photos/moonre.png" as="image">
         <link rel="preload" href="Photos/stars1.png" as="image">
+        <link rel="preload" href="Photos/stars2.png" as="image">
+        <link rel="preload" href="Photos/cloudmoon1.png" as="image">
+        <link rel="preload" href="Photos/cloudmoon2.png" as="image">
+        <link rel="preload" href="Photos/cloudmoon3.png" as="image">
+        <link rel="preload" href="Photos/cloudmoon4.png" as="image">
+        <link rel="preload" href="Photos/cloudmoon5.png" as="image">
         <link rel="icon" type="image/png" href="favicon/favicon-96x96.png" sizes="96x96">
         <link rel="icon" href="favicon/favicon.ico" type="image/x-icon">
         <link rel="apple-touch-icon" href="favicon/apple-touch-icon.png" sizes="180x180">
@@ -213,14 +219,14 @@
     <div class="Title">Bool-helper</div>
     <div id="main-screen">
         <div class="image-container">
-            <img src="Photos/moonre.png" alt="Moonre" class="moonre" loading="lazy">
-            <img src="Photos/cloudmoon3.png" alt="Cloud Moon 3" class="cloudmoon3" loading="lazy">
-            <img src="Photos/stars1.png" alt="Stars1" class="stars1" loading="lazy">
-            <img src="Photos/stars2.png" alt="Stars2" class="stars2" loading="lazy">
-            <img src="Photos/cloudmoon1.png" alt="Cloud Moon 1" class="cloudmoon" loading="lazy">
-            <img src="Photos/cloudmoon2.png" alt="Cloud Moon 2" class="cloudmoon2" loading="lazy">
-            <img src="Photos/cloudmoon4.png" alt="Cloud Moon 4" class="cloudmoon4" loading="lazy">
-            <img src="Photos/cloudmoon5.png" alt="Cloud Moon 5" class="cloudmoon5" loading="lazy">
+            <img src="Photos/moonre.png" alt="Moonre" class="moonre" onload="this.classList.add('loaded')" onerror="this.classList.add('error')">
+            <img src="Photos/cloudmoon3.png" alt="Cloud Moon 3" class="cloudmoon3" onload="this.classList.add('loaded')" onerror="this.classList.add('error')">
+            <img src="Photos/stars1.png" alt="Stars1" class="stars1" loading="lazy" onload="this.classList.add('loaded')" onerror="this.classList.add('error')">
+            <img src="Photos/stars2.png" alt="Stars2" class="stars2" loading="lazy" onload="this.classList.add('loaded')" onerror="this.classList.add('error')">
+            <img src="Photos/cloudmoon1.png" alt="Cloud Moon 1" class="cloudmoon" onload="this.classList.add('loaded')" onerror="this.classList.add('error')">
+            <img src="Photos/cloudmoon2.png" alt="Cloud Moon 2" class="cloudmoon2" onload="this.classList.add('loaded')" onerror="this.classList.add('error')">
+            <img src="Photos/cloudmoon4.png" alt="Cloud Moon 4" class="cloudmoon4" onload="this.classList.add('loaded')" onerror="this.classList.add('error')">
+            <img src="Photos/cloudmoon5.png" alt="Cloud Moon 5" class="cloudmoon5" onload="this.classList.add('loaded')" onerror="this.classList.add('error')">
         </div>
         <button id="map-btn" class="map-btn" data-mode="normal">Play</button>
     </div>
