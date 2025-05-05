@@ -60,27 +60,33 @@ body, html {
 
 .welcome-text {
     position: absolute;
-    top: 50%;
+    top: 55%;
     left: 50%;
     transform: translate(-50%, -50%);
     z-index: 4;
     font-family: 'Comfortaa', cursive;
     color: #ffffff;
     text-align: center;
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+    text-shadow: 4px 4px 6px rgba(0, 0, 0, 0.3);
     max-width: 90%;
     font-size: clamp(3rem, 7vw, 7rem);
     white-space: nowrap;
 }
 
 .continue-btn {
-    top: 60%;
+    position: absolute;
     left: 50%;
     width: clamp(80px, 12vmin, 160px);
     z-index: 4;
-    transform: translate(-50%, -50%);
+    transform: translateX(-50%);
     animation: none;
+    top: calc(var(--cloud-bottom-position) + 200px);
 }
+
+:root {
+    --cloud-bottom-position: calc(90% + clamp(120px, 20vw, 300px) / 2);
+}
+
 
 #welcome-screen.loaded .continue-btn {
     animation: continuePulse 2s infinite alternate;
@@ -129,16 +135,25 @@ body, html {
 
 /* Адаптивность */
 @media (max-width: 507px) {
-    .welcome-text {
-        font-size: clamp(1.5rem, 8vw, 3rem);
+    :root {
+        --cloud-bottom-position: calc(80% + clamp(120px, 20vw, 300px) / 2);
     }
     .continue-btn {
-        top: 60%;
         width: clamp(60px, 20vmin, 120px);
+    }
+    .welcome-text {
+        font-size: clamp(1.5rem, 8vw, 3rem);
     }
 }
 
 @media (max-width: 1700px) {
+    :root {
+        --cloud-bottom-position: calc(70% + clamp(150px, 20vw, 300px) / 2);
+    }
+    .continue-btn {
+        width: clamp(60px, 15vmin, 120px);
+        margin-top: 22px;
+    }
     .moon {
         top: 190px;
         width: clamp(150px, 18vw, 250px);
@@ -147,7 +162,8 @@ body, html {
         width: clamp(180px, 27vw, 350px);
     }
     .welcome-text {
-        font-size: clamp(3rem, 6vw, 6rem);
+        font-size: clamp(2.6rem, 4vw, 4rem);
+        position: center;
     }
     .continue-btn {
         top: 60%;
@@ -155,13 +171,12 @@ body, html {
     }
     .cloudmoon{
         top: 80%;
-        width: clamp(180px, 27vw, 350px);
+        width: clamp(150px, 20vw, 300px);
 
     }
     .cloudmoon2{
         top: 70%;
         width: clamp(180px, 27vw, 350px);
-
     }
 }
 
@@ -175,6 +190,10 @@ body, html {
     .welcome-text {
         font-size: clamp(3rem, 6vw, 6rem);
     }
+}
+
+#welcome-screen.loaded .continue-btn {
+    animation: continuePulse 2s infinite alternate;
 }
 
 @keyframes moonMove {
@@ -212,8 +231,8 @@ body, html {
 }
 
 @keyframes continuePulse {
-    0% { transform: translate(-50%, -50%) scale(1) rotate(8deg); }
-    100% { transform: translate(-50%, -50%) scale(1.05) rotate(-4deg); }
+    0% { transform: translateX(-50%) scale(1) rotate(8deg); }
+    100% { transform: translateX(-50%) scale(1.05) rotate(-4deg); }
 }
 
 #main-iframe {
