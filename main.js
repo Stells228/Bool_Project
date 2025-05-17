@@ -222,4 +222,21 @@ document.addEventListener('DOMContentLoaded', () => {
     // Плавное появление карты при загрузке
     document.body.style.opacity = '1';
     transitionOverlay.classList.remove('active');
+
+    // Кнопка перехода
+    const rightArrow = document.getElementById('right-arrow');
+    const transitionScreen = document.getElementById('transition-screen');
+    
+    rightArrow.addEventListener('click', () => {
+        // Активируем шторку
+        transitionScreen.classList.add('active');
+        
+        // Через 500ms (когда анимация завершится) переходим на новую страницу
+        setTimeout(() => {
+            window.location.href = 'gmain.html';
+        }, 500);
+    });
+    
+    // Плавное появление страницы
+    document.body.style.opacity = '1';
 });
