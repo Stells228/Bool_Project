@@ -484,12 +484,124 @@ body {
     left: -100%; 
     width: 100%;
     height: 100%;
-    background: linear-gradient(to right, #416190, #776f98); /* Градиент слева-направо */
+    background: linear-gradient(to right, #416190, #776f98); 
     z-index: 1000;
     pointer-events: none;
-    transition: left 0.5s ease-in-out; /* Анимация по left */
+    transition: left 0.5s ease-in-out; 
 }
 
 .transition-screen.active {
-    left: 0;  /* Полностью открывается */
+    left: 0;  
+}
+
+.slide-window {
+    position: fixed;
+    top: 0;
+    right: -85vw; /* скрыто справа */
+    width: 85vw;
+    max-width: 600px;
+    height: 100vh;
+    background: linear-gradient(to bottom, rgba(97, 60, 192, 0.9), rgba(70, 30, 169, 0.9));
+    border-radius: 10px 0 0 10px; /* Скругление СЛЕВАА */
+    z-index: 500;
+    transition: right 0.4s cubic-bezier(0.25, 0.1, 0.25, 1);
+    will-change: right;
+    box-sizing: border-box;
+    padding-left: 15px;
+    left: auto; 
+}
+
+.slide-window {
+    max-height: auto; 
+}
+
+.slide-window.open {
+    right: 0;
+}
+
+.slide-window.closed {
+    right: -80vw;
+}
+
+.toggle-btn {
+    position: fixed;
+    background: linear-gradient(to bottom, rgba(97, 60, 192, 0.95), rgba(70, 30, 169, 0.95));
+    border: none;
+    border-radius: 10px 0 0 10px;
+    cursor: pointer;
+    z-index: 1100;
+    transition: all 0.4s cubic-bezier(0.25, 0.1, 0.25, 1);
+    width: clamp(45px, 10vw, 70px);
+    height: clamp(45px, 10vw, 70px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    right: 0;
+}
+
+
+.toggle-btn.hidden {
+    opacity: 0;
+    pointer-events: none;
+    transform: translateX(10px);
+}
+
+.toggle-btn:hover {
+    background: linear-gradient(to bottom, rgba(171, 144, 239, 0.9), rgba(150, 120, 200, 0.9));
+}
+
+.icon {
+    width: 70%;
+    height: 70%;
+    object-fit: contain;
+    filter: drop-shadow(1px 1px 2px rgba(0,0,0,0.3));
+}
+
+@media (max-width: 768px) {
+    .slide-window {
+        right: -85vw;
+        width: 85vw;
+    }
+    
+    .slide-window.closed {
+        right: -85vw;
+    }
+    
+    .toggle-btn {
+        right: -50px;
+    }
+}
+
+/* Шторка перехода */
+.transition-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: #776f98;
+    transform: translateY(-100%);
+    z-index: 2000;
+    pointer-events: none;
+    transition: transform 0.5s ease-in-out;
+}
+
+.transition-overlay.active {
+    transform: translateY(0);
+}
+
+.left-transition-screen {
+    position: fixed;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(to right, #416190, #776f98);
+    z-index: 2000;
+    pointer-events: none;
+    transition: left 0.5s ease-in-out;
+}
+
+.left-transition-screen.active {
+    left: 0;
 }
