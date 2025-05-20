@@ -1,4 +1,12 @@
 document.addEventListener('DOMContentLoaded', () => {
+    const mainMenuBtn = document.getElementById('main-menu-btn');
+    if (mainMenuBtn) {
+        mainMenuBtn.style.display = 'flex';
+        mainMenuBtn.style.opacity = '1';
+    }
+});
+
+document.addEventListener('DOMContentLoaded', () => {
     // Кэшируем элементы DOM
     const transitionOverlay = document.createElement('div');
     transitionOverlay.className = 'transition-overlay';
