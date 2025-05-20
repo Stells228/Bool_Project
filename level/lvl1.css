@@ -169,11 +169,11 @@ h1 {
 .custom-select {
     position: relative;
     margin-bottom: 2%;
-    width: 100%;
     font-family: 'Comfortaa', cursive;
     z-index: 12;
     box-sizing: border-box;
     overflow: visible;
+    max-width: 100%;
 }
 
 .select-header {
@@ -618,5 +618,33 @@ h1 {
         width: 20vw;
         max-width: 200px;
         animation: cometMove 10s linear infinite;
+    }
+}
+
+@media (max-width: 768px) {
+    .function-select-container {
+        width: 90%;
+        max-width: 100%;
+        margin-left: auto;
+        margin-right: auto;
+        padding: 0 5px;
+    }
+
+    .custom-select {
+        width: 100%;
+    }
+
+    .select-header, .option {
+        padding: 10px 12px;
+        font-size: 0.9em;
+    }
+
+    .select-options {
+        max-height: 120px;
+    }
+
+    .level-container {
+        padding: 20px 15px;
+        width: 95%;
     }
 }
