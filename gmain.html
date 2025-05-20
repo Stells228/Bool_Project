@@ -6,6 +6,8 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link rel="preload" href="gmain.css" as="style">
         <link rel="stylesheet" href="gmain.css">
+        <link rel="stylesheet" href="gsettings.css">
+        <link rel="stylesheet" href="grating.css">
         <link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@400&display=swap" rel="stylesheet">
         <link rel="preload" href="Photos/moonre.png" as="image">
         <link rel="preload" href="Photos/stars1.png" as="image">
@@ -18,6 +20,40 @@
         <link rel="icon" type="image/png" href="favicon/favicon-96x96.png" sizes="96x96">
     </head>
 <body> 
+    <!-- Выдвижные окна -->
+    <div id="gsettings-window" class="slide-window">
+        <div class="settings-container">
+            <h2 class="settings-title">Настройки</h2>
+            <div class="mode-toggle">
+                <button class="mode-btn" id="normal-mode">Свободный</button>
+                <button class="mode-btn" id="passing-mode">Прохождение</button>
+                <button class="mode-btn" id="competition-mode">Соревнование</button>
+            </div>
+            <button id="new-game-btn" class="new-game-btn">
+                <img src="Photos/restart.png" alt="New Game" class="reset-icon">
+                Новая игра
+            </button>
+        </div>
+        <button id="gsettings-toggle" class="toggle-btn">
+            <img src="Photos/gear.png" alt="Gear" class="icon">
+        </button>
+    </div>
+
+    <div id="grating-window" class="slide-window">
+        <div class="rating-container">
+            <h2 class="rating-title">Рейтинг</h2>
+            <div class="rating-summary">
+                <span id="total-score">Общий счёт: 0</span>
+            </div>
+            <div class="rating-details">
+                <ul id="level-scores" class="level-scores"></ul>
+            </div>
+        </div>
+        <button id="grating-toggle" class="toggle-btn">
+            <img src="Photos/cup.png" alt="Cup" class="icon">
+        </button>
+    </div>
+
     <div class="Title">Graph-helper</div>
     <div id="main-screen">
         <div class="image-container">
@@ -36,7 +72,10 @@
             <img src="Photos/left.png" alt="Back" class="arrow-icon">
         </button>
         <div id="transition-screen" class="transition-screen"></div>
+        <div class="left-transition-screen"></div>
     </div>
     <script src="gmain.js"></script>
+    <script src="gsettings.js"></script>
+    <script src="grating.js"></script>
 </body>
 </html>
