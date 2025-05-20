@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en"> 
+<head> 
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Graph Level Selection</title>
+    <link rel="preload" href="gmap.css" as="style">
+    <link rel="stylesheet" href="gmap.css">
+    <link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@400&display=swap" rel="stylesheet">
+    <!-- Предзагрузка всех ключевых изображений -->
+    <link rel="preload" href="Photos/moon.png" as="image">
+    <link rel="preload" href="Photos/stars1.png" as="image">
+    <link rel="preload" href="Photos/stars2.png" as="image">
+    <link rel="preload" href="Photos/cloudmoon1.png" as="image">
+    <link rel="preload" href="Photos/cloudmoon2.png" as="image">
+    <link rel="preload" href="Photos/cloudmoon3.png" as="image">
+    <link rel="preload" href="Photos/cloudmoon4.png" as="image">
+    <link rel="preload" href="Photos/cloudmoon5.png" as="image">
+    <link rel="icon" type="image/png" href="favicon/favicon-96x96.png" sizes="96x96">
+    <link rel="icon" href="favicon/favicon.ico" type="image/x-icon">
+    <link rel="apple-touch-icon" href="favicon/apple-touch-icon.png" sizes="180x180">
+    <link rel="manifest" href="favicon/site.webmanifest">
+    <link rel="icon" href="favicon/web-app-manifest-192x192.png" type="image/png" sizes="192x192">
+    <link rel="icon" href="favicon/web-app-manifest-512x512.png" type="image/png" sizes="512x512">
+</head>
+<body>
+    <div class="background">
+        <img src="Photos/stars1.png" alt="Stars" class="stars1" loading="lazy" onload="this.classList.add('loaded')" onerror="this.classList.add('error')">
+        <img src="Photos/stars2.png" alt="Stars" class="stars2" loading="lazy" onload="this.classList.add('loaded')" onerror="this.classList.add('error')">
+        <img src="Photos/moon.png" alt="Moon" class="moon" onload="this.classList.add('loaded')" onerror="this.classList.add('error')">
+        <img src="Photos/cloudmoon1.png" alt="Cloud" class="cloud1" onload="this.classList.add('loaded')" onerror="this.classList.add('error')">
+        <img src="Photos/cloudmoon2.png" alt="Cloud" class="cloud2" onload="this.classList.add('loaded')" onerror="this.classList.add('error')">
+        <img src="Photos/cloudmoon3.png" alt="Cloud" class="cloud3" onload="this.classList.add('loaded')" onerror="this.classList.add('error')">
+        <img src="Photos/cloudmoon4.png" alt="Cloud" class="cloud4" onload="this.classList.add('loaded')" onerror="this.classList.add('error')">
+        <img src="Photos/cloudmoon5.png" alt="Cloud" class="cloud5" onload="this.classList.add('loaded')" onerror="this.classList.add('error')">
+    </div>
+    <div class="map-container">
+        <h1 class="map-title">Выбор уровня</h1>
+        <div class="level-scroll">
+            <a href="glevel/glevel1.html" target="_parent" class="level-block-link">
+                <div class="level-block" data-level="1">
+                    <span class="level-title">Уровень 1</span>
+                    <p>Обход графа по алгоритму обхода в глубину</p>
+                </div>
+            </a>
+            <a href="glevel/glevel2.html" target="_parent" class="level-block-link">
+                <div class="level-block" data-level="2">
+                    <span class="level-title">Уровень 2</span>
+                    <p>Обход графа по алгоритму обхода в ширину</p>
+                </div>
+            </a>
+            <a href="glevel/glevel3.html" target="_parent" class="level-block-link">
+                <div class="level-block" data-level="3">
+                    <span class="level-title">Уровень 3</span>
+                    <p>Нахождение компонент связности</p>
+                </div>
+            </a>
+        </div>
+    </div>
+    <button class="main-menu-btn" id="main-menu-btn">
+        <img src="Photos/home.png" alt="Home" class="home-icon">
+        В главное меню
+    </button>
+    <script src="gmap.js"></script>
+</body>
+</html>
