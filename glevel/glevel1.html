@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <title>Проверка DFS</title>
+  <link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="glvl1.css">
+</head>
+<body>
+  <div class="level-container">
+    <div class="nav-buttons">
+      <button class="nav-icon-btn" id="mapBtn">
+        <img src="../Photos/list.png" class="nav-icon">
+      </button>
+      <button class="nav-icon-btn" id="nextLevelBtn">
+        <img src="../Photos/right.png" class="nav-icon">
+      </button>
+    </div>
+
+    <h1>Обход графа в глубину</h1>
+    <p class="task-description">Введите матрицу смежности графа и укажите порядок обхода вершин при DFS</p>
+
+    <div class="content-wrapper">
+      <div class="left-panel">
+        <div class="button-group">
+          <label>
+            Количество вершин:
+            <input type="number" id="vertices" min="1" max="20" value="4" required>
+          </label>
+          <button type="button" class="submit-btn" id="generateMatrixBtn">Создать матрицу</button>
+        </div>
+
+        <label for="startVertex">Начальная вершина:</label>
+        <div class="custom-select">
+          <select id="startVertex"></select>
+        </div>
+
+        <div id="matrixContainer" class="truth-table-container"></div>
+      </div>
+
+      <div class="right-panel">
+        <h3>Введите порядок обхода (начиная с выбранной вершины):</h3>
+        <div id="userInputContainer"></div>
+
+        <div class="button-group">
+          <button type="button" class="submit-btn" id="checkAnswerBtn">Проверить</button>
+          <button type="button" class="try-again-btn" id="tryAgainBtn">Ещё раз</button>
+        </div>
+        
+        <div id="feedback" class="feedback"></div>
+      </div>
+    </div>
+  </div>
+
+  <img src="../Photos/stars1.png" alt="Stars" class="stars stars1">
+  <img src="../Photos/stars2.png" alt="Stars" class="stars stars2">
+  <img src="../Photos/moon.png" alt="Moon" class="moon">
+  <img src="../Photos/cloudmoon1.png" alt="Cloud" class="cloud cloud1">
+  <img src="../Photos/cloudmoon2.png" alt="Cloud" class="cloud cloud2">
+  <img src="../Photos/cloudmoon3.png" alt="Cloud" class="cloud cloud3">
+  <img src="../Photos/cloudmoon4.png" alt="Cloud" class="cloud cloud4">
+  <img src="../Photos/cloudmoon5.png" alt="Cloud" class="cloud cloud5">
+  <img src="../Photos/cloudmoon6.png" alt="Cloud" class="cloud cloud6">
+  <img src="../Photos/comet.png" alt="Comet 1" class="comet1">
+  <img src="../Photos/comet.png" alt="Comet 2" class="comet2">
+  <img src="../Photos/comet.png" alt="Comet 3" class="comet3">
+  <img src="../Photos/comet.png" alt="Comet 4" class="comet4">
+
+  <script src="glvl1.js"></script>
+</body>
+</html>
