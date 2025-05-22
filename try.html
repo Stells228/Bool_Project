@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Graph-calc</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="try.css">
+    <link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@400&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"></script>
+</head>
+<body>
+    <!--Окно подтверждения -->
+    <div id="confirm-modal" class="modal">
+        <div class="modal-content">
+            <h3>Подтверждение</h3>
+            <p id="confirm-message">Вы действительно хотите сбросить граф?</p>
+            <div class="modal-buttons">
+                <button id="confirm-cancel">Отмена</button>
+                <button id="confirm-ok">Подтвердить</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="Title">Graph-calc</div>
+    
+    <div class="main-container">
+        <div id="graph-container"></div>
+        
+        <div class="panel">
+            <div class="section">
+                <h3>Управление графом</h3>
+                <div class="button-group">
+                    <button id="color-graph">Раскрасить граф</button>
+                    <button id="add-node">+ вершина</button>
+                    <button id="add-edge">+ ребро</button>
+                    <button id="reset-graph">Сбросить граф</button>
+                </div>
+            </div>
+            
+            <div class="section">
+                <button id="toggle-dfs" class="dropdown-btn">Обход в глубину</button>
+                <div id="dfs-section" class="dropdown-content">
+                    <div class="button-group">
+                        <label>
+                            Вершин:
+                            <input type="number" id="vertices" min="1" max="20" value="4" required>
+                        </label>
+                        <button id="generate-matrix">Создать матрицу</button>
+                        <button id="apply-matrix">Применить к графу</button>
+                    </div>
+                    
+                    <div id="matrixContainer" class="matrix-container"></div>
+                    
+                    <div class="button-group">
+                        <label for="startVertex">Начальная вершина:</label>
+                        <select id="startVertex"></select>
+                        <button id="run-dfs">Выполнить</button>
+                    </div>
+                </div>
+            </div>
+            
+            <div id="result-container" class="section">
+                <h3>Результаты операций</h3>
+                <div id="resultMessage" class="result-message"></div>
+                <button id="clear-history">Очистить историю</button>
+            </div>
+        </div>
+    </div>
+    
+    <div id="graph-notification"></div>
+    
+    <script src="try.js"></script>
+</body>
+</html>
