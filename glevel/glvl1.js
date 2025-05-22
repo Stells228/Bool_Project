@@ -1,5 +1,4 @@
 document.addEventListener('DOMContentLoaded', () => {
-    // Элементы управления
     const matrixContainer = document.getElementById('matrixContainer');
     const checkBtn = document.getElementById('checkBtn');
     const tryAgainBtn = document.getElementById('tryAgainBtn');
@@ -192,77 +191,6 @@ document.addEventListener('DOMContentLoaded', () => {
     let vertices = [];
     let adjacencyMatrix = [];
     
-    
-
-    function checkAnswer() {
-        if (!matrixContainer.querySelector('table')) {
-            showFeedback("Сначала создайте матрицу", "error");
-            return;
-        }
-
-        const n = parseInt(verticesInput.value);
-        if (isNaN(n) || n < 1 || n > 20) {
-            showFeedback("Сначала создайте матрицу", "error");
-            return;
-        }
-
-        const userAnswer = userAnswerInput.value.trim();
-        if (!userAnswer) {
-            showFeedback("Введите порядок обхода", "error");
-            return;
-        }
-
-        // Проверяем, что введены только заглавные английские буквы и пробелы
-        if (!/^[A-Z\s]+$/.test(userAnswer)) {
-            showFeedback("Вводите только заглавные английские буквы (A-Z), разделённые пробелами", "error");
-            return;
-        }
-
-        const userOrderLetters = userAnswer.split(/\s+/).filter(x => x);
-
-        if (userOrderLetters.length !== n) {
-            showFeedback(`Введите обход для всех ${n} вершин`, "error");
-            return;
-        }
-
-        const validLetters = new Set();
-        for (let i = 0; i < n; i++) {
-            validLetters.add(String.fromCharCode(65 + i));
-        }
-
-        const usedLetters = new Set();
-        for (const letter of userOrderLetters) {
-            if (!validLetters.has(letter)) {
-                showFeedback(`Вершина "${letter}" не существует. Используйте буквы от A до ${String.fromCharCode(65 + n - 1)}`, "error");
-                return;
-            }
-            if (usedLetters.has(letter)) {
-                showFeedback(`Вершина "${letter}" повторяется`, "error");
-                return;
-            }
-            usedLetters.add(letter);
-        }
-
-        // Преобразуем буквы в индексы для сравнения с правильным порядком
-        const userOrder = userOrderLetters.map(l => l.charCodeAt(0) - 65);
-
-        // Вычисляем правильный DFS
-        const startVertex = parseInt(startVertexSelect.value);
-        const correctDFS = calculateDFS(adjacencyMatrix, startVertex);
-
-        if (JSON.stringify(userOrder) === JSON.stringify(correctDFS)) {
-            showFeedback("✅ Правильно! Порядок обхода вершин верный", "correct");
-        } 
-        else {
-            const correctOrderStr = correctDFS.map(i => String.fromCharCode(65 + i)).join(' → ');
-            showFeedback(`❌ Неправильно. Правильный порядок: ${correctOrderStr}`, "incorrect");
-        }
-
-        checkBtn.style.display = 'none';
-        tryAgainBtn.style.display = 'inline-block';
-    }
-      
-
     function calculateDFS(matrix, start) {
         const visited = Array(matrix.length).fill(false);
         const result = [];
@@ -291,14 +219,75 @@ document.addEventListener('DOMContentLoaded', () => {
         
         traverse(start);
         
-        // Если граф несвязный, добавляем оставшиеся вершины
-        for (let i = 0; i < matrix.length; i++) {
-            if (!visited[i]) {
-                result.push(i);
-            }
-        }
-        
+        // Убрали добавление несвязных вершин
         return result;
+    }
+
+    function checkAnswer() {
+        if (!matrixContainer.querySelector('table')) {
+            showFeedback("Сначала создайте матрицу", "error");
+            return;
+        }
+    
+        const n = parseInt(verticesInput.value);
+        if (isNaN(n) || n < 1 || n > 20) {
+            showFeedback("Сначала создайте матрицу", "error");
+            return;
+        }
+    
+        const userAnswer = userAnswerInput.value.trim();
+        if (!userAnswer) {
+            showFeedback("Введите порядок обхода", "error");
+            return;
+        }
+    
+        if (!/^[A-Z\s]+$/.test(userAnswer)) {
+            showFeedback("Вводите только заглавные английские буквы (A-Z), разделённые пробелами", "error");
+            return;
+        }
+    
+        const userOrderLetters = userAnswer.split(/\s+/).filter(x => x);
+        const startVertex = parseInt(startVertexSelect.value);
+        const correctDFS = calculateDFS(adjacencyMatrix, startVertex);
+    
+        // Проверяем только достижимые вершины
+        const reachableCount = correctDFS.length;
+    
+        if (userOrderLetters.length !== reachableCount) {
+            showFeedback(`Введите обход для ${reachableCount} достижимых вершин`, "error");
+            return;
+        }
+    
+        const validLetters = new Set();
+        for (let i = 0; i < reachableCount; i++) {
+            validLetters.add(String.fromCharCode(65 + correctDFS[i]));
+        }
+    
+        const usedLetters = new Set();
+        for (const letter of userOrderLetters) {
+            if (!validLetters.has(letter)) {
+                showFeedback(`Вершина "${letter}" недостижима из начальной`, "error");
+                return;
+            }
+            if (usedLetters.has(letter)) {
+                showFeedback(`Вершина "${letter}" повторяется`, "error");
+                return;
+            }
+            usedLetters.add(letter);
+        }
+    
+        const userOrder = userOrderLetters.map(l => l.charCodeAt(0) - 65);
+    
+        if (JSON.stringify(userOrder) === JSON.stringify(correctDFS)) {
+            showFeedback("✅ Правильно! Порядок обхода вершин верный", "correct");
+        } 
+        else {
+            const correctOrderStr = correctDFS.map(i => String.fromCharCode(65 + i)).join(' → ');
+            showFeedback(`❌ Неправильно. Правильный порядок: ${correctOrderStr}`, "incorrect");
+        }
+    
+        checkBtn.style.display = 'none';
+        tryAgainBtn.style.display = 'inline-block';
     }
 
     function resetTask() {
