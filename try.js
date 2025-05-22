@@ -17,12 +17,10 @@ document.addEventListener('DOMContentLoaded', () => {
     let network;
 
     function initNetwork() {
-        // Удаляем старую сеть, если существует
         if (network) {
             network.destroy();
         }
 
-        // Создаем новую сеть с актуальными размерами
         network = new vis.Network(container, { nodes, edges }, {
             nodes: { 
                 shape: 'circle', 
@@ -53,7 +51,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Функции для расчета размеров в зависимости от разрешения
     function calculateNodeSize() {
         const width = window.innerWidth;
         if (width < 768) return 20;
@@ -68,7 +65,6 @@ document.addEventListener('DOMContentLoaded', () => {
         return 20;
     }
 
-    // Обработчик изменения размера окна
     window.addEventListener('resize', function() {
         if (network) {
             network.setOptions({
@@ -83,7 +79,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // Инициализация сети при загрузке
     initNetwork();
 
     function showNotification(message, type = 'info', duration = 8000) {
@@ -167,20 +162,42 @@ document.addEventListener('DOMContentLoaded', () => {
         showResult("Граф раскрашен!\n" + colorInfo, 'correct');
     }
 
-    /**
-    * Генерирует таблицу матрицы смежности
-    */
-    function generateMatrix() {
-        const n = Math.min(20, parseInt(document.getElementById('vertices').value));
-        if (isNaN(n) || n < 1) {
-            showNotification("Введите корректное количество вершин (1-20)", "error");
-            return;
-        }
+    // Эл-ты для мобильного меню
+    const panelToggle = document.createElement('button');
+    panelToggle.className = 'panel-toggle';
+    document.body.appendChild(panelToggle);
 
+    const panelOverlay = document.createElement('div');
+    panelOverlay.className = 'panel-overlay';
+    document.body.appendChild(panelOverlay);
+
+    const panel = document.querySelector('.panel');
+
+    // Обработчики для мобильного меню
+    panelToggle.addEventListener('click', () => {
+        panelToggle.classList.toggle('active');
+        panel.classList.toggle('active');
+        panelOverlay.classList.toggle('active');
+    });
+
+    panelOverlay.addEventListener('click', () => {
+        panelToggle.classList.remove('active');
+        panel.classList.remove('active');
+        panelOverlay.classList.remove('active');
+    });
+
+
+    /**
+     * Генерирует таблицу матрицы смежности
+     */
+    function generateMatrix() {
+        const n = nodes.length;
         const matrixContainer = document.getElementById('matrixContainer');
         matrixContainer.innerHTML = '';
 
-        // Создание матрицы
+        // Обновляем значение в input кол-ва вершин
+        document.getElementById('vertices').value = n;
+
         const matrixTable = document.createElement('table');
         const headerRow = document.createElement('tr');
         headerRow.appendChild(document.createElement('th'));
@@ -215,13 +232,13 @@ document.addEventListener('DOMContentLoaded', () => {
             matrixTable.appendChild(row);
         }
         matrixContainer.appendChild(matrixTable);
-        // Обновление выпадающего списка начальной вершины
         updateStartVertexSelect(n);
+        updateMatrixFromGraph(); // Обновляем матрицу по текущему графу
     }
 
     /**
-    * Обновляет список начальных вершин
-    */
+     * Обновляет список начальных вершин
+     */
     function updateStartVertexSelect(n) {
         const select = document.getElementById('startVertex');
         select.innerHTML = '';
@@ -231,6 +248,180 @@ document.addEventListener('DOMContentLoaded', () => {
             option.textContent = String.fromCharCode(65 + i);
             select.appendChild(option);
         }
+    }
+
+    /**
+     * DFS для первой фазы (алгоритм Косарайю)
+     */
+    function dfs1(matrix, node, visited, stack) {
+        visited[node] = true;
+        for (let neighbor = 0; neighbor < matrix.length; neighbor++) {
+            if (matrix[node][neighbor] && !visited[neighbor]) {
+                dfs1(matrix, neighbor, visited, stack);
+            }
+        }
+        stack.push(node);
+    }
+
+    /**
+     * DFS для второй фазы (алгоритм Косарайю)
+     */
+    function dfs2(matrix, node, visited, component) {
+        visited[node] = true;
+        component.push(node);
+        for (let neighbor = 0; neighbor < matrix.length; neighbor++) {
+            if (matrix[neighbor][node] && !visited[neighbor]) {
+                dfs2(matrix, neighbor, visited, component);
+            }
+        }
+    }
+
+    /**
+     * Транспонирование матрицы
+     */
+    function transpose(matrix) {
+        const n = matrix.length;
+        const t = Array.from({ length: n }, () => Array(n).fill(0));
+        for (let i = 0; i < n; i++) {
+            for (let j = 0; j < n; j++) {
+                t[i][j] = matrix[j][i];
+            }
+        }
+        return t;
+    }
+
+    /**
+     * Алгоритм Косарайю для подсчёта SCC
+     */
+    function countSCC(matrix) {
+        const n = matrix.length;
+        const visited = Array(n).fill(false);
+        const stack = [];
+
+        // Фаза 1: обход по порядку завершения
+        for (let i = 0; i < n; i++) {
+            if (!visited[i]) {
+                dfs1(matrix, i, visited, stack);
+            }
+        }
+
+        // Фаза 2: транспонируем граф
+        const transposeMatrix = transpose(matrix);
+        visited.fill(false);
+        let sccCount = 0;
+
+        while (stack.length > 0) {
+            const node = stack.pop();
+            if (!visited[node]) {
+                dfs2(transposeMatrix, node, visited, []);
+                sccCount++;
+            }
+        }
+
+        return sccCount;
+    }
+
+    /**
+     * Подсчитывает число компонент связности
+     */
+    function countConnectedComponents() {
+        const matrix = getCurrentMatrix();
+        const scc = countSCC(matrix);
+        showResult(`Число сильно связных компонент (SCC): ${scc}`, 'correct');
+    }
+
+    /**
+     * Получает текущую матрицу смежности из графа
+     */
+    function getCurrentMatrix() {
+        const nodeList = nodes.get();
+        const n = nodeList.length;
+        const matrix = Array.from({ length: n }, () => Array(n).fill(0));
+
+        edges.get().forEach(edge => {
+            const fromIndex = nodeList.findIndex(node => node.id === edge.from);
+            const toIndex = nodeList.findIndex(node => node.id === edge.to);
+            if (fromIndex !== -1 && toIndex !== -1) {
+                matrix[fromIndex][toIndex] = 1;
+                matrix[toIndex][fromIndex] = 1; // Для неориентированного графа
+            }
+        });
+
+        return matrix;
+    }
+
+    /**
+     * Обновляет матрицу смежности по текущему графу
+     */
+    function updateMatrixFromGraph() {
+        const matrix = getCurrentMatrix();
+        const matrixContainer = document.getElementById('matrixContainer');
+        const inputs = matrixContainer.querySelectorAll('input');
+        
+        if (inputs.length === 0) return;
+
+        inputs.forEach(input => {
+            const row = parseInt(input.dataset.row);
+            const col = parseInt(input.dataset.col);
+            if (row < matrix.length && col < matrix.length) {
+                input.value = matrix[row][col];
+            }
+        });
+    }
+
+    /**
+     * Обновляет граф по текущей матрице смежности
+     */
+    function updateGraphFromMatrix() {
+        const inputs = document.querySelectorAll('#matrixContainer input');
+        if (inputs.length === 0) return;
+
+        const n = parseInt(document.getElementById('vertices').value);
+        const matrix = [];
+
+        for (let i = 0; i < n; i++) {
+            const row = [];
+            for (let j = 0; j < n; j++) {
+                const input = document.querySelector(`input[data-row='${i}'][data-col='${j}']`);
+                let val = parseInt(input.value);
+                row.push(isNaN(val) ? 0 : Math.min(1, Math.max(0, val)));
+            }
+            matrix.push(row);
+        }
+
+        const newNodes = [];
+        for (let i = 0; i < n; i++) {
+            newNodes.push({
+                id: i + 1,
+                label: String.fromCharCode(65 + i),
+                color: {
+                    background: '#9b59b6',
+                    border: '#8e44ad',
+                    highlight: {
+                        background: '#e74c3c',
+                        border: '#c0392b'
+                    }
+                }
+            });
+        }
+
+        const newEdges = [];
+        for (let i = 0; i < n; i++) {
+            for (let j = i; j < n; j++) {
+                if (matrix[i][j] === 1) {
+                    newEdges.push({
+                        from: i + 1,
+                        to: j + 1
+                    });
+                }
+            }
+        }
+
+        nodes.clear();
+        nodes.add(newNodes);
+        edges.clear();
+        edges.add(newEdges);
+        nextNodeId = n + 1;
     }
 
     async function dfs(matrix, start) {
@@ -258,11 +449,11 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     /**
-    * Алгоритм поиска в ширину (BFS)
-    * param {number[][]} matrix - Матрица смежности
-    * param {number} start - Стартовая вершина
-    * returns {number[]} - Порядок обхода вершин
-    */
+     * Алгоритм поиска в ширину (BFS)
+     * param {number[][]} matrix - Матрица смежности
+     * param {number} start - Стартовая вершина
+     * returns {number[]} - Порядок обхода вершин
+     */
     async function bfs(matrix, start) {
         const visited = Array(matrix.length).fill(false);
         const queue = [start];
@@ -328,12 +519,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     async function runDFS() {
-        const inputs = document.querySelectorAll('#matrixContainer input');
-        if (inputs.length === 0) {
-            showNotification("Сначала создайте матрицу смежности", "error");
-            return;
-        }
-
         const n = parseInt(document.getElementById('vertices').value);
         const matrix = [];
 
@@ -358,16 +543,7 @@ document.addEventListener('DOMContentLoaded', () => {
         showResult(`Обход графа в глубину (DFS): ${labeledOrder.join(' → ')}`, 'correct');
     }
 
-    /**
-    * Считывает матрицу из формы и запускает BFS
-    */
     async function runBFS() {
-        const inputs = document.querySelectorAll('#matrixContainer input');
-        if (inputs.length === 0) {
-            showNotification("Сначала создайте матрицу смежности", "error");
-            return;
-        }
-
         const n = parseInt(document.getElementById('vertices').value);
         const matrix = [];
 
@@ -393,59 +569,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function applyMatrixToGraph() {
-        const inputs = document.querySelectorAll('#matrixContainer input');
-        if (inputs.length === 0) {
-            showNotification("Сначала создайте матрицу смежности", "error");
-            return;
-        }
-
-        const n = parseInt(document.getElementById('vertices').value);
-        const matrix = [];
-
-        for (let i = 0; i < n; i++) {
-            const row = [];
-            for (let j = 0; j < n; j++) {
-                const input = document.querySelector(`input[data-row='${i}'][data-col='${j}']`);
-                let val = parseInt(input.value);
-                row.push(isNaN(val) ? 0 : Math.min(1, Math.max(0, val)));
-            }
-            matrix.push(row);
-        }
-
-        const newNodes = [];
-        for (let i = 0; i < n; i++) {
-            newNodes.push({
-                id: i + 1,
-                label: String.fromCharCode(65 + i),
-                color: {
-                    background: '#9b59b6',
-                    border: '#8e44ad',
-                    highlight: {
-                        background: '#e74c3c',
-                        border: '#c0392b'
-                    }
-                }
-            });
-        }
-
-        const newEdges = [];
-        for (let i = 0; i < n; i++) {
-            for (let j = i; j < n; j++) {
-                if (matrix[i][j] === 1) {
-                    newEdges.push({
-                        from: i + 1,
-                        to: j + 1
-                    });
-                }
-            }
-        }
-
-        nodes.clear();
-        nodes.add(newNodes);
-        edges.clear();
-        edges.add(newEdges);
-        nextNodeId = n + 1;
-
+        updateGraphFromMatrix();
         showResult("Граф успешно обновлен по матрице смежности", 'correct');
     }
 
@@ -461,10 +585,23 @@ document.addEventListener('DOMContentLoaded', () => {
             edges.add([]);
             nextNodeId = 3;
             showResult("Граф сброшен к начальному состоянию", 'info');
+            generateMatrix();
         }
     }
 
-    document.getElementById('add-node').addEventListener('click', () => {
+    function addEdge(from, to) {
+        const existingEdge = edges.get({
+            filter: item => (item.from === from && item.to === to) || (item.from === to && item.to === from)
+        })[0];
+
+        if (!existingEdge) {
+            edges.add({ from, to });
+            showResult(`Добавлено ребро: ${nodes.get(from).label} ↔ ${nodes.get(to).label}`, 'correct');
+            updateMatrixFromGraph();
+        }
+    }
+
+    function addNode() {
         const label = String.fromCharCode(64 + nextNodeId);
         nodes.add({ 
             id: nextNodeId, 
@@ -480,7 +617,8 @@ document.addEventListener('DOMContentLoaded', () => {
         });
         nextNodeId++;
         showResult(`Добавлена вершина: ${label}`, 'correct');
-    });
+        generateMatrix(); // Перегенерируем матрицу при добавлении вершины
+    }
 
     document.getElementById('add-edge').addEventListener('click', () => {
         if (!edgeFrom) {
@@ -491,8 +629,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     showNotification(`Теперь выберите вторую вершину для ребра из ${nodes.get(edgeFrom).label}`, "info");
                     network.once('click', (params) => {
                         if (params.nodes.length && params.nodes[0] !== edgeFrom) {
-                            edges.add({ from: edgeFrom, to: params.nodes[0] });
-                            showResult(`Добавлено ребро: ${nodes.get(edgeFrom).label} ↔ ${nodes.get(params.nodes[0]).label}`, 'correct');
+                            addEdge(edgeFrom, params.nodes[0]);
                         }
                         edgeFrom = null;
                     });
@@ -501,22 +638,44 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
+    // Обработчик изменений в матрице
+    document.getElementById('matrixContainer').addEventListener('input', (e) => {
+        if (e.target.tagName === 'INPUT') {
+            const input = e.target;
+            const row = parseInt(input.dataset.row);
+            const col = parseInt(input.dataset.col);
+            
+            // Проверяем, чтобы значение было 0 или 1
+            let val = parseInt(input.value);
+            if (isNaN(val) || val < 0) {
+                input.value = '0';
+            } else if (val > 1) {
+                input.value = '1';
+            }
+            
+            // Для неориентированного графа синхронизируем симметричную ячейку
+            if (row !== col) {
+                const symmetricInput = document.querySelector(`input[data-row='${col}'][data-col='${row}']`);
+                if (symmetricInput) {
+                    symmetricInput.value = input.value;
+                }
+            }
+            
+            updateGraphFromMatrix();
+        }
+    });
+
     document.getElementById('toggle-traversal').addEventListener('click', function() {
         this.classList.toggle('active');
         const content = document.getElementById('traversal-section');
         content.classList.toggle('show');
-        
-        if (content.classList.contains('show')) {
-            this.innerHTML = 'Алгоритмы обхода';
-        } 
-        else {
-            this.innerHTML = 'Алгоритмы обхода';
-        }
     });
 
+    document.getElementById('count-components').addEventListener('click', countConnectedComponents);
     document.getElementById('run-dfs').addEventListener('click', runDFS);
     document.getElementById('run-bfs').addEventListener('click', runBFS);
     document.getElementById('generate-matrix').addEventListener('click', generateMatrix);
+    document.getElementById('add-node').addEventListener('click', addNode);
     document.getElementById('apply-matrix').addEventListener('click', applyMatrixToGraph);
     document.getElementById('reset-graph').addEventListener('click', resetGraph);
     document.getElementById('color-graph').addEventListener('click', colorGraph);
