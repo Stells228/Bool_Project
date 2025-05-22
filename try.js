@@ -14,31 +14,77 @@ document.addEventListener('DOMContentLoaded', () => {
     const confirmModal = document.getElementById('confirm-modal');
     const confirmMessage = document.getElementById('confirm-message');
     let confirmResolve;
+    let network;
 
-    const network = new vis.Network(container, { nodes, edges }, {
-        nodes: { 
-            shape: 'circle', 
-            size: 30,
-            font: { color: '#fff', size: 20 },
-            color: {
-                background: '#9b59b6',
-                border: '#8e44ad',
-                highlight: {
-                    background: '#e74c3c',
-                    border: '#c0392b'
+    function initNetwork() {
+        // Удаляем старую сеть, если существует
+        if (network) {
+            network.destroy();
+        }
+
+        // Создаем новую сеть с актуальными размерами
+        network = new vis.Network(container, { nodes, edges }, {
+            nodes: { 
+                shape: 'circle', 
+                size: calculateNodeSize(),
+                font: { 
+                    color: '#fff', 
+                    size: calculateFontSize(),
+                    face: 'Comfortaa'
+                },
+                color: {
+                    background: '#9b59b6',
+                    border: '#8e44ad',
+                    highlight: {
+                        background: '#e74c3c',
+                        border: '#c0392b'
+                    }
                 }
+            },
+            edges: { 
+                color: '#fff', 
+                width: 2,
+                smooth: true
+            },
+            physics: {
+                enabled: true,
+                stabilization: false
             }
-        },
-        edges: { 
-            color: '#fff', 
-            width: 2,
-            smooth: true
-        },
-        physics: {
-            enabled: true,
-            stabilization: false
+        });
+    }
+
+    // Функции для расчета размеров в зависимости от разрешения
+    function calculateNodeSize() {
+        const width = window.innerWidth;
+        if (width < 768) return 20;
+        if (width < 1024) return 25;
+        return 30;
+    }
+
+    function calculateFontSize() {
+        const width = window.innerWidth;
+        if (width < 768) return 14;
+        if (width < 1024) return 16;
+        return 20;
+    }
+
+    // Обработчик изменения размера окна
+    window.addEventListener('resize', function() {
+        if (network) {
+            network.setOptions({
+                nodes: {
+                    size: calculateNodeSize(),
+                    font: {
+                        size: calculateFontSize()
+                    }
+                }
+            });
+            network.fit();
         }
     });
+
+    // Инициализация сети при загрузке
+    initNetwork();
 
     function showNotification(message, type = 'info', duration = 8000) {
         notification.textContent = message;
@@ -79,19 +125,16 @@ document.addEventListener('DOMContentLoaded', () => {
         const adjacencyList = {};
         const colors = {};
         
-        // Инициализация списка смежности
         nodes.get().forEach(node => {
             adjacencyList[node.id] = [];
             colors[node.id] = -1;
         });
 
-        // Заполнение списка смежности
         edges.get().forEach(edge => {
             adjacencyList[edge.from].push(edge.to);
             adjacencyList[edge.to].push(edge.from);
         });
 
-        // Раскраска вершин
         nodes.get().forEach(node => {
             const usedColors = new Set();
             adjacencyList[node.id].forEach(neighborId => {
@@ -105,7 +148,6 @@ document.addEventListener('DOMContentLoaded', () => {
             colors[node.id] = color;
         });
 
-        // Обновление цветов на графе
         const updates = nodes.get().map(node => ({
             id: node.id,
             color: {
@@ -125,6 +167,9 @@ document.addEventListener('DOMContentLoaded', () => {
         showResult("Граф раскрашен!\n" + colorInfo, 'correct');
     }
 
+    /**
+    * Генерирует таблицу матрицы смежности
+    */
     function generateMatrix() {
         const n = Math.min(20, parseInt(document.getElementById('vertices').value));
         if (isNaN(n) || n < 1) {
@@ -174,6 +219,9 @@ document.addEventListener('DOMContentLoaded', () => {
         updateStartVertexSelect(n);
     }
 
+    /**
+    * Обновляет список начальных вершин
+    */
     function updateStartVertexSelect(n) {
         const select = document.getElementById('startVertex');
         select.innerHTML = '';
@@ -206,6 +254,41 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         await traverse(start);
+        return result;
+    }
+
+    /**
+    * Алгоритм поиска в ширину (BFS)
+    * param {number[][]} matrix - Матрица смежности
+    * param {number} start - Стартовая вершина
+    * returns {number[]} - Порядок обхода вершин
+    */
+    async function bfs(matrix, start) {
+        const visited = Array(matrix.length).fill(false);
+        const queue = [start];
+        const result = [];
+        
+        visited[start] = true;
+        await highlightNode(start + 1, '#FF5722');
+
+        while (queue.length > 0) {
+            const node = queue.shift();
+            result.push(node);
+
+            await highlightNode(node + 1, '#4CAF50');
+            
+            for (let neighbor = 0; neighbor < matrix.length; neighbor++) {
+                if (matrix[node][neighbor] !== 0 && !visited[neighbor]) {
+                    visited[neighbor] = true;
+                    queue.push(neighbor);
+                    
+                    await highlightEdge(node + 1, neighbor + 1, '#FFC107');
+                    await highlightNode(neighbor + 1, '#9C27B0');
+                }
+            }
+        }
+
+        colorGraph();
         return result;
     }
 
@@ -245,6 +328,12 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     async function runDFS() {
+        const inputs = document.querySelectorAll('#matrixContainer input');
+        if (inputs.length === 0) {
+            showNotification("Сначала создайте матрицу смежности", "error");
+            return;
+        }
+
         const n = parseInt(document.getElementById('vertices').value);
         const matrix = [];
 
@@ -269,7 +358,47 @@ document.addEventListener('DOMContentLoaded', () => {
         showResult(`Обход графа в глубину (DFS): ${labeledOrder.join(' → ')}`, 'correct');
     }
 
+    /**
+    * Считывает матрицу из формы и запускает BFS
+    */
+    async function runBFS() {
+        const inputs = document.querySelectorAll('#matrixContainer input');
+        if (inputs.length === 0) {
+            showNotification("Сначала создайте матрицу смежности", "error");
+            return;
+        }
+
+        const n = parseInt(document.getElementById('vertices').value);
+        const matrix = [];
+
+        for (let i = 0; i < n; i++) {
+            const row = [];
+            for (let j = 0; j < n; j++) {
+                const input = document.querySelector(`input[data-row='${i}'][data-col='${j}']`);
+                let val = parseInt(input.value);
+                row.push(isNaN(val) ? 0 : Math.min(1, Math.max(0, val)));
+            }
+            matrix.push(row);
+        }
+
+        const start = parseInt(document.getElementById('startVertex').value);
+        if (isNaN(start)) {
+            showNotification("Выберите начальную вершину", "error");
+            return;
+        }
+
+        const order = await bfs(matrix, start);
+        const labeledOrder = order.map(v => String.fromCharCode(65 + v));
+        showResult(`Обход графа в ширину (BFS): ${labeledOrder.join(' → ')}`, 'correct');
+    }
+
     function applyMatrixToGraph() {
+        const inputs = document.querySelectorAll('#matrixContainer input');
+        if (inputs.length === 0) {
+            showNotification("Сначала создайте матрицу смежности", "error");
+            return;
+        }
+
         const n = parseInt(document.getElementById('vertices').value);
         const matrix = [];
 
@@ -287,7 +416,15 @@ document.addEventListener('DOMContentLoaded', () => {
         for (let i = 0; i < n; i++) {
             newNodes.push({
                 id: i + 1,
-                label: String.fromCharCode(65 + i)
+                label: String.fromCharCode(65 + i),
+                color: {
+                    background: '#9b59b6',
+                    border: '#8e44ad',
+                    highlight: {
+                        background: '#e74c3c',
+                        border: '#c0392b'
+                    }
+                }
             });
         }
 
@@ -332,7 +469,7 @@ document.addEventListener('DOMContentLoaded', () => {
         nodes.add({ 
             id: nextNodeId, 
             label,
-            color: {  // Стандартный цвет для новых узлов
+            color: {
                 background: '#9b59b6',
                 border: '#8e44ad',
                 highlight: {
@@ -364,21 +501,21 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    document.getElementById('toggle-dfs').addEventListener('click', function() {
+    document.getElementById('toggle-traversal').addEventListener('click', function() {
         this.classList.toggle('active');
-        document.getElementById('dfs-section').classList.toggle('show');
-    });
-
-    document.getElementById('run-dfs').addEventListener('click', function() {
-        const vertices = parseInt(document.getElementById('vertices').value);
+        const content = document.getElementById('traversal-section');
+        content.classList.toggle('show');
         
-        if (isNaN(vertices)) {
-            showNotification("Укажите количество вершин", "error");
-            return;
+        if (content.classList.contains('show')) {
+            this.innerHTML = 'Алгоритмы обхода';
+        } 
+        else {
+            this.innerHTML = 'Алгоритмы обхода';
         }
-        runDFS();
     });
 
+    document.getElementById('run-dfs').addEventListener('click', runDFS);
+    document.getElementById('run-bfs').addEventListener('click', runBFS);
     document.getElementById('generate-matrix').addEventListener('click', generateMatrix);
     document.getElementById('apply-matrix').addEventListener('click', applyMatrixToGraph);
     document.getElementById('reset-graph').addEventListener('click', resetGraph);
