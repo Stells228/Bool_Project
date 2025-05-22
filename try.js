@@ -16,6 +16,32 @@ document.addEventListener('DOMContentLoaded', () => {
     let confirmResolve;
     let network;
 
+    const transitionOverlay = document.getElementById('transitionOverlay');
+    const mainMenuBtn = document.getElementById('main-menu-btn');
+
+    if (mainMenuBtn && transitionOverlay) {
+        mainMenuBtn.addEventListener('click', () => {
+            document.querySelectorAll('.cloud1, .cloud2, .cloud3, .cloud4, .cloud5').forEach(el => {
+                el.style.animation = 'none';
+            });
+            transitionOverlay.classList.add('active');
+            setTimeout(() => {
+                window.location.href = 'gmain.html';
+            }, 600); 
+        });
+    }
+
+    // Обработчик кнопки главного меню
+    mainMenuBtn.addEventListener('click', () => {
+        document.querySelectorAll('.cloud1, .cloud2, .cloud3, .cloud4, .cloud5').forEach(el => {
+            el.style.animation = 'none';
+        });
+
+        setTimeout(() => {
+            window.location.href = 'gmain.html';
+        }, 300); 
+    });
+
     function initNetwork() {
         if (network) {
             network.destroy();
