@@ -29,7 +29,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 window.location.href = 'gmain.html';
             }, 600); 
         });
-    }
+    } 
 
     // Обработчик кнопки главного меню
     mainMenuBtn.addEventListener('click', () => {
@@ -800,7 +800,701 @@ document.addEventListener('DOMContentLoaded', () => {
         });
         nextNodeId++;
         showResult(`Добавлена вершина: ${label}`, 'correct');
-        generateMatrix(); // Перегенерируем матрицу при добавлении вершины
+        generateMatrix(); 
+    }
+
+    // Алгоритм Краскала для поиска минимального остовного дерева
+    async function runKruskal() {
+        const matrix = getCurrentMatrix();
+        const n = matrix.length;
+        
+        // Собираем все рёбра, где есть вес > 0
+        const allEdges = [];
+        for (let i = 0; i < n; i++) {
+            for (let j = i + 1; j < n; j++) {
+                const weight = matrix[i][j];
+                if (weight > 0) {
+                    allEdges.push({ 
+                        u: i, 
+                        v: j, 
+                        weight,
+                        from: i + 1, 
+                        to: j + 1
+                    });
+                }
+            }
+        }
+    
+        // Сортируем рёбра по возрастанию веса
+        allEdges.sort((a, b) => a.weight - b.weight);
+    
+        const parent = Array(n).fill(0).map((_, i) => i);
+    
+        function find(u) {
+            if (parent[u] !== u) {
+                parent[u] = find(parent[u]);
+            }
+            return parent[u];
+        }
+    
+        function union(u, v) {
+            const rootU = find(u);
+            const rootV = find(v);
+            if (rootU !== rootV) {
+                parent[rootV] = rootU;
+                return true;
+            }
+            return false;
+        }
+    
+        const mstEdges = [];
+        let totalWeight = 0;
+    
+        // Сначала сбросим все цвета
+        const nodeUpdates = nodes.get().map(node => ({
+            id: node.id,
+            color: {
+                background: '#9b59b6',
+                border: '#8e44ad',
+                highlight: {
+                    background: '#e74c3c',
+                    border: '#c0392b'
+                }
+            }
+        }));
+        nodes.update(nodeUpdates);
+        
+        const edgeUpdates = edges.get().map(edge => ({
+            id: edge.id,
+            color: '#fff',
+            width: 2
+        }));
+        edges.update(edgeUpdates);
+    
+        // Визуализация процесса
+        for (const edge of allEdges) {
+            // Подсвечиваем текущее рассматриваемое ребро
+            await highlightEdge(edge.from, edge.to, '#FF5722');
+            await new Promise(resolve => setTimeout(resolve, 300));
+            
+            if (union(edge.u, edge.v)) {
+                mstEdges.push(edge);
+                totalWeight += edge.weight;
+                
+                // Подсвечиваем ребро MST
+                await highlightEdge(edge.from, edge.to, '#4CAF50');
+                await highlightNode(edge.from, '#FFC107');
+                await highlightNode(edge.to, '#FFC107');
+                await new Promise(resolve => setTimeout(resolve, 500));
+            } 
+            else {
+                // Возвращаем обычный цвет для ребра, не вошедшего в MST
+                await highlightEdge(edge.from, edge.to, '#fff');
+            }
+        }
+    
+        // Проверяем, все ли вершины связаны
+        const root = find(0);
+        const isConnected = parent.every(p => find(p) === root);
+    
+        if (!isConnected || mstEdges.length < n - 1) {
+            showResult('❌ Граф несвязный — минимальное остовное дерево построить нельзя.', 'error');
+            return;
+        }
+    
+        let text = '✅ Минимальное остовное дерево:\n';
+        text += 'Рёбра (u → v): вес\n';
+        for (const edge of mstEdges) {
+            text += `${String.fromCharCode(65 + edge.u)} → ${String.fromCharCode(65 + edge.v)}: ${edge.weight}\n`;
+        }
+        text += `\nОбщий вес: ${totalWeight}`;
+        showResult(text, 'correct');
+    }
+
+    // Алгоритм Дейкстры для нахождения кратчайших путей
+    async function runDijkstra() {
+        const matrix = getCurrentMatrix();
+        const n = matrix.length;
+        const start = parseInt(document.getElementById('startVertex').value);
+        
+        if (isNaN(start)) {
+            showNotification("Выберите начальную вершину", "error");
+            return;
+        }
+
+        // Сброс цветов
+        const nodeUpdates = nodes.get().map(node => ({
+            id: node.id,
+            color: {
+                background: '#9b59b6',
+                border: '#8e44ad',
+                highlight: {
+                    background: '#e74c3c',
+                    border: '#c0392b'
+                }
+            }
+        }));
+        nodes.update(nodeUpdates);
+        
+        const edgeUpdates = edges.get().map(edge => ({
+            id: edge.id,
+            color: '#fff',
+            width: 2
+        }));
+        edges.update(edgeUpdates);
+
+        // Подсветка стартовой вершины
+        await highlightNode(start + 1, '#FF5722');
+        await new Promise(resolve => setTimeout(resolve, 500));
+
+        const dist = Array(n).fill(Infinity);
+        const prev = Array(n).fill(null);
+        const visited = Array(n).fill(false);
+
+        dist[start] = 0;
+
+        for (let count = 0; count < n - 1; count++) {
+            // Находим вершину с мин расстоянием
+            let u = -1;
+            let minDist = Infinity;
+
+            for (let i = 0; i < n; i++) {
+                if (!visited[i] && dist[i] < minDist) {
+                    minDist = dist[i];
+                    u = i;
+                }
+            }
+
+            if (u === -1) break; // Не достижимые вершины
+            visited[u] = true;
+
+            // Подсветка текущей вершины
+            await highlightNode(u + 1, '#4CAF50');
+            await new Promise(resolve => setTimeout(resolve, 300));
+
+            // Обновляем расстояния до соседних вершин
+            for (let v = 0; v < n; v++) {
+                if (!visited[v] && matrix[u][v] > 0) {
+                    const newDist = dist[u] + matrix[u][v];
+                    
+                    // Подсветка нашего ребра
+                    await highlightEdge(u + 1, v + 1, '#FFC107');
+                    await new Promise(resolve => setTimeout(resolve, 300));
+
+                    if (newDist < dist[v]) {
+                        dist[v] = newDist;
+                        prev[v] = u;
+                        
+                        // Подсветка нового кратчайшего пути
+                        await highlightNode(v + 1, '#9C27B0');
+                        await highlightEdge(u + 1, v + 1, '#4CAF50');
+                        await new Promise(resolve => setTimeout(resolve, 300));
+                    } 
+                    else {
+                        // Возвращаем обычный цвет ребра
+                        await highlightEdge(u + 1, v + 1, '#fff');
+                    }
+                }
+            }
+        }
+
+        // Восстановление путей и вывод результатов
+        let resultText = `Кратчайшие пути из вершины ${String.fromCharCode(65 + start)}:\n\n`;
+        
+        for (let i = 0; i < n; i++) {
+            if (i === start) continue;
+
+            const path = reconstructPath(prev, i);
+            const cost = dist[i];
+
+            if (path.length === 0) {
+                resultText += `До вершины ${String.fromCharCode(65 + i)}: недостижим\n`;
+            } 
+            else {
+                const labeledPath = path.map(v => String.fromCharCode(65 + v)).join(' → ');
+                resultText += `До вершины ${String.fromCharCode(65 + i)}: ${labeledPath} | Длина: ${cost}\n`;
+            }
+        }
+
+        showResult(resultText, 'correct');
+    }
+
+    // Восстановление пути
+    function reconstructPath(prev, target) {
+        const path = [];
+        let current = target;
+
+        while (current !== null) {
+            path.unshift(current);
+            current = prev[current];
+        }
+
+        return path.length > 1 ? path : [];
+    }
+
+    // Алгоритм Флойда-Уоршелла для нахождения кратчайших путей между всеми парами вершин
+    async function runFloydWarshall() {
+        const matrix = getCurrentMatrix();
+        const n = matrix.length;
+
+        // Создаём копию матрицы с учетом бесконечности для отсутствующих связей
+        const dist = matrix.map(row => row.slice());
+        
+        // Матрица расстояний
+        for (let i = 0; i < n; i++) {
+            for (let j = 0; j < n; j++) {
+                if (i !== j && dist[i][j] === 0) {
+                    dist[i][j] = Infinity;
+                }
+            }
+        }
+        await visualizeMatrix(dist, "Исходная матрица расстояний");
+
+        // Основна
+        for (let k = 0; k < n; k++) {
+            for (let i = 0; i < n; i++) {
+                for (let j = 0; j < n; j++) {
+                    if (dist[i][k] + dist[k][j] < dist[i][j]) {
+                        dist[i][j] = dist[i][k] + dist[k][j];
+                        
+                        await visualizeUpdate(i, j, k, dist[i][j]);
+                    }
+                }
+            }
+        }
+
+        displayResultMatrix(dist);
+    }
+
+    // Визуализация матрицы расстояний
+    async function visualizeMatrix(matrix, title) {
+        let resultText = `${title}:\n\n`;
+        
+        // Заголовок
+        resultText += "     ";
+        for (let j = 0; j < matrix.length; j++) {
+            resultText += `${String.fromCharCode(65 + j)}`.padEnd(6);
+        }
+        resultText += "\n";
+        
+        // Строки матрицы
+        for (let i = 0; i < matrix.length; i++) {
+            resultText += `${String.fromCharCode(65 + i)} | `;
+            for (let j = 0; j < matrix.length; j++) {
+                const value = matrix[i][j] === Infinity ? "∞" : matrix[i][j];
+                resultText += `${value}`.padEnd(6);
+            }
+            resultText += "\n";
+        }
+        
+        showResult(resultText, 'info');
+        await new Promise(resolve => setTimeout(resolve, 1000));
+    }
+
+    // Визуализация обновления расстояния
+    async function visualizeUpdate(i, j, k, newDist) {
+        // Подсветка вершин и ребер, участвующих в обновлении
+        await highlightNode(i + 1, '#FF5722'); // i - красный
+        await highlightNode(k + 1, '#4CAF50'); // k - зеленый
+        await highlightNode(j + 1, '#2196F3'); // j - синий
+        
+        // Подсветка ребер (если они существуют)
+        if (i !== k) {
+            await highlightEdge(i + 1, k + 1, '#FFC107'); // i-k - желтый
+        }
+        if (k !== j) {
+            await highlightEdge(k + 1, j + 1, '#FFC107'); // k-j - желтый
+        }
+        
+        await new Promise(resolve => setTimeout(resolve, 300));
+        
+        // Возвращаем стандартные цвета
+        await highlightNode(i + 1, '#9b59b6');
+        await highlightNode(k + 1, '#9b59b6');
+        await highlightNode(j + 1, '#9b59b6');
+        
+        if (i !== k) {
+            await highlightEdge(i + 1, k + 1, '#fff');
+        }
+        if (k !== j) {
+            await highlightEdge(k + 1, j + 1, '#fff');
+        }
+    }
+
+    // Отображение результирующей матрицы
+    function displayResultMatrix(matrix) {
+        let resultText = "Матрица кратчайших путей:\n\n";
+        
+        // Заголовок
+        resultText += "     ";
+        for (let j = 0; j < matrix.length; j++) {
+            resultText += `${String.fromCharCode(65 + j)}`.padEnd(8);
+        }
+        resultText += "\n";
+        
+        // Строки матрицы
+        for (let i = 0; i < matrix.length; i++) {
+            resultText += `${String.fromCharCode(65 + i)} | `;
+            for (let j = 0; j < matrix.length; j++) {
+                const value = matrix[i][j] === Infinity ? "∞" : matrix[i][j];
+                resultText += `${value}`.padEnd(8);
+            }
+            resultText += "\n";
+        }
+        
+        showResult(resultText, 'correct');
+    }
+
+    // Проверка, граф ли дерево
+    function isTree(matrix) {
+        const n = matrix.length;
+        const visited = Array(n).fill(false);
+        let edgesCount = 0;
+        let isTree = true;
+
+        function dfs(u, parent) {
+            visited[u] = true;
+            for (let v = 0; v < n; v++) {
+                if (matrix[u][v] > 0) {
+                    if (!visited[v]) {
+                        edgesCount++;
+                        dfs(v, u);
+                    }
+                    else if (v !== parent) {
+                        isTree = false;
+                    }
+                }
+            }
+        }
+
+        dfs(0);
+
+        if (!isTree) {
+            return { isTree: false, reason: "Граф содержит циклы" };
+        }
+
+        if (edgesCount !== n - 1) {
+            return { isTree: false, reason: "Число рёбер не равно n - 1" };
+        }
+
+        for (let i = 0; i < n; i++) {
+            if (!visited[i]) {
+                return { isTree: false, reason: "Граф несвязный" };
+            }
+        }
+
+        return { isTree: true };
+    }
+
+    // Алгоритм построения кода Прюфера
+    async function runPrufer() {
+        const matrix = getCurrentMatrix();
+        const n = matrix.length;
+        
+        // Проверка, что граф является деревом
+        const resultCheck = isTree(matrix);
+        if (!resultCheck.isTree) {
+            showResult(`❌ Не является деревом: ${resultCheck.reason}`, 'error');
+            return;
+        }
+
+        // Создаём копию матрицы и вычисляем степени вершин
+        const degrees = matrix.map(row => 
+            row.reduce((acc, val) => acc + (val > 0 ? 1 : 0), 0)
+        );
+        const code = [];
+
+        // Начальное состояния
+        await visualizeTree(matrix, degrees, "Исходное дерево");
+
+        // Основа
+        for (let step = 0; step < n - 2; step++) {
+            // Находим мин листовую вершину
+            let leaf = -1;
+            for (let i = 0; i < n; i++) {
+                if (degrees[i] === 1) {
+                    leaf = i;
+                    break;
+                }
+            }
+
+            if (leaf === -1) break;
+
+            // Находим соседа
+            let neighbor = -1;
+            for (let i = 0; i < n; i++) {
+                if (matrix[leaf][i] > 0 && degrees[i] > 0) {
+                    neighbor = i;
+                    break;
+                }
+            }
+
+            if (neighbor === -1) break;
+            code.push(neighbor);
+
+            await visualizeStep(leaf, neighbor, matrix, degrees, step + 1, code);
+
+            degrees[leaf]--;
+            degrees[neighbor]--;
+        }
+
+        showResult(`✅ Код Прюфера: [${code.join(', ')}]`, 'correct');
+    }
+
+    // Визуализация дерева
+    async function visualizeTree(matrix, degrees, title) {
+        // Сброс цветов
+        const nodeUpdates = nodes.get().map(node => ({
+            id: node.id,
+            color: {
+                background: '#9b59b6',
+                border: '#8e44ad',
+                highlight: {
+                    background: '#e74c3c',
+                    border: '#c0392b'
+                }
+            }
+        }));
+        nodes.update(nodeUpdates);
+        
+        const edgeUpdates = edges.get().map(edge => ({
+            id: edge.id,
+            color: '#fff',
+            width: 2
+        }));
+        edges.update(edgeUpdates);
+
+        // Подсветка листьев
+        const leaves = [];
+        for (let i = 0; i < degrees.length; i++) {
+            if (degrees[i] === 1) {
+                leaves.push(i + 1); // ААА +1 тк в vis.js вершины нумеруются с 1 КАКОГО-ТО ПЁСЕЛЯ
+            }
+        }
+
+        for (const leaf of leaves) {
+            await highlightNode(leaf, '#FFC107');
+        }
+
+        showResult(`${title}\nЛистья подсвечены желтым`, 'info');
+        await new Promise(resolve => setTimeout(resolve, 1000));
+    }
+
+    // Визуализация шага алгоритма
+    async function visualizeStep(leaf, neighbor, matrix, degrees, step, code) {
+        // Подсветка текущего листа и его соседа
+        await highlightNode(leaf + 1, '#FF5722'); // Лист - красный
+        await highlightNode(neighbor + 1, '#4CAF50'); // Сосед - зеленый
+
+        // Подсветка ребра между ними
+        await highlightEdge(leaf + 1, neighbor + 1, '#9C27B0');
+        
+        let info = `Шаг ${step}:\n`;
+        info += `Удаляем лист ${String.fromCharCode(65 + leaf)} (красный)\n`;
+        info += `Добавляем в код Прюфера вершину ${String.fromCharCode(65 + neighbor)} (зелёный)\n`;
+        info += `Текущий код: [${code.join(', ')}]`;
+        
+        showResult(info, 'info');
+        await new Promise(resolve => setTimeout(resolve, 1500));
+        
+        // Возвращаем стандартные цвета для оставшихся вершин
+        for (let i = 0; i < degrees.length; i++) {
+            if (degrees[i] > 0) {
+                await highlightNode(i + 1, '#9b59b6');
+            }
+        }
+        
+        // Подсветка новых листьев
+        for (let i = 0; i < degrees.length; i++) {
+            if (degrees[i] === 1) {
+                await highlightNode(i + 1, '#FFC107');
+            }
+        }
+    }
+
+    // Декодирование кода Прюфера и восстановление дерева
+    async function runPruferDecode() {
+        const modal = document.getElementById('prufer-modal');
+        const input = document.getElementById('prufer-code-input');
+        const cancelBtn = document.getElementById('prufer-cancel');
+        const okBtn = document.getElementById('prufer-ok');
+        
+        input.value = '';
+        modal.style.display = 'flex';
+        input.focus();
+        
+        // Ввод пользователя
+        const codeInput = await new Promise(resolve => {
+            okBtn.onclick = () => {
+                modal.style.display = 'none';
+                resolve(input.value.trim());
+            };
+            
+            cancelBtn.onclick = () => {
+                modal.style.display = 'none';
+                resolve(null);
+            };
+            
+            input.onkeypress = (e) => {
+                if (e.key === 'Enter') {
+                    modal.style.display = 'none';
+                    resolve(input.value.trim());
+                }
+            };
+        });
+        
+        if (!codeInput) return;
+    
+        // Парсим код Прюфера
+        const prufer = codeInput.split(' ').map(num => {
+            const n = parseInt(num);
+            return isNaN(n) ? 0 : n; // Некорректные значения в топку на 0
+        });
+        
+        const n = prufer.length + 2; // Кол-во вершин в дереве
+    
+        // Проверка корректности кода
+        if (prufer.some(v => v < 0 || v >= n)) {
+            showResult("❌ Код Прюфера содержит недопустимые значения (должны быть числа от 0 до " + (n-1) + ")", 'error');
+            return;
+        }
+    
+        // Считаем степени вершин
+        const degree = Array(n).fill(1);
+        for (let num of prufer) {
+            degree[num]++;
+        }
+            const copyDegree = [...degree];
+    
+        // Находим начальные листья
+        let leaves = [];
+        for (let i = 0; i < n; i++) {
+            if (copyDegree[i] === 1) {
+                leaves.push(i);
+            }
+        }
+        leaves.sort((a, b) => a - b);
+    
+        let edges = [];
+        let steps = [];
+    
+        // Восстанавливаем рёбра по коду Прюфера
+        for (let i = 0; i < prufer.length; i++) {
+            const leaf = leaves.shift();  // Берём мин лист
+            const node = prufer[i];
+            edges.push([leaf, node]);
+            copyDegree[leaf]--;
+            copyDegree[node]--;
+    
+            // Сохраняем шаг для визуализации
+            steps.push({
+                leaf,
+                node,
+                edges: [...edges],
+                degrees: [...copyDegree],
+                remainingLeaves: [...leaves]
+            });
+    
+            if (copyDegree[node] === 1) {
+                leaves.push(node);
+                leaves.sort((a, b) => a - b); // Поддерживаем порядок А ТО ПА ЖОПЕ ПОЛУЧИТЕ
+            }
+        }
+    
+        // Последнее ребро между оставшимися двумя листьями ААААА ОНО НАКОНЕЦ-ТО ВСТАЛО МАТЬ ВАШУ
+        let lastLeaves = [];
+        for (let i = 0; i < n; i++) {
+            if (copyDegree[i] === 1) {
+                lastLeaves.push(i);
+            }
+        }
+    
+        if (lastLeaves.length >= 2) {
+            edges.push([lastLeaves[0], lastLeaves[1]]);
+            steps.push({
+                leaf: lastLeaves[0],
+                node: lastLeaves[1],
+                edges: [...edges],
+                degrees: [...copyDegree],
+                remainingLeaves: []
+            });
+        }
+    
+        await visualizePruferDecoding(steps, prufer);
+    
+        // Выводим результат
+        const sortedEdges = edges.map(edge =>
+            edge[0] <= edge[1] ? edge : [edge[1], edge[0]]
+        ).sort((a, b) => a[0] - b[0] || a[1] - b[1]);
+    
+        let resultText = "✅ Восстановленное дерево:\n\n";
+        resultText += "Рёбра:\n";
+        sortedEdges.forEach(edge => {
+            resultText += `${String.fromCharCode(65 + edge[0])} — ${String.fromCharCode(65 + edge[1])}\n`;
+        });
+    
+        showResult(resultText, 'correct');
+    }
+
+    // Визуализация процесса декодирования
+    async function visualizePruferDecoding(steps, prufer) {
+        // Сначала очистим граф
+        nodes.clear();
+        edges.clear();
+    
+        const n = prufer.length + 2;
+        
+        // Создаем вершины
+        const newNodes = [];
+        for (let i = 0; i < n; i++) {
+            newNodes.push({
+                id: i + 1,
+                label: String.fromCharCode(65 + i), // A, B, C, ...
+                color: {
+                    background: '#9b59b6',
+                    border: '#8e44ad',
+                    highlight: {
+                        background: '#e74c3c',
+                        border: '#c0392b'
+                    }
+                }
+            });
+        }
+        nodes.add(newNodes);
+    
+        // Визуализируем каждый шаг
+        for (let i = 0; i < steps.length; i++) {
+            const step = steps[i];
+            let stepInfo = `Шаг ${i + 1}:\n`;
+            
+            if (i < prufer.length) {
+                stepInfo += `Код Прюфера: ${String.fromCharCode(65 + prufer[i])}\n`;
+            }
+            
+            stepInfo += `Добавляем ребро: ${String.fromCharCode(65 + step.leaf)} — ${String.fromCharCode(65 + step.node)}`;
+            showResult(stepInfo, 'info');
+    
+            // Подсветка текущего листа и узла
+            await highlightNode(step.leaf + 1, '#FF5722'); // Лист - красный
+            await highlightNode(step.node + 1, '#4CAF50'); // Узел - зеленый
+            await new Promise(resolve => setTimeout(resolve, 500));
+    
+            // Добавляем ребро
+            edges.add({
+                from: step.leaf + 1,
+                to: step.node + 1,
+                color: '#9C27B0',
+                width: 3,
+                label: String(i + 1) // Номер шага
+            });
+    
+            // Подсветка новых листьев
+            for (const leaf of step.remainingLeaves) {
+                await highlightNode(leaf + 1, '#FFC107');
+            }
+    
+            await new Promise(resolve => setTimeout(resolve, 1000));
+        }
     }
 
     document.getElementById('add-edge').addEventListener('click', () => {
@@ -832,7 +1526,8 @@ document.addEventListener('DOMContentLoaded', () => {
             let val = parseInt(input.value);
             if (isNaN(val) || val < 0) {
                 input.value = '0';
-            } else if (val > 1) {
+            } 
+            else if (val > 1) {
                 input.value = '1';
             }
             
@@ -855,6 +1550,11 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     document.getElementById('show-info').addEventListener('click', showGraphInfo);
+    document.getElementById('run-kruskal').addEventListener('click', runKruskal);
+    document.getElementById('run-dijkstra').addEventListener('click', runDijkstra);
+    document.getElementById('run-floyd-warshall').addEventListener('click', runFloydWarshall);
+    document.getElementById('run-prufer').addEventListener('click', runPrufer);
+    document.getElementById('run-prufer-decode').addEventListener('click', runPruferDecode);
     document.getElementById('count-components').addEventListener('click', countConnectedComponents);
     document.getElementById('run-dfs').addEventListener('click', runDFS);
     document.getElementById('run-bfs').addEventListener('click', runBFS);
@@ -877,6 +1577,11 @@ document.addEventListener('DOMContentLoaded', () => {
             this.value = 20;
             showNotification("Максимальное количество вершин - 20", "error");
         }
+    });
+    document.getElementById('toggle-other').addEventListener('click', function() {
+        this.classList.toggle('active');
+        const content = document.getElementById('other-section');
+        content.classList.toggle('show');
     });
 
     generateMatrix();
