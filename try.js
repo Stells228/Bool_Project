@@ -322,6 +322,159 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     /**
+     * Подсчитывает степень каждой вершины
+     */
+    function calculateVertexDegrees() {
+        const nodeList = nodes.get();
+        const degrees = {};
+        
+        // Инициализируем степени всех вершин нулями
+        nodeList.forEach(node => {
+            degrees[node.id] = 0;
+        });
+
+        // Считаем степени вершин
+        edges.get().forEach(edge => {
+            degrees[edge.from]++;
+            degrees[edge.to]++;
+        });
+
+        // Формируем результат
+        const result = nodeList.map(node => 
+            `Вершина ${node.label}: степень ${degrees[node.id]}`
+        ).join('\n');
+        
+        showResult("Степени вершин:\n" + result, 'correct');
+    }
+
+    /**
+     * Проверяет, является ли граф эйлеровым или полуэйлеровым
+     */
+    function checkEulerian() {
+        const nodeList = nodes.get();
+        const degrees = {};
+        let oddDegreeCount = 0;
+
+        // Инициализируем степени всех вершин нулями
+        nodeList.forEach(node => {
+            degrees[node.id] = 0;
+        });
+
+        // Считаем степени вершин
+        edges.get().forEach(edge => {
+            degrees[edge.from]++;
+            degrees[edge.to]++;
+        });
+
+        // Подсчитываем вершины с нечетной степенью
+        nodeList.forEach(node => {
+            if (degrees[node.id] % 2 !== 0) {
+                oddDegreeCount++;
+            }
+        });
+
+        // Проверяем условия эйлеровости
+        if (oddDegreeCount === 0) {
+            showResult("Граф является эйлеровым (содержит эйлеров цикл)", 'correct');
+        } 
+        else if (oddDegreeCount === 2) {
+            showResult("Граф является полуэйлеровым (содержит эйлеров путь)", 'correct');
+        } 
+        else {
+            showResult("Граф не является эйлеровым", 'info');
+        }
+    }
+
+    /**
+     * Проверяет, является ли граф двудольным
+     */
+    function checkBipartite() {
+        const nodeList = nodes.get();
+        const adjacencyList = {};
+        const colors = {};
+        let isBipartite = true;
+
+        // Строим список смежности
+        nodeList.forEach(node => {
+            adjacencyList[node.id] = [];
+            colors[node.id] = -1; // -1 означает непокрашенную вершину
+        });
+
+        edges.get().forEach(edge => {
+            adjacencyList[edge.from].push(edge.to);
+            adjacencyList[edge.to].push(edge.from);
+        });
+
+        // Проверяем двудольность с помощью BFS
+        for (let i = 0; i < nodeList.length && isBipartite; i++) {
+            const startNode = nodeList[i];
+            if (colors[startNode.id] === -1) {
+                const queue = [startNode.id];
+                colors[startNode.id] = 0;
+
+                while (queue.length > 0 && isBipartite) {
+                    const nodeId = queue.shift();
+                    const currentColor = colors[nodeId];
+
+                    adjacencyList[nodeId].forEach(neighborId => {
+                        if (colors[neighborId] === -1) {
+                            colors[neighborId] = 1 - currentColor;
+                            queue.push(neighborId);
+                        } 
+                        else if (colors[neighborId] === currentColor) {
+                            isBipartite = false;
+                        }
+                    });
+                }
+            }
+        }
+
+        if (isBipartite) {
+            // Проверяем, является ли граф полным двудольным
+            const partitions = [[], []];
+            nodeList.forEach(node => {
+                partitions[colors[node.id]].push(node.label);
+            });
+
+            // Проверяем все возможные связи между долями
+            let isComplete = true;
+            for (let i = 0; i < partitions[0].length && isComplete; i++) {
+                for (let j = 0; j < partitions[1].length && isComplete; j++) {
+                    const from = nodeList.find(n => n.label === partitions[0][i]).id;
+                    const to = nodeList.find(n => n.label === partitions[1][j]).id;
+                    
+                    const hasEdge = edges.get({
+                        filter: e => (e.from === from && e.to === to) || (e.from === to && e.to === from)
+                    }).length > 0;
+                    
+                    if (!hasEdge) {
+                        isComplete = false;
+                    }
+                }
+            }
+
+            if (isComplete) {
+                showResult(`Граф является полным двудольным (K${partitions[0].length},${partitions[1].length})`, 'correct');
+            } 
+            else {
+                showResult("Граф является двудольным", 'correct');
+            }
+        } 
+        else {
+            showResult("Граф не является двудольным", 'info');
+        }
+    }
+
+    /**
+     * Показывает информацию о графе (степени вершин, эйлеровость, двудольность)
+     */
+    function showGraphInfo() {
+        calculateVertexDegrees();
+        checkEulerian();
+        checkBipartite();
+    }
+
+    /**
      * Подсчитывает число компонент связности
      */
     function countConnectedComponents() {
@@ -382,12 +535,16 @@ document.addEventListener('DOMContentLoaded', () => {
         for (let i = 0; i < n; i++) {
             const row = [];
             for (let j = 0; j < n; j++) {
-                const input = document.querySelector(`input[data-row='${i}'][data-col='${j}']`);
-                let val = parseInt(input.value);
-                row.push(isNaN(val) ? 0 : Math.min(1, Math.max(0, val)));
+              const input = document.querySelector(`input[data-row='${i}'][data-col='${j}']`);
+              let val = 0;
+              if (input) {
+                val = parseInt(input.value);
+              }
+              row.push(isNaN(val) ? 0 : Math.min(1, Math.max(0, val)));
             }
             matrix.push(row);
-        }
+          }
+          
 
         const newNodes = [];
         for (let i = 0; i < n; i++) {
@@ -671,6 +828,7 @@ document.addEventListener('DOMContentLoaded', () => {
         content.classList.toggle('show');
     });
 
+    document.getElementById('show-info').addEventListener('click', showGraphInfo);
     document.getElementById('count-components').addEventListener('click', countConnectedComponents);
     document.getElementById('run-dfs').addEventListener('click', runDFS);
     document.getElementById('run-bfs').addEventListener('click', runBFS);
