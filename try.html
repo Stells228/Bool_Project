@@ -7,8 +7,20 @@
     <link rel="stylesheet" href="try.css">
     <link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@400&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"></script>
+    <link rel="preload" href="Photos/moon.png" as="image">
+    <link rel="preload" href="Photos/stars1.png" as="image">
+    <link rel="preload" href="Photos/stars2.png" as="image">
+    <link rel="preload" href="Photos/cloudmoon2.png" as="image">
+    <link rel="preload" href="Photos/cloudmoon4.png" as="image">
 </head>
 <body>
+    <div class="background">
+        <img src="Photos/stars1.png" alt="Stars" class="stars1" loading="lazy" onload="this.classList.add('loaded')" onerror="this.classList.add('error')">
+        <img src="Photos/stars2.png" alt="Stars" class="stars2" loading="lazy" onload="this.classList.add('loaded')" onerror="this.classList.add('error')">
+        <img src="Photos/moon.png" alt="Moon" class="moon" onload="this.classList.add('loaded')" onerror="this.classList.add('error')">
+        <img src="Photos/cloudmoon2.png" alt="Cloud" class="cloud2" onload="this.classList.add('loaded')" onerror="this.classList.add('error')">
+        <img src="Photos/cloudmoon4.png" alt="Cloud" class="cloud4" onload="this.classList.add('loaded')" onerror="this.classList.add('error')">
+    </div>
     <div id="confirm-modal" class="modal">
         <div class="modal-content">
             <h3>Подтверждение</h3>
@@ -65,6 +77,26 @@
                         <button id="run-bfs">Выполнить BFS</button>
                     </div>
                 </div>
+                <div class="section">
+                    <button id="toggle-other" class="dropdown-btn">+ Другие алгоритмы</button>
+                    <div id="other-section" class="dropdown-content">
+                        <div class="button-group">
+                            <button id="run-kruskal">Алгоритм Краскала (MST)</button>
+                        </div>
+                        <div class="button-group">
+                            <button id="run-dijkstra">Алгоритм Дейкстры (кратчайшие пути)</button>
+                        </div>
+                        <div class="button-group">
+                            <button id="run-floyd-warshall">Алгоритм Флойда-Уоршелла</button>
+                        </div>
+                        <div class="button-group">
+                            <button id="run-prufer">Кодирование Прюфера</button>
+                        </div>
+                        <div class="button-group">
+                            <button id="run-prufer-decode">Декодирование Прюфера</button>
+                        </div>
+                    </div>
+                </div>
             </div>
             
             <div id="result-container" class="section">
@@ -74,7 +106,17 @@
             </div>
         </div>
     </div>
-    
+    <div id="prufer-modal" class="modal">
+        <div class="modal-content">
+            <h3>Декодирование кода Прюфера</h3>
+            <p>Введите код Прюфера через пробел (например: "1 2 3 3")</p>
+            <input type="text" id="prufer-code-input" placeholder="1 2 3 3">
+            <div class="modal-buttons">
+                <button id="prufer-cancel">Отмена</button>
+                <button id="prufer-ok">Применить</button>
+            </div>
+        </div>
+    </div>
     <div id="graph-notification"></div>
     <button class="main-menu-btn" id="main-menu-btn">
         <img src="Photos/home.png" alt="Home" class="home-icon">
@@ -83,3 +125,4 @@
     <script src="try.js"></script>
 </body>
 </html>
+ 
