@@ -1,28 +1,17 @@
 document.addEventListener('DOMContentLoaded', () => {
     const mainMenuBtn = document.getElementById('main-menu-btn');
-    if (mainMenuBtn) {
-        mainMenuBtn.style.display = 'flex';
-        mainMenuBtn.style.opacity = '1';
-    }
-});
-
-document.addEventListener('DOMContentLoaded', () => {
-    // Кэшируем элементы DOM
-    const transitionOverlay = document.createElement('div');
-    transitionOverlay.className = 'transition-overlay';
-    document.body.appendChild(transitionOverlay);
-
-    const mainMenuBtn = document.getElementById('main-menu-btn');
     const levelScroll = document.querySelector('.level-scroll');
     const levelLinks = document.querySelectorAll('.level-block-link');
 
-    // Проверка наличия критических элементов
     if (!mainMenuBtn || !levelScroll || !levelLinks.length) {
         console.error('Critical elements missing:', { mainMenuBtn, levelScroll, levelLinks });
         return;
     }
 
-    // Сброс overlay
+    // Создаём и сбрасываем overlay
+    const transitionOverlay = document.createElement('div');
+    transitionOverlay.className = 'transition-overlay';
+    document.body.appendChild(transitionOverlay);
     transitionOverlay.classList.remove('active');
 
     // Обработчик кнопки главного меню
@@ -35,63 +24,16 @@ document.addEventListener('DOMContentLoaded', () => {
         transitionOverlay.classList.add('active');
         setTimeout(() => {
             window.location.href = 'gmain.html';
-        }, 300); // Уменьшили время для ускорения
+        }, 300);
     });
 
-    // Получаем параметры URL и данные из localStorage
-    const urlParams = new URLSearchParams(window.location.search);
-    const gameMode = urlParams.get('mode') || 'normal';
-    let completedLevels = JSON.parse(localStorage.getItem('completedLevels')) || [];
-    if (!Array.isArray(completedLevels)) completedLevels = [];
-
-    // Обновление доступности уровней
-    function updateLevelAvailability() {
-        const highestCompleted = completedLevels.length > 0 ? Math.max(...completedLevels) : 0;
-        const nextLevel = highestCompleted + 1;
-
-        levelLinks.forEach(link => {
-            const levelBlock = link.querySelector('.level-block');
-            const level = parseInt(levelBlock.dataset.level);
-            const href = `glevel/glevel${level}.html?mode=${gameMode}`;
-
-            if (gameMode === 'passing') {
-                if (completedLevels.includes(level) || level === nextLevel) {
-                    link.classList.remove('disabled');
-                    link.setAttribute('href', href);
-                } 
-                else {
-                    link.classList.add('disabled');
-                    link.removeAttribute('href');
-                }
-            } 
-            else {
-                link.classList.remove('disabled');
-                link.setAttribute('href', href);
-            }
-        });
-    }
-
-    // Вызываем обновление уровней
-    updateLevelAvailability();
-
-    // Обработчик сообщений для сброса или завершения уровня
-    window.addEventListener('message', (event) => {
-        if (event.data.type === 'resetGame') {
-            completedLevels = [];
-            localStorage.removeItem('completedLevels');
-            updateLevelAvailability();
-            levelScroll.scrollTo({ left: 0, behavior: 'smooth' });
-        } 
-        else if (event.data.type === 'levelCompleted') {
-            const level = event.data.level;
-            if (!completedLevels.includes(level)) {
-                completedLevels.push(level);
-                completedLevels.sort((a, b) => a - b);
-                localStorage.setItem('completedLevels', JSON.stringify(completedLevels));
-                updateLevelAvailability();
-            }
-        }
-    }, { once: false }); // Оставляем постоянное прослушивание, так как уровни могут завершаться
+    levelLinks.forEach(link => {
+        const levelBlock = link.querySelector('.level-block');
+        const level = parseInt(levelBlock.dataset.level);
+        const href = `glevel/glevel${level}.html`;
+        link.classList.remove('disabled');
+        link.setAttribute('href', href);
+    });
 
     // Плавное появление страницы
     document.body.style.opacity = '1';
