@@ -9,7 +9,6 @@
     <script src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"></script>
 </head>
 <body>
-    <!--Окно подтверждения -->
     <div id="confirm-modal" class="modal">
         <div class="modal-content">
             <h3>Подтверждение</h3>
@@ -38,23 +37,29 @@
             </div>
             
             <div class="section">
-                <button id="toggle-dfs" class="dropdown-btn">Обход в глубину</button>
-                <div id="dfs-section" class="dropdown-content">
-                    <div class="button-group">
-                        <label>
-                            Вершин:
-                            <input type="number" id="vertices" min="1" max="20" value="4" required>
-                        </label>
-                        <button id="generate-matrix">Создать матрицу</button>
-                        <button id="apply-matrix">Применить к графу</button>
-                    </div>
-                    
-                    <div id="matrixContainer" class="matrix-container"></div>
-                    
+                <h3>Матрица смежности</h3>
+                <div class="button-group">
+                    <label>
+                        Вершин:
+                        <input type="number" id="vertices" min="1" max="20" value="4" required>
+                    </label>
+                    <button id="generate-matrix">Создать матрицу</button>
+                    <button id="apply-matrix">Применить к графу</button>
+                </div>
+                
+                <div id="matrixContainer" class="matrix-container"></div>
+            </div>
+            
+            <div class="section">
+                <button id="toggle-traversal" class="dropdown-btn">Алгоритмы обхода</button>
+                <div id="traversal-section" class="dropdown-content">
                     <div class="button-group">
                         <label for="startVertex">Начальная вершина:</label>
                         <select id="startVertex"></select>
-                        <button id="run-dfs">Выполнить</button>
+                    </div>
+                    <div class="button-group">
+                        <button id="run-dfs">Выполнить DFS</button>
+                        <button id="run-bfs">Выполнить BFS</button>
                     </div>
                 </div>
             </div>
