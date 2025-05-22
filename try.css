@@ -91,6 +91,14 @@ button:hover {
     transform: translateY(-2px);
 }
 
+#run-bfs {
+    background: #673AB7;
+}
+
+#run-bfs:hover {
+    background: #7E57C2;
+}
+
 #run-dfs {
     background: #2196F3;
 }
@@ -310,12 +318,19 @@ input, select {
     transform: rotate(180deg);
 }
 
+.dropdown-btn.active {
+    margin-bottom: 0;
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+}
+
 .dropdown-content {
     display: none;
     padding: 15px;
     background: rgba(255, 255, 255, 0.05);
-    border-radius: 5px;
-    margin-bottom: 15px;
+    border-radius: 0 0 5px 5px;
+    margin-top: -5px;
+    border-top: none;
 }
 
 .dropdown-content.show {
