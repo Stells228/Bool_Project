@@ -1,12 +1,20 @@
 document.addEventListener('DOMContentLoaded', () => {
     const mainMenuBtn = document.getElementById('main-menu-btn');
+    if (mainMenuBtn) {
+        mainMenuBtn.style.display = 'flex';
+        mainMenuBtn.style.opacity = '1'; 
+    }
+});
+
+document.addEventListener('DOMContentLoaded', () => {
+    const mainMenuBtn = document.getElementById('main-menu-btn');
     const levelScroll = document.querySelector('.level-scroll');
     const levelLinks = document.querySelectorAll('.level-block-link');
 
     if (!mainMenuBtn || !levelScroll || !levelLinks.length) {
         console.error('Critical elements missing:', { mainMenuBtn, levelScroll, levelLinks });
         return;
-    }
+    } 
 
     // Создаём и сбрасываем overlay
     const transitionOverlay = document.createElement('div');
