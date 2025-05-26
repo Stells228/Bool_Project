@@ -244,3 +244,18 @@ body, html {
     left: 0;
     z-index: 500;
 }
+
+.install-btn {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 1001;
+    padding: 10px 20px;
+    border-radius: 5px;
+    background-color: #ffffff;
+    color: #416190;
+    border: none;
+    cursor: pointer;
+    font-family: 'Comfortaa', sans-serif;
+}
