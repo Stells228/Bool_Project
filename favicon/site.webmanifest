@@ -1,21 +1,28 @@
 {
-  "name": "MyWebSite",
-  "short_name": "MySite",
+  "name": "Bool & Graphs Helper",
+  "short_name": "BGH",
+  "description": "Помощник по булевым функциям и графам",
+  "start_url": "/index.html",
+  "display": "standalone",
+  "background_color": "#416190",
+  "theme_color": "#416190",
+  "orientation": "portrait",
   "icons": [
     {
-      "src": "/web-app-manifest-192x192.png",
-      "sizes": "192x192",
-      "type": "image/png",
-      "purpose": "maskable"
+      "src": "/favicon/favicon-96x96.png",
+      "sizes": "96x96",
+      "type": "image/png"
     },
     {
-      "src": "/web-app-manifest-512x512.png",
+      "src": "/favicon/web-app-manifest-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/favicon/web-app-manifest-512x512.png",
       "sizes": "512x512",
       "type": "image/png",
-      "purpose": "maskable"
+      "purpose": "any maskable"
     }
-  ],
-  "theme_color": "#ffffff",
-  "background_color": "#ffffff",
-  "display": "standalone"
+  ]
 }
