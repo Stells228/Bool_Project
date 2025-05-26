@@ -1,22 +1,12 @@
 document.addEventListener('DOMContentLoaded', () => {
-    // Позиционирование кнопок справа
-    function positionToggleButtons() {
-        const toggleButtons = document.querySelectorAll('.toggle-btn');
-        const totalButtons = toggleButtons.length;
-        const viewportHeight = window.innerHeight;
-        const buttonHeight = 60;
-        const fixedSpacing = 20;
-        const totalHeight = buttonHeight * totalButtons + fixedSpacing * (totalButtons - 1);
-        const startTop = (viewportHeight - totalHeight) / 2;
+    const cloudElements = document.querySelectorAll('.cloudmoon, .cloudmoon2, .cloudmoon3, .cloudmoon4, .cloudmoon5');
 
-        toggleButtons.forEach((btn, index) => {
-            const topPosition = startTop + index * (buttonHeight + fixedSpacing);
-            btn.style.top = `${topPosition}px`;
-            btn.style.right = '0';
+    // Очистка при уходе со страницы
+    window.addEventListener('pagehide', () => {
+        cloudElements.forEach(cloud => {
+            cloud.style.animation = 'none';
         });
-    }
-
-    positionToggleButtons();
+    });
 
     const transitionOverlay = document.createElement('div');
     transitionOverlay.className = 'transition-overlay';
@@ -60,7 +50,6 @@ document.addEventListener('DOMContentLoaded', () => {
         leftArrow.addEventListener('click', () => {
             const leftTransition = document.querySelector('.left-transition-screen');
             console.log('Back button clicked, redirecting to main.html');
-            
             // шторка слева-направо
             if (leftTransition) {
                 leftTransition.classList.add('active');
@@ -72,10 +61,21 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Обновление позиции кнопок при изменении размера окна
-    window.addEventListener('resize', () => {
-        positionToggleButtons();
+    window.addEventListener('popstate', (event) => {
+        if (event.state?.mode) {
+        handlePageTransition(event.state.mode);
+        } 
+        else {
+        location.reload();
+        }
     });
+    
+    function handlePageTransition(mode) {
+        transitionOverlay.classList.add('active');
+        setTimeout(() => {
+        window.location.href = `map.html?mode=${mode}`;
+        }, 400);
+    }
 
     // Плавное появление страницы
     document.body.style.opacity = '1';
