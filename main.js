@@ -1,5 +1,4 @@
 document.addEventListener('DOMContentLoaded', () => {
-    // Позиционирование кнопок
     function positionToggleButtons() {
         const toggleButtons = document.querySelectorAll('.toggle-btn');
         const totalButtons = toggleButtons.length;
@@ -8,6 +7,14 @@ document.addEventListener('DOMContentLoaded', () => {
         const fixedSpacing = 20; // Фиксированное расстояние между кнопками в пикселях
         const totalHeight = buttonHeight * totalButtons + fixedSpacing * (totalButtons - 1); // Общая высота всех кнопок и промежутков
         const startTop = (viewportHeight - totalHeight) / 2; // Центр кнопки по вертикали
+        const cloudElements = document.querySelectorAll('.cloudmoon, .cloudmoon2, .cloudmoon3, .cloudmoon4, .cloudmoon5');
+
+        // Очистка при уходе со страницы
+        window.addEventListener('pagehide', () => {
+            cloudElements.forEach(cloud => {
+                cloud.style.animation = 'none';
+            });
+        });
 
         toggleButtons.forEach((btn, index) => {
             const topPosition = startTop + index * (buttonHeight + fixedSpacing);
@@ -179,14 +186,13 @@ document.addEventListener('DOMContentLoaded', () => {
     // Обработка кнопки карты
     function handleMapButtonClick() {
         const gameMode = mapBtn.dataset.mode;
-        console.log('Map button clicked, redirecting to map.html with mode:', gameMode);
         transitionOverlay.classList.add('active');
-        console.log('Transition overlay activated (smooth)');
-        setTimeout(() => {
-            console.log('Redirecting to map.html');
-            window.location.href = `map.html?mode=${gameMode}`;
-        }, 400);
-    }
+        
+        requestIdleCallback(() => {
+          history.pushState({ mode: gameMode }, '', `map.html?mode=${gameMode}`);
+          window.dispatchEvent(new Event('popstate'));
+        }, { timeout: 300 });
+      }
 
     if (mapBtn && mainScreen) {
         mapBtn.removeEventListener('click', handleMapButtonClick);
@@ -233,10 +239,26 @@ document.addEventListener('DOMContentLoaded', () => {
         
         // Через 500ms (когда анимация завершится) переходим на новую страницу
         setTimeout(() => {
-            window.location.href = 'gmain.html';
+            history.pushState({}, '', 'gmain.html');
+            window.dispatchEvent(new Event('popstate'));
         }, 500);
     });
+
+    window.addEventListener('popstate', (event) => {
+        if (event.state?.mode) {
+        handlePageTransition(event.state.mode);
+        } 
+        else {
+        location.reload();
+        }
+    });
     
+    function handlePageTransition(mode) {
+        transitionOverlay.classList.add('active');
+        setTimeout(() => {
+        window.location.href = `map.html?mode=${mode}`;
+        }, 400);
+    }
     // Плавное появление страницы
     document.body.style.opacity = '1';
 });
