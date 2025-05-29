@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Лекция 2. Булевы функции</title>
+
+    <link rel="preload" href="lec2.css" as="style">
+    <link rel="preload" href="../main.css" as="style">
+    <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/vis/4.21.0/vis.min.js" as="script">
+
+    <link href="lec2.css" rel="stylesheet">
+    <link rel="stylesheet" href="../main.css">
+    <link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <!-- PWA метаданные -->
+    <link rel="manifest" href="/favicon/site.webmanifest">
+    <meta name="theme-color" content="#416190">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+    <!-- Иконки -->
+    <link rel="icon" href="/favicon/favicon.ico" type="image/x-icon">
+    <link rel="apple-touch-icon" href="/favicon/apple-touch-icon.png" sizes="180x180">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vis/4.21.0/vis.min.js" defer></script>
+</head>
+<body>
+    <div class="lecture-decoration">
+        <img src="../Photos/cloudmoon1.png" alt="Cloud" class="decoration-cloud cloud1">
+        <img src="../Photos/cloudmoon2.png" alt="Cloud" class="decoration-cloud cloud2">
+        <img src="../Photos/cloudmoon3.png" alt="Cloud" class="decoration-cloud cloud3">
+        <img src="../Photos/stars1.png" alt="Stars" class="decoration-stars stars1">
+        <img src="../Photos/stars2.png" alt="Stars" class="decoration-stars stars2">
+    </div>
+    <div class="lecture-container">
+        <div class="back-button" id="homeButton">
+            <img src="../Photos/home.png" alt="Домой" class="back-icon">
+        </div>  
+
+        <h1 class="lecture-title">🧩 Лекция 2. Булевы функции</h1>
+
+        <div class="toc-container">
+            <h3>Содержание:</h3>
+            <ul class="toc-list">
+                <li><a href="#section1">1. Что такое булева функция?</a></li>
+                <li><a href="#section2">2. Способы задания булевой функции</a></li>
+                <li><a href="#section3">3. Обозначения и нотация</a></li>
+                <li><a href="#section4">4. Сколько всего булевых функций?</a></li>
+                <li><a href="#section5">5. Матричное представление функции</a></li>
+                <li><a href="#section6">6. Примеры стандартных булевых функций</a></li>
+                <li><a href="#section7">7. Обратная операция — склейка</a></li>
+                <li><a href="#section8">8. Остаточные функции</a></li>
+                <li><a href="#summary">Краткое резюме</a></li>
+                <li><a href="#cards">Пятисекундка</a></li>
+            </ul>
+        </div>
+
+        <div class="lecture-content">
+            <!-- Секция 1 -->
+            <div class="lecture-section" id="section1">
+                <h2>1. Что такое булева функция?</h2>
+                <div class="definition">
+                    <strong>Определение</strong>
+                    <p>Булева функция — это отображение из множества всех двоичных наборов длины n в множество {0,1}:</p>
+                    <div class="formula">$$f: E^n \rightarrow E, \text{где } E = \{0, 1\}$$</div>
+                    <p>Если f зависит от n переменных, говорят, что её размерность — n.</p>
+                    <div class="examples">
+                        <p>Пример:</p>
+                        <p>Для n = 2 булева функция задаёт соответствие:</p>
+                        <ul>
+                            <li>f(0,0) = 1</li>
+                            <li>f(0,1) = 0</li>
+                            <li>f(1,0) = 0</li>
+                            <li>f(1,1) = 1</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Секция 2 -->
+            <div class="lecture-section" id="section2">
+                <h2>2. Способы задания булевой функции</h2>
+                <div class="concept-box">
+                    <p>Булеву функцию можно задать тремя способами:</p>
+                    
+                    <h3>🔹 Таблица значений</h3>
+                    <p>Слева — все наборы длины n, справа — значения функции.</p>
+                    <div class="examples">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Набор</th>
+                                    <th>Значение f</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr><td>(00)</td><td>1</td></tr>
+                                <tr><td>(01)</td><td>0</td></tr>
+                                <tr><td>(10)</td><td>0</td></tr>
+                                <tr><td>(11)</td><td>1</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    <h3>🔹 Формула</h3>
+                    <p>Функция может быть записана в виде логического выражения, например:</p>
+                    <div class="formula">$$f(x,y) = x \cdot y + \overline{x} \cdot \overline{y}$$</div>
+                    
+                    <h3>🔹 Вектор значений</h3>
+                    <p>Если наборы упорядочены по натуральному порядку, можно просто указать строку:</p>
+                    <div class="formula">$$f = (1001)$$</div>
+                    <p>Это значит: f(00)=1, f(01)=0, f(10)=0, f(11)=1</p>
+                </div>
+            </div>
+
+            <!-- Секция 3 -->
+            <div class="lecture-section" id="section3">
+                <h2>3. Обозначения и нотация</h2>
+                <div class="notation">
+                    <p>📌 <strong>Обозначение функции:</strong> f(σ₁, ..., σₙ) = α</p>
+                    <p>Можно говорить: «функция принимает значение α на наборе (σ₁, ..., σₙ)»</p>
+                </div>
+            </div>
+
+            <!-- Секция 4 -->
+            <div class="lecture-section" id="section4">
+                <h2>4. Сколько всего булевых функций?</h2>
+                <div class="theorem">
+                    <strong>Теорема 3</strong>
+                    <p>Любой двоичный набор длины 2ⁿ — это вектор значений некоторой булевой функции.</p>
+                </div>
+                
+                <div class="theorem">
+                    <strong>Теорема 4</strong>
+                    <p>Общее число булевых функций размерности n:</p>
+                    <div class="formula">$$2^{2^n}$$</div>
+                </div>
+                
+                <div class="examples">
+                    <p>Примеры:</p>
+                    <ul>
+                        <li>Для n = 1 → \(2^{2^1} = 2^2 = 4\) функций</li>
+                        <li>Для n = 2 → \(2^{2^2} = 2^4 = 16\) функций</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Секция 5 -->
+            <div class="lecture-section" id="section5">
+                <h2>5. Матричное представление функции</h2>
+                <div class="concept-box">
+                    <p>При n = 4 можно разбить переменные на два блока по 2 переменных и представить функцию как таблицу 4×4:</p>
+                    <div class="examples">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>x₁x₂ \ x₃x₄</th>
+                                    <th>00</th>
+                                    <th>01</th>
+                                    <th>10</th>
+                                    <th>11</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>00</td>
+                                    <td>f(0,0,0,0)</td>
+                                    <td>...</td>
+                                    <td>...</td>
+                                    <td>...</td>
+                                </tr>
+                                <tr>
+                                    <td>01</td>
+                                    <td>f(0,1,0,0)</td>
+                                    <td>...</td>
+                                    <td>...</td>
+                                    <td>...</td>
+                                </tr>
+                                <tr>
+                                    <td>10</td>
+                                    <td>...</td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td>11</td>
+                                    <td>...</td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <p>Такое представление удобно для визуального анализа структуры функции.</p>
+                </div>
+            </div>
+
+            <!-- Секция 6 -->
+            <div class="lecture-section" id="section6">
+                <h2>6. Примеры стандартных булевых функций</h2>
+                <div class="concept-box">
+                    <h3>Для одного аргумента:</h3>
+                    <div class="examples">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Функция</th>
+                                    <th>Вектор</th>
+                                    <th>Название</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr><td>f₁</td><td>(00)</td><td>Нулевая (всегда 0)</td></tr>
+                                <tr><td>f₂</td><td>(01)</td><td>Тождественная (x)</td></tr>
+                                <tr><td>f₃</td><td>(10)</td><td>Отрицание (¬x)</td></tr>
+                                <tr><td>f₄</td><td>(11)</td><td>Единичная (всегда 1)</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    <h3>Для двух аргументов (всего 16 функций, примеры):</h3>
+                    <div class="examples">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Функция</th>
+                                    <th>Вектор</th>
+                                    <th>Название</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr><td>f₁</td><td>(0001)</td><td>Конъюнкция (И, AND)</td></tr>
+                                <tr><td>f₂</td><td>(0111)</td><td>Дизъюнкция (ИЛИ, OR)</td></tr>
+                                <tr><td>f₃</td><td>(0110)</td><td>Сложение (XOR)</td></tr>
+                                <tr><td>f₄</td><td>(1110)</td><td>Штрих Шеффера (NAND)</td></tr>
+                                <tr><td>f₅</td><td>(1000)</td><td>Стрелка Пирса (NOR)</td></tr>
+                                <tr><td>f₆</td><td>(1101)</td><td>Импликация (→)</td></tr>
+                                <tr><td>f₇</td><td>(1001)</td><td>Эквивалентность (↔)</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Секция 7 -->
+            <div class="lecture-section" id="section7">
+                <h2>7. Обратная операция — склейка</h2>
+                <div class="concept-box">
+                    <p>Можно склеить две функции от n-1 аргумента и получить функцию от n аргументов, если известны нулевая и единичная остаточные.</p>
+                </div>
+            </div>
+
+            <!-- Секция 8 -->
+            <div class="lecture-section" id="section8">
+                <h2>8. Остаточные функции</h2>
+                <div class="concept-box">
+                    <p>В следующем блоке, мы рассмотрим, как поведение функции меняется при фиксировании значений некоторых аргументов — это важно для анализа структуры.</p>
+                </div>
+            </div>
+
+            <!-- Краткое резюме -->
+            <div class="summary-section" id="summary">
+                <h2>📝 Краткое резюме</h2>
+                <ul>
+                    <li><strong>Булева функция</strong> — это отображение из двоичных наборов в {0,1}. Она может быть задана таблицей, формулой или вектором значений.</li>
+                    <li>Общее число булевых функций от n аргументов: \(2^{2^n}\).</li>
+                    <li>Для анализа можно использовать матричную форму.</li>
+                    <li>Существуют стандартные логические функции, такие как И, ИЛИ, НЕ, XOR и др.</li>
+                </ul>
+            </div>
+
+            <!-- Карточки -->
+            <div class="cards-section" id="cards">
+                <h2>🃏 Пятисекундка</h2>
+                <div class="cards-container">
+                    <div class="card">
+                        <div class="card-front">Что такое булева функция?</div>
+                        <div class="card-back">Отображение из двоичных наборов длины n в {0,1}</div>
+                    </div>
+                    <div class="card">
+                        <div class="card-front">Сколько булевых функций от n переменных?</div>
+                        <div class="card-back">$$2^{2^n}$$</div>
+                    </div>
+                    <div class="card">
+                        <div class="card-front">Как можно задать булеву функцию?</div>
+                        <div class="card-back">Таблицей, формулой, вектором значений</div>
+                    </div>
+                    <div class="card">
+                        <div class="card-front">Что такое вектор значений?</div>
+                        <div class="card-back">Последовательность из 0 и 1, определяющая значения функции при натуральном порядке входов</div>
+                    </div>
+                    <div class="card">
+                        <div class="card-front">Что делает функция f = (0110)?</div>
+                        <div class="card-back">f(00)=0, f(01)=1, f(10)=1, f(11)=0</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="up-button" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">
+        <img src="../Photos/up.png" alt="Вверх" class="up-icon">
+    </div>
+    <script src="lec2.js"></script>
+</body>
+</html>
