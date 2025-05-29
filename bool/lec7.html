@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>🧩 Лекция 7. Замкнутость и полнота в булевых функциях</title>
+    
+    <link rel="preload" href="lec7.css" as="style">
+    <link rel="preload" href="../main.css" as="style">
+    <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/vis/4.21.0/vis.min.js" as="script">
+
+    <link href="lec7.css" rel="stylesheet">
+    <link rel="stylesheet" href="../main.css">
+    <link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <!-- PWA метаданные -->
+    <link rel="manifest" href="/favicon/site.webmanifest">
+    <meta name="theme-color" content="#416190">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+    <!-- Иконки -->
+    <link rel="icon" href="/favicon/favicon.ico" type="image/x-icon">
+    <link rel="apple-touch-icon" href="/favicon/apple-touch-icon.png" sizes="180x180">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vis/4.21.0/vis.min.js" defer></script>
+</head>
+<body>
+    <div class="lecture-decoration">
+        <img src="../Photos/cloudmoon1.png" alt="Cloud" class="decoration-cloud cloud1" />
+        <img src="../Photos/cloudmoon2.png" alt="Cloud" class="decoration-cloud cloud2" />
+        <img src="../Photos/cloudmoon3.png" alt="Cloud" class="decoration-cloud cloud3" />
+        <img src="../Photos/stars1.png" alt="Stars" class="decoration-stars stars1" />
+        <img src="../Photos/stars2.png" alt="Stars" class="decoration-stars stars2" />
+    </div>
+
+    <div class="lecture-container">
+        <div class="back-button" onclick="window.history.back()">
+            <img src="../Photos/home.png" alt="Назад" class="back-icon" />
+        </div>
+
+        <h1 class="lecture-title">🧩 Лекция 7. Замкнутость и полнота в булевых функциях</h1>
+
+        <div class="toc-container">
+            <h3>Содержание:</h3>
+            <ul class="toc-list">
+                <li><a href="#section1">1. Что такое замкнутое множество булевых функций?</a></li>
+                <li><a href="#section2">2. Пример</a></li>
+                <li><a href="#section3">3. Полные множества</a></li>
+                <li><a href="#section4">4. Критерий полноты (Теорема Поста)</a></li>
+                <li><a href="#section5">5. Проверка полноты — как применять критерий?</a></li>
+                <li><a href="#section6">6. Минимальные полные множества</a></li>
+                <li><a href="#section7">7. Замыкание — свойства</a></li>
+                <li><a href="#summary">Краткое резюме</a></li>
+                <li><a href="#cards">Пятисекундка</a></li>
+                <li><a href="#table">Таблица — Классы и их свойства</a></li>
+            </ul>
+        </div>
+
+        <div class="lecture-content">
+            <!-- 1 -->
+            <div class="lecture-section" id="section1">
+                <h2>1. Что такое замкнутое множество булевых функций?</h2>
+                <p><strong>Определение</strong></p>
+                <p>Множество булевых функций замкнуто, если:</p>
+                <ul>
+                    <li>Оно содержит базисные функции.</li>
+                    <li>Оно замкнуто относительно суперпозиции — то есть при любом построении новых функций из функций множества результат снова принадлежит этому множеству.</li>
+                </ul>
+                <p><strong>Обозначение:</strong></p>
+                <p>Если \(K\) — множество функций, то замыкание:</p>
+                <div class="formula">
+                    \[
+                    [K] = \text{все функции, которые можно построить из } K
+                    \]
+                </div>
+            </div>
+
+            <!-- 2 -->
+            <div class="lecture-section" id="section2">
+                <h2>2. Пример</h2>
+                <p>Пусть \(K = \{\wedge, \vee, \neg\}\).</p>
+                <p>Тогда из этих операций можно построить любую булеву функцию.</p>
+                <p>Следовательно:</p>
+                <div class="formula">
+                    \[
+                    [K] = F \quad (\text{множество всех булевых функций})
+                    \]
+                </div>
+                <p>Такое множество называется <strong>полным</strong>.</p>
+            </div>
+
+            <!-- 3 -->
+            <div class="lecture-section" id="section3">
+                <h2>3. Полные множества</h2>
+                <p><strong>Определение</strong></p>
+                <p>Множество булевых функций \(K\) называется полным, если:</p>
+                <div class="formula">
+                    \[
+                    [K] = F
+                    \]
+                </div>
+                <p>то есть из функций \(K\) можно выразить любую булеву функцию.</p>
+            </div>
+
+            <!-- 4 -->
+            <div class="lecture-section" id="section4">
+                <h2>4. Критерий полноты (Теорема Поста)</h2>
+                <p>Для того чтобы множество \(K\) было полным, оно не должно целиком содержаться в каждом из следующих 5 специальных классов:</p>
+                <table class="residual-properties-table">
+                    <thead>
+                        <tr>
+                            <th>Класс</th>
+                            <th>Свойство сохраняется?</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>\(T_0\)</td><td>сохраняет 0</td></tr>
+                        <tr><td>\(T_1\)</td><td>сохраняет 1</td></tr>
+                        <tr><td>\(S\)</td><td>самодвойственность</td></tr>
+                        <tr><td>\(M\)</td><td>монотонность</td></tr>
+                        <tr><td>\(L\)</td><td>линейность</td></tr>
+                    </tbody>
+                </table>
+                <p><strong>Условие:</strong></p>
+                <p>
+                    \(K \not\subseteq T_0,\quad K \not\subseteq T_1,\quad K \not\subseteq S,\quad K \not\subseteq M,\quad K \not\subseteq L\)
+                </p>
+                <p>Тогда и только тогда \(K\) — полное множество.</p>
+            </div>
+
+            <!-- 5 -->
+            <div class="lecture-section" id="section5">
+                <h2>5. Проверка полноты — как применять критерий?</h2>
+                <p><strong>Пример 1:</strong></p>
+                <p>Пусть \(K = \{\neg, \vee\}\).</p>
+                <p>Проверим:</p>
+                <table class="residual-properties-table">
+                    <thead>
+                        <tr>
+                            <th>Класс</th>
+                            <th>Входит ли \(K\) полностью?</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>\(T_0\)</td><td>нет (¬ не сохраняет 0)</td></tr>
+                        <tr><td>\(T_1\)</td><td>нет (¬ не сохраняет 1)</td></tr>
+                        <tr><td>\(S\)</td><td>нет (¬ — не самодвойственная)</td></tr>
+                        <tr><td>\(M\)</td><td>нет (¬ — не монотонна)</td></tr>
+                        <tr><td>\(L\)</td><td>нет (¬ не линейна)</td></tr>
+                    </tbody>
+                </table>
+                <p>✅ Не входит ни в один → множество \(K\) полно.</p>
+            </div>
+
+            <!-- 6 -->
+            <div class="lecture-section" id="section6">
+                <h2>6. Минимальные полные множества</h2>
+                <p>Есть одиночные функции, замыкание которых даёт всё множество функций:</p>
+                <ul>
+                    <li>Штрих Шеффера (NAND): \(f(x,y) = \neg(x \wedge y)\)</li>
+                    <li>Стрелка Пирса (NOR): \(f(x,y) = \neg(x \vee y)\)</li>
+                </ul>
+                <p>Эти функции — функционально полные.</p>
+            </div>
+
+            <!-- 7 -->
+            <div class="lecture-section" id="section7">
+                <h2>7. Замыкание — свойства</h2>
+                <ul>
+                    <li>\([K]\) всегда замкнуто.</li>
+                    <li>\([K] \supseteq K\)</li>
+                    <li>Если \(K \subseteq K'\), то \([K] \subseteq [K']\)</li>
+                </ul>
+            </div>
+
+            <!-- Краткое резюме -->
+            <div class="lecture-section" id="summary">
+                <h2>📝 Краткое резюме</h2>
+                <ul>
+                    <li>Замкнутое множество булевых функций содержит все функции, получаемые суперпозицией из исходного набора.</li>
+                    <li>Полным называется множество, из которого можно выразить любую булеву функцию.</li>
+                    <li>Критерий полноты: множество не должно входить целиком ни в один из 5 классов (\(T_0, T_1, S, M, L\)).</li>
+                    <li>Примеры полных множеств: \(\{\neg, \vee\}\), \(\{\downarrow\}\), \(\{\to, 0\}\).</li>
+                    <li>Функции NAND и NOR — функционально полные.</li>
+                </ul>
+            </div>
+
+            <!-- Карточки -->
+            <div class="cards-section" id="cards">
+                <h2>🃏 Пятисекундка</h2>
+                <div class="cards-container">
+                    <div class="card">
+                        <div class="card-front">Что такое замыкание множества K?</div>
+                        <div class="card-back">Это все функции, которые можно получить суперпозицией из функций K.</div>
+                    </div>
+                    <div class="card">
+                        <div class="card-front">Что такое полное множество?</div>
+                        <div class="card-back">Множество, из которого можно выразить любую булеву функцию.</div>
+                    </div>
+                    <div class="card">
+                        <div class="card-front">Назови 5 специальных классов функций.</div>
+                        <div class="card-back">\(T_0, T_1, S, M, L\).</div>
+                    </div>
+                    <div class="card">
+                        <div class="card-front">Когда множество K является полным?</div>
+                        <div class="card-back">Когда \(K\) не входит целиком ни в один из классов \(T_0, T_1, S, M, L\).</div>
+                    </div>
+                    <div class="card">
+                        <div class="card-front">Какие одиночные функции являются полными?</div>
+                        <div class="card-back">Штрих Шеффера (NAND), стрелка Пирса (NOR).</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Таблица -->
+            <div class="table-section residual-properties-table" id="table">
+                <h2>📊 Таблица — Классы и их свойства</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Класс</th>
+                            <th>Название</th>
+                            <th>Пример функции</th>
+                            <th>Свойство</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>\(T_0\)</td>
+                            <td>Сохраняющие 0</td>
+                            <td>\(x \lor y\)</td>
+                            <td>\(f(0,\ldots,0) = 0\)</td>
+                        </tr>
+                        <tr>
+                            <td>\(T_1\)</td>
+                            <td>Сохраняющие 1</td>
+                            <td>\(x \land y\)</td>
+                            <td>\(f(1,\ldots,1) = 1\)</td>
+                        </tr>
+                        <tr>
+                            <td>\(S\)</td>
+                            <td>Самодвойственные</td>
+                            <td>\(x \oplus y\)</td>
+                            <td>\(f(x) = \neg f(\neg x)\)</td>
+                        </tr>
+                        <tr>
+                            <td>\(M\)</td>
+                            <td>Монотонные</td>
+                            <td>\(x \lor y\)</td>
+                            <td>\(x \leq y \Rightarrow f(x) \leq f(y)\)</td>
+                        </tr>
+                        <tr>
+                            <td>\(L\)</td>
+                            <td>Линейные</td>
+                            <td>\(x \oplus y\)</td>
+                            <td>Полином степени \(\leq 1\)</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="up-button">
+        <img src="../Photos/up.png" alt="Вверх" class="up-icon" />
+    </div>
+
+    <script src="lec7.js"></script>
+</body>
+</html>
