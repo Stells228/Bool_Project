@@ -18,6 +18,25 @@ html, body {
     overflow: hidden; 
 }
 
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: linear-gradient(to bottom, #613cc0, #416190);
+    border-radius: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(to bottom, #7e57c2, #5c6bc0);
+}
+
 .level-container {
     background: rgba(97, 60, 192, 0.6);
     border: 2px solid #ffffff;
