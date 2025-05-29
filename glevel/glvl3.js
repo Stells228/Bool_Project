@@ -13,15 +13,15 @@ document.addEventListener('DOMContentLoaded', () => {
   let vertices = [];
 
   class Vertex {
-      constructor(name) {
-          this.name = name;
-          this.adjacent = [];
+    constructor(name) {
+      this.name = name;
+      this.adjacent = [];
+    }
+    addEdge(vertex) {
+      if (!this.adjacent.includes(vertex)) {
+        this.adjacent.push(vertex);
       }
-      addEdge(vertex) {
-          if (!this.adjacent.includes(vertex)) {
-              this.adjacent.push(vertex);
-          }
-      }
+    }
   }
 
   // Навигация между страницами
@@ -31,6 +31,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
   document.getElementById('toLevel2')?.addEventListener('click', () => {
     window.location.href = 'glevel2.html';
+  });
+
+  document.getElementById('toLevel4')?.addEventListener('click', () => {
+    window.location.href = 'glevel4.html';
   });
 
   document.querySelector('.submit-btn').addEventListener('click', generateMatrix);
@@ -87,18 +91,24 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     wrapper.appendChild(table);
+
+    const inputs = matrixContainer.querySelectorAll('input');
+    inputs.forEach(input => {
+      input.readOnly = true;
+    });
+
     updateGraph();
   }
 
   function updateGraph() {
     graphContainer.innerHTML = '';
     vertices = [];
-    
+
     // Создаем вершины
     for (let i = 0; i < currentNodes; i++) {
       vertices.push(new Vertex(String.fromCharCode(65 + i)));
     }
-    
+
     // Добавляем ребра на основе матрицы
     const inputs = matrixContainer.querySelectorAll('input');
     inputs.forEach(input => {
@@ -114,7 +124,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const nodes = new vis.DataSet(
       vertices.map((v, i) => ({ id: i, label: v.name }))
     );
-    
+
     const edges = new vis.DataSet([]);
     vertices.forEach((vertex, i) => {
       vertex.adjacent.forEach(adjVertex => {
@@ -169,7 +179,7 @@ document.addEventListener('DOMContentLoaded', () => {
       showFeedback("Введите число компонент", "error");
       return;
     }
-    
+
     if (userAnswer < 1 || userAnswer > n) {
       showFeedback(`Число компонент должно быть от 1 до ${n}`, "error");
       return;
@@ -191,17 +201,17 @@ document.addEventListener('DOMContentLoaded', () => {
   function countComponents() {
     let visited = new Set();
     let componentCount = 0;
-    
+
     for (const vertex of vertices) {
       if (!visited.has(vertex)) {
         dfsComponent(vertex, visited);
         componentCount++;
       }
     }
-    
+
     return componentCount;
   }
-  
+
   function dfsComponent(vertex, visited) {
     visited.add(vertex);
     for (const neighbor of vertex.adjacent) {
@@ -216,6 +226,8 @@ document.addEventListener('DOMContentLoaded', () => {
     feedback.className = `feedback ${type} show`;
     setTimeout(() => {
       feedback.className = `feedback ${type}`;
-    }, 5000);
+    }, 2000);
   }
+
+  generateMatrix();
 });

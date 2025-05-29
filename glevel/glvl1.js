@@ -21,9 +21,9 @@ document.addEventListener('DOMContentLoaded', () => {
     checkBtn.addEventListener('click', checkAnswer);
     tryAgainBtn.addEventListener('click', resetTask);
 
-    userAnswerInput.addEventListener('input', function() {
+    userAnswerInput.addEventListener('input', function () {
         this.value = this.value.toUpperCase().replace(/[^A-Z\s]/g, '');
-      });
+    });
 
     class Vertex {
         constructor(name) {
@@ -35,7 +35,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 this.adjacent.push(vertex);
             }
         }
-    }    
+    }
 
     function generateMatrix() {
         const n = parseInt(verticesInput.value);
@@ -51,7 +51,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (n > 4) {
             wrapper.style.overflowX = 'auto';
             wrapper.style.maxHeight = '300px';
-        } 
+        }
         else {
             wrapper.style.overflowX = 'visible';
             wrapper.style.maxHeight = 'none';
@@ -70,7 +70,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const table = document.createElement('table');
         const header = document.createElement('tr');
         header.appendChild(document.createElement('th'));
-        
+
         // Заголовки столбцов
         for (let j = 0; j < n; j++) {
             const th = document.createElement('th');
@@ -103,6 +103,12 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         wrapper.appendChild(table);
+
+        const inputs = matrixContainer.querySelectorAll('input');
+        inputs.forEach(input => {
+            input.readOnly = true;
+        });
+
         updateGraph();
     }
 
@@ -110,11 +116,11 @@ document.addEventListener('DOMContentLoaded', () => {
         graphContainer.innerHTML = '';
         vertices = [];
         adjacencyMatrix = [];
-    
+
         for (let i = 0; i < currentNodes; i++) {
             vertices.push(new Vertex(String.fromCharCode(65 + i)));
         }
-    
+
         // Заполняем матрицу смежности и строим связи
         for (let i = 0; i < currentNodes; i++) {
             adjacencyMatrix[i] = [];
@@ -127,55 +133,55 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             }
         }
-        
+
         const inputs = matrixContainer.querySelectorAll('input');
         inputs.forEach(input => {
-          const from = parseInt(input.dataset.row);
-          const to = parseInt(input.dataset.col);
-          const value = parseInt(input.value);
-          if (value === 1 && from !== to) {
-            vertices[from].addEdge(vertices[to]);
-          }
+            const from = parseInt(input.dataset.row);
+            const to = parseInt(input.dataset.col);
+            const value = parseInt(input.value);
+            if (value === 1 && from !== to) {
+                vertices[from].addEdge(vertices[to]);
+            }
         });
-    
+
         const nodes = new vis.DataSet(
-          vertices.map((v, i) => ({ id: i, label: v.name }))
+            vertices.map((v, i) => ({ id: i, label: v.name }))
         );
-        
+
         const edges = new vis.DataSet([]);
         vertices.forEach((vertex, i) => {
-          vertex.adjacent.forEach(adjVertex => {
-            const j = vertices.indexOf(adjVertex);
-            edges.add({ from: i, to: j, arrows: 'to', width: 2 });
-          });
+            vertex.adjacent.forEach(adjVertex => {
+                const j = vertices.indexOf(adjVertex);
+                edges.add({ from: i, to: j, arrows: 'to', width: 2 });
+            });
         });
-    
+
         const data = { nodes, edges };
         const options = {
-          physics: { enabled: false },
-          interaction: { dragNodes: false, dragView: false, zoomView: false, selectable: false },
-          nodes: { font: { size: 16 } },
-          edges: {
-            smooth: false,
-            arrows: { to: { enabled: true, scaleFactor: 0.5 } }
-          },
-          layout: { improvedLayout: true, randomSeed: 1 },
-          configure: { enabled: false }
+            physics: { enabled: false },
+            interaction: { dragNodes: false, dragView: false, zoomView: false, selectable: false },
+            nodes: { font: { size: 16 } },
+            edges: {
+                smooth: false,
+                arrows: { to: { enabled: true, scaleFactor: 0.5 } }
+            },
+            layout: { improvedLayout: true, randomSeed: 1 },
+            configure: { enabled: false }
         };
-    
+
         const network = new vis.Network(graphContainer, data, options);
-    
+
         network.once('stabilizationIterationsDone', () => {
-          network.fit({ animation: { duration: 0 }, scale: 1.0 });
-          setTimeout(() => {
-            const canvas = graphContainer.querySelector('canvas');
-            if (canvas && canvas.width > graphContainer.clientWidth) {
-              network.moveTo({
-                scale: graphContainer.clientWidth / canvas.width * 0.9,
-                animation: { duration: 0 }
-              });
-            }
-          }, 50);
+            network.fit({ animation: { duration: 0 }, scale: 1.0 });
+            setTimeout(() => {
+                const canvas = graphContainer.querySelector('canvas');
+                if (canvas && canvas.width > graphContainer.clientWidth) {
+                    network.moveTo({
+                        scale: graphContainer.clientWidth / canvas.width * 0.9,
+                        animation: { duration: 0 }
+                    });
+                }
+            }, 50);
         });
     }
 
@@ -190,15 +196,15 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     let vertices = [];
     let adjacencyMatrix = [];
-    
+
     function calculateDFS(matrix, start) {
         const visited = Array(matrix.length).fill(false);
         const result = [];
-        
+
         function traverse(node) {
             visited[node] = true;
             result.push(node);
-            
+
             // Получаем соседей в порядке 0, 1, 2, ... (A, B, C, ...)
             const neighbors = [];
             for (let i = 0; i < matrix.length; i++) {
@@ -206,19 +212,19 @@ document.addEventListener('DOMContentLoaded', () => {
                     neighbors.push(i);
                 }
             }
-            
+
             // Сортируем соседей по возрастанию (A, B, C, ...)
             neighbors.sort((a, b) => a - b);
-            
+
             for (const neighbor of neighbors) {
                 if (!visited[neighbor]) {
                     traverse(neighbor);
                 }
             }
         }
-        
+
         traverse(start);
-        
+
         // Убрали добавление несвязных вершин
         return result;
     }
@@ -228,41 +234,41 @@ document.addEventListener('DOMContentLoaded', () => {
             showFeedback("Сначала создайте матрицу", "error");
             return;
         }
-    
+
         const n = parseInt(verticesInput.value);
         if (isNaN(n) || n < 1 || n > 20) {
             showFeedback("Сначала создайте матрицу", "error");
             return;
         }
-    
+
         const userAnswer = userAnswerInput.value.trim();
         if (!userAnswer) {
             showFeedback("Введите порядок обхода", "error");
             return;
         }
-    
+
         if (!/^[A-Z\s]+$/.test(userAnswer)) {
             showFeedback("Вводите только заглавные английские буквы (A-Z), разделённые пробелами", "error");
             return;
         }
-    
+
         const userOrderLetters = userAnswer.split(/\s+/).filter(x => x);
         const startVertex = parseInt(startVertexSelect.value);
         const correctDFS = calculateDFS(adjacencyMatrix, startVertex);
-    
+
         // Проверяем только достижимые вершины
         const reachableCount = correctDFS.length;
-    
+
         if (userOrderLetters.length !== reachableCount) {
             showFeedback(`Введите обход для ${reachableCount} достижимых вершин`, "error");
             return;
         }
-    
+
         const validLetters = new Set();
         for (let i = 0; i < reachableCount; i++) {
             validLetters.add(String.fromCharCode(65 + correctDFS[i]));
         }
-    
+
         const usedLetters = new Set();
         for (const letter of userOrderLetters) {
             if (!validLetters.has(letter)) {
@@ -275,17 +281,17 @@ document.addEventListener('DOMContentLoaded', () => {
             }
             usedLetters.add(letter);
         }
-    
+
         const userOrder = userOrderLetters.map(l => l.charCodeAt(0) - 65);
-    
+
         if (JSON.stringify(userOrder) === JSON.stringify(correctDFS)) {
             showFeedback("✅ Правильно! Порядок обхода вершин верный", "correct");
-        } 
+        }
         else {
             const correctOrderStr = correctDFS.map(i => String.fromCharCode(65 + i)).join(' → ');
             showFeedback(`❌ Неправильно. Правильный порядок: ${correctOrderStr}`, "incorrect");
         }
-    
+
         checkBtn.style.display = 'none';
         tryAgainBtn.style.display = 'inline-block';
     }
@@ -303,7 +309,7 @@ document.addEventListener('DOMContentLoaded', () => {
         feedback.className = `feedback ${type} show`;
         setTimeout(() => {
             feedback.className = `feedback ${type}`;
-        }, 4000);
+        }, 2000);
     }
 
     generateMatrix();

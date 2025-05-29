@@ -45,7 +45,43 @@ const ASSETS = [
   '/Photos/gear.png',
   '/Photos/cup.png',
   '/Photos/table.png',
-  '/Photos/right.png'
+  '/Photos/right.png',
+  '/glevel/glevel1.html',
+  '/glevel/glevel2.html',
+  '/glevel/glevel3.html',
+  '/glevel/glevel4.html',
+  '/glevel/glevel5.html',
+  '/glevel/glevel6.html',
+  '/glevel/glvl1.css',
+  '/glevel/glvl1.js',
+  '/glevel/glvl2.css',
+  '/glevel/glvl2.js',
+  '/glevel/glvl3.css',
+  '/glevel/glvl3.js',
+  '/glevel/glvl4.css',
+  '/glevel/glvl4.js',
+  '/glevel/glvl5.css',
+  '/glevel/glvl5.js',
+  '/glevel/glvl6.css',
+  '/glevel/glvl6.js',
+  '/level/level1.html',
+  '/level/level2.html',
+  '/level/level3.html',
+  '/level/level4.html',
+  '/level/level5.html',
+  '/level/level6.html',
+  '/level/lvl1.css',
+  '/level/lvl1.js',
+  '/level/lvl2.css',
+  '/level/lvl2.js',
+  '/level/lvl3.css',
+  '/level/lvl3.js',
+  '/level/lvl4.css',
+  '/level/lvl4.js',
+  '/level/lvl5.css',
+  '/level/lvl5.js',
+  '/level/lvl6.css',
+  '/level/lvl6.js'
 ];
 
 // Установка Service Worker
@@ -79,13 +115,13 @@ self.addEventListener('activate', event => {
 // Стратегия "Cache first, then network" с обновлением кэша
 self.addEventListener('fetch', event => {
   // Игнор chrome-extension запросы и другие не-HTTP запросы
-  if (!event.request.url.startsWith('http') || 
-      event.request.url.startsWith('chrome-extension://')) {
+  if (!event.request.url.startsWith('http') ||
+    event.request.url.startsWith('chrome-extension://')) {
     return;
   }
 
   if (event.request.method !== 'GET') return;
-  
+
   // Игнорируем запросы от расширений chrome и другие неподдерживаемые схемы
   if (!event.request.url.startsWith('http')) {
     console.log('Skipping non-http request:', event.request.url);
@@ -125,7 +161,7 @@ self.addEventListener('fetch', event => {
             console.log('Showing offline page');
             return caches.match('/offline.html');
           });
-        
+
         // Возвращаем кэшированный ответ сразу, если он есть
         return cachedResponse || fetchPromise;
       })

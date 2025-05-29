@@ -8,7 +8,7 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
-    color: #ffffff; 
+    color: #ffffff;
     overflow: hidden;
 }
 
@@ -19,7 +19,7 @@ body {
     padding: 30px;
     width: 90%;
     max-width: 1000px;
-    height: 650px; 
+    height: 650px;
     text-align: center;
     box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
     box-sizing: border-box;
@@ -106,19 +106,20 @@ h1 {
     gap: 15px;
     width: 100%;
 }
-  
+
 .panels-container {
     display: flex;
     gap: 30px;
 }
 
-.left-panel, .right-panel {
+.left-panel,
+.right-panel {
     flex: 1;
     min-width: 300px;
     display: flex;
     flex-direction: column;
     box-sizing: border-box;
-    overflow: hidden; 
+    overflow: hidden;
 }
 
 .left-panel {
@@ -228,7 +229,8 @@ input[type="number"] {
     text-align: center;
 }
 
-#matrixContainer th, #matrixContainer td {
+#matrixContainer th,
+#matrixContainer td {
     padding: 8px;
     text-align: center;
     border: 1px solid #8a2be2;
@@ -290,7 +292,7 @@ input[type="number"] {
     width: 100%;
     height: 100%;
     min-height: 400px;
-    background:  0 0 15px rgba(138, 53, 218, 0.7); 
+    background: 0 0 15px rgba(138, 53, 218, 0.7);
     border-radius: 10px;
     overflow: hidden;
     position: relative;
@@ -304,7 +306,7 @@ input[type="number"] {
     width: 100%;
     height: 300px;
     min-height: 400px;
-    background: rgba(203, 146, 252, 0.95); 
+    background: rgba(203, 146, 252, 0.95);
     user-select: none;
     display: flex;
     justify-content: center;
@@ -357,11 +359,17 @@ input[type="number"] {
 }
 
 @keyframes fadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
 }
 
-.stars1, .stars2 {
+.stars1,
+.stars2 {
     position: fixed;
     width: 50vw;
     height: 100vh;
@@ -438,7 +446,10 @@ input[type="number"] {
     max-width: 250px;
 }
 
-.comet1, .comet2, .comet3, .comet4 {
+.comet1,
+.comet2,
+.comet3,
+.comet4 {
     position: fixed;
     top: -45vh;
     width: 20vw;
@@ -472,6 +483,7 @@ input[type="number"] {
     0% {
         transform: translateX(-15px);
     }
+
     100% {
         transform: translateX(15px);
     }
@@ -483,15 +495,17 @@ input[type="number"] {
         opacity: 0;
         transform: translateX(0);
     }
+
     10% {
         opacity: 1;
     }
+
     100% {
         top: 145vh;
         opacity: 0;
         transform: translateX(-100vw);
     }
-}   
+}
 
 /*чтоб граф не расслаблялся и двигался активненько*/
 .graph-container {
@@ -537,7 +551,7 @@ input[type="number"] {
     width: 100%;
     margin-top: 20px;
     margin-bottom: 20px;
-  }
+}
 
 /*АДАПТИВКУ НЕ ТРОГАТЬ - РУКИ ОТОРВУ*/
 
@@ -550,12 +564,13 @@ input[type="number"] {
     .panels-container {
         flex-direction: column;
         gap: 15px;
-      }
-      
-      .left-panel, .right-panel {
+    }
+
+    .left-panel,
+    .right-panel {
         width: 100%;
         min-width: 0;
-      }
+    }
 
     .level-container {
         width: 100%;
@@ -570,13 +585,13 @@ input[type="number"] {
     .matrix-wrapper {
         max-width: calc(100vw - 60px);
     }
-    
+
     .graph-container {
         height: 300px;
         min-height: 300px;
         top: -20px;
     }
-    
+
     #graph-visualization {
         min-height: 350px;
     }
@@ -594,7 +609,7 @@ input[type="number"] {
         margin-top: 20px;
     }
 
-    .nav-buttons { 
+    .nav-buttons {
         position: static;
         display: flex;
         margin: 0 auto 15px;
@@ -617,42 +632,43 @@ input[type="number"] {
         overflow: auto;
     }
 
-    .level-container{
+    .level-container {
         top: 5%;
         width: 90%;
         max-width: 900px;
         height: 100%;
         max-height: 1200px;
     }
-    
+
     .nav-buttons {
-      position: absolute;
-      top: 25px;
-      left: 15px;
-      margin-bottom: 0;
+        position: absolute;
+        top: 25px;
+        left: 15px;
+        margin-bottom: 0;
     }
-    
+
     .top-controls {
-      padding-top: 40px; 
+        padding-top: 40px;
     }
-    
-    .graph-container{
-        height: 100%;  
+
+    .graph-container {
+        height: 100%;
     }
 
     .panels-container {
-      flex-direction: row;
-      height: 100%;
-      max-height: 500px;
-    }
-    
-    .left-panel, .right-panel {
-      width: 50%;
-      top: 20px;
+        flex-direction: row;
+        height: 100%;
+        max-height: 500px;
     }
 
-    #checkBtn.submit-btn{
-        left:50%;
+    .left-panel,
+    .right-panel {
+        width: 50%;
+        top: 20px;
+    }
+
+    #checkBtn.submit-btn {
+        left: 50%;
     }
 
     .feedback {
@@ -662,49 +678,56 @@ input[type="number"] {
         transform: translateX(-50%);
         width: calc(100% - 40px);
         max-width: none;
-      }
+    }
 }
 
-@media (min-width: 769px) and (max-width: 1024px) {
+@media (min-width: 769px) {
     body {
         overflow: auto;
     }
 
-    .level-container{
-        width: 100%;
-        max-width: 900px;
-        height: 80%;
-        max-height: 600px;
+    .level-container {
+        width: 90%;
+        max-width: 1000px;
+        height: 650px;
+        padding: 30px;
     }
-    
+
+    .content-wrapper {
+        height: calc(100% - 120px);
+        margin-top: 0;
+        gap: 3px;
+    }
+
     .nav-buttons {
-      position: absolute;
-      top: 25px;
-      left: 15px;
-      margin-bottom: 0;
+        position: absolute;
+        top: 25px;
+        left: 15px;
+        margin-bottom: 0;
     }
-    
+
     .top-controls {
-      padding-top: 40px; 
-    }
-    
-    .graph-container{
-        height: 100%;  
+        padding-top: 40px;
     }
 
     .panels-container {
-      flex-direction: row;
-      height: 100%;
-      max-height: 500px;
-    }
-    
-    .left-panel, .right-panel {
-      width: 50%;
-      top: 20px;
+        flex-direction: row;
+        height: 100%;
+        max-height: 1000px;
     }
 
-    #checkBtn.submit-btn{
-        left:50%;
+    .left-panel,
+    .right-panel {
+        width: 50%;
+        top: 20px;
+    }
+
+    .right-panel {
+        max-height: 300px;
+    }
+
+    #checkBtn.submit-btn {
+        left: 50%;
     }
 
     .feedback {
@@ -714,56 +737,20 @@ input[type="number"] {
         transform: translateX(-50%);
         width: calc(100% - 40px);
         max-width: none;
-      }
+    }
+
+    .matrix-wrapper {
+        height: 300px;
+        max-height: 300px;
+    }
+
+    .graph-container {
+        height: 300px;
+        max-height: 300px;
+        top: -10px;
+    }
+
+    h1 {
+        margin-top: 0;
+    }
 }
-
-@media (min-width: 1025px) {
-    
-    .level-container{
-        width: 100%;
-        max-width: 900px;
-        height: 80%;
-        max-height: 600px;
-    }
-    
-    .nav-buttons {
-      position: absolute;
-      top: 25px;
-      left: 15px;
-      margin-bottom: 0;
-    }
-    
-    .top-controls {
-      padding-top: 40px; 
-    }
-    
-    .graph-container{
-        height: 100%;  
-    }
-
-    .panels-container {
-      flex-direction: row;
-      height: 100%;
-      max-height: 500px;
-    }
-    
-    .left-panel, .right-panel {
-      width: 50%;
-      top: 20px;
-    }
-
-    #checkBtn.submit-btn{
-        left:50%;
-    }
-
-    .feedback {
-        position: fixed;
-        bottom: 10px;
-        left: 50%;
-        transform: translateX(-50%);
-        width: calc(100% - 40px);
-        max-width: none;
-      }
-  }
-  
-   

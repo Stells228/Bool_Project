@@ -8,7 +8,7 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
-    color: #ffffff;
+    color: #ffffff; 
     overflow: hidden;
 }
 
@@ -19,7 +19,7 @@ body {
     padding: 30px;
     width: 90%;
     max-width: 1000px;
-    height: 650px;
+    height: 650px; 
     text-align: center;
     box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
     box-sizing: border-box;
@@ -98,17 +98,16 @@ h1 {
     margin: 0 auto;
     max-width: 800px;
     box-sizing: border-box;
-    height: calc(100% - 120px);
+    height: calc(100% - 120px); 
 }
 
-.left-panel,
-.right-panel {
+.left-panel, .right-panel {
     flex: 1;
     min-width: 300px;
     display: flex;
     flex-direction: column;
     box-sizing: border-box;
-    overflow: hidden;
+    overflow: hidden; 
 }
 
 .left-panel {
@@ -218,8 +217,7 @@ input[type="number"] {
     text-align: center;
 }
 
-#matrixContainer th,
-#matrixContainer td {
+#matrixContainer th, #matrixContainer td {
     padding: 8px;
     text-align: center;
     border: 1px solid #8a2be2;
@@ -264,7 +262,7 @@ input[type="number"] {
     width: 100%;
     height: 100%;
     min-height: 400px;
-    background: 0 0 15px rgba(138, 53, 218, 0.7);
+    background:  0 0 15px rgba(138, 53, 218, 0.7); 
     border-radius: 10px;
     overflow: hidden;
     position: relative;
@@ -278,7 +276,7 @@ input[type="number"] {
     width: 100%;
     height: 100%;
     min-height: 400px;
-    background: rgba(203, 146, 252, 0.95);
+    background: rgba(203, 146, 252, 0.95); 
     user-select: none;
     display: flex;
     justify-content: center;
@@ -328,17 +326,11 @@ input[type="number"] {
 }
 
 @keyframes fadeIn {
-    from {
-        opacity: 0;
-    }
-
-    to {
-        opacity: 1;
-    }
+    from { opacity: 0; }
+    to { opacity: 1; }
 }
 
-.stars1,
-.stars2 {
+.stars1, .stars2 {
     position: fixed;
     width: 50vw;
     height: 100vh;
@@ -415,10 +407,7 @@ input[type="number"] {
     max-width: 250px;
 }
 
-.comet1,
-.comet2,
-.comet3,
-.comet4 {
+.comet1, .comet2, .comet3, .comet4 {
     position: fixed;
     top: -45vh;
     width: 20vw;
@@ -452,7 +441,6 @@ input[type="number"] {
     0% {
         transform: translateX(-15px);
     }
-
     100% {
         transform: translateX(15px);
     }
@@ -464,17 +452,15 @@ input[type="number"] {
         opacity: 0;
         transform: translateX(0);
     }
-
     10% {
         opacity: 1;
     }
-
     100% {
         top: 145vh;
         opacity: 0;
         transform: translateX(-100vw);
     }
-}
+}   
 
 /*чтоб граф не расслаблялся и двигался активненько*/
 .graph-container {
@@ -509,12 +495,12 @@ input[type="number"] {
     .matrix-wrapper {
         max-width: calc(100vw - 60px);
     }
-
+    
     .graph-container {
         height: 350px;
         min-height: 350px;
     }
-
+    
     #graph-visualization {
         min-height: 350px;
     }
@@ -526,8 +512,7 @@ input[type="number"] {
         width: 100%;
     }
 
-    .left-panel,
-    .right-panel {
+    .left-panel, .right-panel {
         width: 100%;
         min-width: 0;
         flex: none;
@@ -544,7 +529,7 @@ input[type="number"] {
         min-height: 350px;
     }
 
-    .nav-buttons {
+    .nav-buttons { 
         position: static;
         display: flex;
         justify-content: center;
@@ -553,15 +538,15 @@ input[type="number"] {
         gap: 15px;
     }
 
-    h1 {
+    h1 { 
         margin-top: 0;
     }
 
-    .task-description {
+    .task-description { 
         margin-bottom: 15px;
     }
 
-    .button-group.answer-controls {
+    .button-group.answer-controls { 
         margin-top: 15px;
     }
 
@@ -615,13 +600,12 @@ input[type="number"] {
         margin-top: 20px;
     }
 
-    .matrix-wrapper {
+    .matrix-wrapper{
         height: 300px;
         max-height: 300px;
     }
 
-    .left-panel,
-    .right-panel {
+    .left-panel, .right-panel {
         flex: 1;
         min-width: 0;
         height: auto;
@@ -644,8 +628,7 @@ input[type="number"] {
         width: 150px;
     }
 
-    .submit-btn,
-    .try-again-btn {
+    .submit-btn, .try-again-btn {
         width: 150px;
     }
 
@@ -659,7 +642,7 @@ input[type="number"] {
     h1 {
         font-size: 2em;
         margin-bottom: 10px;
-        margin-top: 40px;
+        margin-top: 40px; 
     }
 
     .task-description {
@@ -695,13 +678,12 @@ input[type="number"] {
         margin-top: 20px;
     }
 
-    .matrix-wrapper {
+    .matrix-wrapper{
         height: 300px;
         max-height: 300px;
     }
 
-    .left-panel,
-    .right-panel {
+    .left-panel, .right-panel {
         flex: 1;
         min-width: 0;
         height: auto;
@@ -724,8 +706,7 @@ input[type="number"] {
         width: 150px;
     }
 
-    .submit-btn,
-    .try-again-btn {
+    .submit-btn, .try-again-btn {
         width: 150px;
     }
 
@@ -757,7 +738,6 @@ input[type="number"] {
         text-align: center;
         margin: 0 auto;
     }
-
     .stars1,
     .stars2 {
         width: 50vw;
@@ -806,8 +786,7 @@ input[type="number"] {
         margin-top: 0;
     }
 
-    .left-panel,
-    .right-panel {
+    .left-panel, .right-panel {
         flex: 1;
         min-width: 300px;
         height: auto;
@@ -819,7 +798,7 @@ input[type="number"] {
         top: 15px;
     }
 
-    .matrix-wrapper {
+    .matrix-wrapper{
         height: 300px;
         max-height: 300px;
     }
@@ -835,8 +814,7 @@ input[type="number"] {
         width: 200px;
     }
 
-    .submit-btn,
-    .try-again-btn {
+    .submit-btn, .try-again-btn {
         width: 120px;
     }
 
@@ -868,7 +846,6 @@ input[type="number"] {
         text-align: center;
         margin: 0 auto;
     }
-
     .stars1,
     .stars2 {
         width: 50vw;
@@ -882,7 +859,7 @@ input[type="number"] {
 
     .cloud1,
     .cloud2,
-    .cloud3,
+    .cloud3, 
     .cloud4,
     .cloud5,
     .cloud6 {
