@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>🧩 Лекция 6. Полиномиальные формы и полином Жегалкина</title>
+    
+    <link rel="preload" href="lec6.css" as="style">
+    <link rel="preload" href="../main.css" as="style">
+    <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/vis/4.21.0/vis.min.js" as="script">
+
+    <link href="lec6.css" rel="stylesheet">
+    <link rel="stylesheet" href="../main.css">
+    <link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <!-- PWA метаданные -->
+    <link rel="manifest" href="/favicon/site.webmanifest">
+    <meta name="theme-color" content="#416190">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+    <!-- Иконки -->
+    <link rel="icon" href="/favicon/favicon.ico" type="image/x-icon">
+    <link rel="apple-touch-icon" href="/favicon/apple-touch-icon.png" sizes="180x180">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vis/4.21.0/vis.min.js" defer></script>
+</head>
+<body>
+    <div class="lecture-decoration">
+        <img src="../Photos/cloudmoon1.png" alt="Cloud" class="decoration-cloud cloud1" />
+        <img src="../Photos/cloudmoon2.png" alt="Cloud" class="decoration-cloud cloud2" />
+        <img src="../Photos/cloudmoon3.png" alt="Cloud" class="decoration-cloud cloud3" />
+        <img src="../Photos/stars1.png" alt="Stars" class="decoration-stars stars1" />
+        <img src="../Photos/stars2.png" alt="Stars" class="decoration-stars stars2" />
+    </div>
+
+    <div class="lecture-container">
+        <div class="back-button" onclick="window.history.back()">
+            <img src="../Photos/home.png" alt="Назад" class="back-icon" />
+        </div>
+
+        <h1 class="lecture-title">🧩 Лекция 6. Полиномиальные формы и полином Жегалкина</h1>
+
+        <div class="toc-container">
+            <h3>Содержание:</h3>
+            <ul class="toc-list">
+                <li><a href="#section1">1. Что такое полиномиальная форма булевой функции?</a></li>
+                <li><a href="#section2">2. Базовые операции в GF(2)</a></li>
+                <li><a href="#section3">3. Вид полинома Жегалкина</a></li>
+                <li><a href="#section4">4. Примеры полиномов</a></li>
+                <li><a href="#section5">5. Полином Жегалкина по таблице значений</a></li>
+                <li><a href="#section6">6. Метод неопределённых коэффициентов</a></li>
+                <li><a href="#section7">7. Универсальность полинома Жегалкина</a></li>
+                <li><a href="#section8">8. Достоинства полиномиальной формы</a></li>
+                <li><a href="#summary">Краткое резюме</a></li>
+                <li><a href="#cards">Пятисекундка</a></li>
+                <li><a href="#table">Таблица — Построение полинома Жегалкина</a></li>
+            </ul>
+        </div>
+
+        <div class="lecture-content">
+            <!-- 1 -->
+            <div class="lecture-section" id="section1">
+                <h2>1. Что такое полиномиальная форма булевой функции?</h2>
+                <p><strong>Идея</strong></p>
+                <p>Булеву функцию можно представить как многочлен над полем GF(2) (поле из двух элементов: 0 и 1).</p>
+                <p>Это называется полиномом Жегалкина.</p>
+            </div>
+
+            <!-- 2 -->
+            <div class="lecture-section" id="section2">
+                <h2>2. Базовые операции в GF(2)</h2>
+                <table class="residual-table">
+                    <thead>
+                        <tr>
+                            <th>Операция</th>
+                            <th>Обозначение</th>
+                            <th>Значение</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Сложение</td>
+                            <td>⊕</td>
+                            <td>0 + 0 = 0, 1 + 0 = 1, 1 + 1 = 0</td>
+                        </tr>
+                        <tr>
+                            <td>Умножение</td>
+                            <td>⋅ или просто</td>
+                            <td>0⋅x = 0, 1⋅x = x</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <p><strong>Важно:</strong></p>
+                <ul>
+                    <li>Сложение — это XOR</li>
+                    <li>Умножение — это логическое И</li>
+                </ul>
+            </div>
+
+            <!-- 3 -->
+            <div class="lecture-section" id="section3">
+                <h2>3. Вид полинома Жегалкина</h2>
+                <p>Функция \(f(x_1, ..., x_n)\) представляется как сумма (XOR) мономов:</p>
+                <div class="formula">
+                    \[
+                    f(x_1, ..., x_n) = a_0 \oplus a_1 x_1 \oplus a_2 x_2 \oplus a_{12} x_1 x_2 \oplus a_{13} x_1 x_3 \oplus \dots
+                    \]
+                </div>
+                <p>Где \(a_i \in \{0,1\}\). Каждое слагаемое — произведение некоторых переменных.</p>
+            </div>
+
+            <!-- 4 -->
+            <div class="lecture-section" id="section4">
+                <h2>4. Примеры полиномов</h2>
+                <ul>
+                    <li>\(f(x) = x\) — полином: \(x\)</li>
+                    <li>\(f(x) = \neg x = x \oplus 1\)</li>
+                    <li>\(f(x,y) = x \oplus y\) — сложение по модулю 2</li>
+                    <li>\(f(x,y) = x \cdot y\) — логическое И</li>
+                </ul>
+            </div>
+
+            <!-- 5 -->
+            <div class="lecture-section" id="section5">
+                <h2>5. Полином Жегалкина по таблице значений</h2>
+                <p>Пример: \(f = (1,1,1,0)\) при \(n=2\)</p>
+                <table class="residual-table">
+                    <thead>
+                        <tr>
+                            <th>Набор</th>
+                            <th>Значение \(f\)</th>
+                            <th>Моном</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>00</td><td>1</td><td>1</td></tr>
+                        <tr><td>01</td><td>1</td><td>x_2</td></tr>
+                        <tr><td>10</td><td>1</td><td>x_1</td></tr>
+                        <tr><td>11</td><td>0</td><td>x_1 x_2</td></tr>
+                    </tbody>
+                </table>
+                <p>Полином:</p>
+                <div class="formula">
+                    \[
+                    f(x_1, x_2) = 1 \oplus x_1 \oplus x_2
+                    \]
+                </div>
+            </div>
+
+            <!-- 6 -->
+            <div class="lecture-section" id="section6">
+                <h2>6. Метод неопределённых коэффициентов</h2>
+                <p>Чтобы найти полином Жегалкина для \(f\):</p>
+                <p>Обозначим:</p>
+                <div class="formula">
+                    \[
+                    f(x_1, x_2) = a_0 \oplus a_1 x_1 \oplus a_2 x_2 \oplus a_{12} x_1 x_2
+                    \]
+                </div>
+                <p>Подставим все 4 набора и составим систему уравнений:</p>
+                <table class="residual-properties-table">
+                    <thead>
+                        <tr>
+                            <th>\(x_1\)</th>
+                            <th>\(x_2\)</th>
+                            <th>\(f(x_1,x_2)\)</th>
+                            <th>Уравнение</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>0</td><td>0</td><td>f_0</td><td>\(a_0 = f_0\)</td>
+                        </tr>
+                        <tr>
+                            <td>0</td><td>1</td><td>f_1</td><td>\(a_0 \oplus a_2 = f_1\)</td>
+                        </tr>
+                        <tr>
+                            <td>1</td><td>0</td><td>f_2</td><td>\(a_0 \oplus a_1 = f_2\)</td>
+                        </tr>
+                        <tr>
+                            <td>1</td><td>1</td><td>f_3</td><td>\(a_0 \oplus a_1 \oplus a_2 \oplus a_{12} = f_3\)</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <p>Решаем систему — находим коэффициенты \(a_0, a_1, a_2, a_{12}\).</p>
+            </div>
+
+            <!-- 7 -->
+            <div class="lecture-section" id="section7">
+                <h2>7. Универсальность полинома Жегалкина</h2>
+                <p><strong>Теорема:</strong> Любая булева функция имеет единственное представление в виде полинома Жегалкина.</p>
+            </div>
+
+            <!-- 8 -->
+            <div class="lecture-section" id="section8">
+                <h2>8. Достоинства полиномиальной формы</h2>
+                <ul>
+                    <li>Уникальность</li>
+                    <li>Легкость проверки линейности</li>
+                    <li>Хорошо работает с замыканиями и линейными классами</li>
+                </ul>
+            </div>
+
+            <!-- Краткое резюме -->
+            <div class="lecture-section" id="summary">
+                <h2>📝 Краткое резюме</h2>
+                <ul>
+                    <li>Полином Жегалкина — представление булевой функции как многочлена над полем GF(2).</li>
+                    <li>В полиноме используется XOR вместо сложения и AND вместо умножения.</li>
+                    <li>Строится как сумма мономов: \(f = a_0 \oplus a_1 x_1 \oplus a_{12} x_1 x_2 \oplus \dots\)</li>
+                    <li>Каждая булева функция имеет единственный полином Жегалкина.</li>
+                    <li>Метод построения — через систему уравнений по таблице значений.</li>
+                </ul>
+            </div>
+
+            <!-- Карточки -->
+            <div class="cards-section" id="cards">
+                <h2>🃏 Пятисекундка</h2>
+                <div class="cards-container">
+                    <div class="card">
+                        <div class="card-front">Что такое полином Жегалкина?</div>
+                        <div class="card-back">Представление булевой функции в виде многочлена с операциями XOR и AND.</div>
+                    </div>
+                    <div class="card">
+                        <div class="card-front">Какие операции используются в GF(2)?</div>
+                        <div class="card-back">Сложение — XOR, умножение — AND.</div>
+                    </div>
+                    <div class="card">
+                        <div class="card-front">В чём особенность полинома Жегалкина?</div>
+                        <div class="card-back">Он единственный для каждой булевой функции.</div>
+                    </div>
+                    <div class="card">
+                        <div class="card-front">Как построить полином?</div>
+                        <div class="card-back">Составить систему уравнений по таблице значений и решить её.</div>
+                    </div>
+                    <div class="card">
+                        <div class="card-front">Что значит \(f(x) = x \oplus 1\)?</div>
+                        <div class="card-back">Это функция отрицания (¬x).</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Таблица -->
+            <div class="table-section residual-properties-table" id="table">
+                <h2>📊 Таблица — Построение полинома Жегалкина</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>\(x_1\)</th>
+                            <th>\(x_2\)</th>
+                            <th>\(f(x_1,x_2)\)</th>
+                            <th>Уравнение</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>0</td><td>0</td><td>f_0</td><td>$$a_0 = f_0$$</td>
+                        </tr>
+                        <tr>
+                            <td>0</td><td>1</td><td>f_1</td><td>$$a_0 \oplus a_2 = f_1$$</td>
+                        </tr>
+                        <tr>
+                            <td>1</td><td>0</td><td>f_2</td><td>$$a_0 \oplus a_1 = f_2$$</td>
+                        </tr>
+                        <tr>
+                            <td>1</td><td>1</td><td>f_3</td><td>$$a_0 \oplus a_1 \oplus a_2 \oplus a_{12} = f_3$$</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="up-button">
+        <img src="../Photos/up.png" alt="Вверх" class="up-icon" />
+    </div>
+
+    <script src="lec6.js"></script>
+</body>
+</html>
