@@ -32,7 +32,7 @@
   <button onclick="window.location.reload()">Попробовать снова</button>
 
   <script>
-    // Конфиг Firebase (тот же, что и в основном приложении)
+    // Конфиг Firebase 
     const firebaseConfig = {
       apiKey: "AIzaSyDlHLCPtlITZ4ezjYWbUYA3r70BgensOl8",
       authDomain: "hehe-63f6d.firebaseapp.com",
@@ -46,12 +46,12 @@
     // Инициализация Firebase
     firebase.initializeApp(firebaseConfig);
   
-    // Если нужен Analytics
+    // Analytics
     if (firebase.analytics) {
       firebase.analytics();
     }
   
-    // Если используешь Firestore и хочешь оффлайн-поддержку:
+    //  оффлайн-поддержка
     if (firebase.firestore) {
       const db = firebase.firestore();
       db.enablePersistence()
@@ -64,9 +64,9 @@
 
   <!-- Firebase App -->
   <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
-<!-- Firebase Analytics -->
+  <!-- Firebase Analytics -->
   <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-analytics-compat.js"></script>
-<!-- Firestore -->
+  <!-- Firestore -->
   <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
 </body>
 </html>
