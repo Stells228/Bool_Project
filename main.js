@@ -15,12 +15,35 @@ document.addEventListener('DOMContentLoaded', () => {
                 cloud.style.animation = 'none';
             });
         });
-
+ 
         toggleButtons.forEach((btn, index) => {
             const topPosition = startTop + index * (buttonHeight + fixedSpacing);
             btn.style.top = `${topPosition}px`;
             btn.style.right = '-60px';
         });
+    }
+
+    function loadLectureContent() {
+        const lectureContent = document.getElementById('lecture-content');
+        if (lectureContent) {
+            fetch('lec.html')
+                .then(response => response.text())
+                .then(html => {
+                    lectureContent.innerHTML = html;
+                    const lecCss = document.createElement('link');
+                    lecCss.rel = 'stylesheet';
+                    lecCss.href = 'lec.css';
+                    document.head.appendChild(lecCss);
+                    
+                    const lecJs = document.createElement('script');
+                    lecJs.src = 'lec.js';
+                    document.body.appendChild(lecJs);
+                })
+                .catch(error => {
+                    console.error('Error loading lecture content:', error);
+                    lectureContent.innerHTML = '<p>Не удалось загрузить обучающий материал.</p>';
+                });
+        }
     }
 
     // Вызываем функцию при загрузке
@@ -30,7 +53,8 @@ document.addEventListener('DOMContentLoaded', () => {
         { id: 'calc-window', btnId: 'calc-toggle' },
         { id: 'gear-window', btnId: 'gear-toggle' },
         { id: 'cup-window', btnId: 'cup-toggle' },
-        { id: 'construction-window', btnId: 'construction-toggle' }
+        { id: 'construction-window', btnId: 'construction-toggle' },
+        { id: 'lecture-window', btnId: 'lecture-toggle' } 
     ];
 
     const transitionOverlay = document.createElement('div');
@@ -94,6 +118,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 e.stopPropagation();
                 const closedPosition = getClosedPosition();
                 const isOpen = slideWindow.style.left === '0px' || slideWindow.classList.contains('open');
+                
+                if (!isOpen && window.id === 'lecture-window') {
+                    loadLectureContent();
+                }
                 if (isOpen) {
                     slideWindow.style.left = closedPosition;
                     slideWindow.classList.remove('open');

@@ -1,10 +1,11 @@
 <!DOCTYPE html>
-<html lang="en"> 
+<html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <title>Bool-helper</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    
+
     <link rel="preload" href="main.css" as="style">
     <link rel="stylesheet" href="main.css">
     <link rel="stylesheet" href="calculator.css">
@@ -12,27 +13,28 @@
     <link rel="stylesheet" href="rating.css">
     <link rel="stylesheet" href="cons.css">
     <link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@400&display=swap" rel="stylesheet">
-    
+
     <link rel="preload" href="Photos/moonre.png" as="image">
     <link rel="preload" href="Photos/stars1.png" as="image">
     <link rel="preload" href="Photos/cloudmoon1.png" as="image">
-    
+
     <!-- PWA метаданные -->
     <link rel="manifest" href="/favicon/site.webmanifest">
     <meta name="theme-color" content="#416190">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    
+
     <!-- Иконки -->
     <link rel="icon" href="/favicon/favicon.ico" type="image/x-icon">
     <link rel="icon" type="image/png" href="/favicon/favicon-96x96.png" sizes="96x96">
     <link rel="apple-touch-icon" href="/favicon/apple-touch-icon.png" sizes="180x180">
 </head>
-<body> 
+
+<body>
     <!-- Выдвижное окно с калькулятором -->
     <!-- Задания: 1,2,3,8,9 -->
-    <div id="calc-window" class="slide-window"> 
+    <div id="calc-window" class="slide-window">
         <div class="calculator">
             <div class="Calc-name">Bool's Calculator</div>
             <div class="Calc-name2">Boolean Functions</div>
@@ -51,7 +53,8 @@
             <div class="calc-mode" id="random-mode">
                 <div class="calc-input-group">
                     <label for="arg-count" class="calc-label">Число аргументов (n):</label>
-                    <input type="number" id="arg-count" class="calc-input" min="1" max="6" placeholder="Введите n от 1 до 6">
+                    <input type="number" id="arg-count" class="calc-input" min="1" max="6"
+                        placeholder="Введите n от 1 до 6">
                 </div>
                 <div id="calc-display-random" class="calc-display"></div>
                 <div class="calc-buttons">
@@ -68,7 +71,8 @@
                 </div>
                 <div class="calc-input-group">
                     <label for="arg-count-residual" class="calc-label">Число аргументов (n):</label>
-                    <input type="number" id="arg-count-residual" class="calc-input" min="1" max="6" placeholder="Введите n от 1 до 6">
+                    <input type="number" id="arg-count-residual" class="calc-input" min="1" max="6"
+                        placeholder="Введите n от 1 до 6">
                 </div>
                 <div class="calc-input-group">
                     <label for="fix-arg" class="calc-label">Номер аргумента (например, 1 для x1):</label>
@@ -88,7 +92,7 @@
                 </div>
             </div>
             <!-- Реконструкция функции -->
-            <!-- Задание 3 --> 
+            <!-- Задание 3 -->
             <div class="calc-mode" id="reconstruct-mode" style="display: none;">
                 <div class="calc-input-group">
                     <label for="vector0" class="calc-label">Нулевая остаточная (x_k = 0):</label>
@@ -100,7 +104,8 @@
                 </div>
                 <div class="calc-input-group">
                     <label for="arg-count-reconstruct" class="calc-label">Число аргументов (n):</label>
-                    <input type="number" id="arg-count-reconstruct" class="calc-input" min="1" max="6" placeholder="Введите n от 1 до 6">
+                    <input type="number" id="arg-count-reconstruct" class="calc-input" min="1" max="6"
+                        placeholder="Введите n от 1 до 6">
                 </div>
                 <div class="calc-input-group">
                     <label for="fixed-arg" class="calc-label">Номер аргумента (например, 1 для x1):</label>
@@ -121,7 +126,8 @@
                 </div>
                 <div class="calc-input-group">
                     <label for="arg-count-sdnf" class="calc-label">Число аргументов (n):</label>
-                    <input type="number" id="arg-count-sdnf" class="calc-input" min="1" max="6" placeholder="Введите n от 1 до 6">
+                    <input type="number" id="arg-count-sdnf" class="calc-input" min="1" max="6"
+                        placeholder="Введите n от 1 до 6">
                 </div>
                 <div id="calc-display-sdnf" class="calc-display"></div>
                 <div class="calc-buttons">
@@ -138,7 +144,8 @@
                 </div>
                 <div class="calc-input-group">
                     <label for="arg-count-sknf" class="calc-label">Число аргументов (n):</label>
-                    <input type="number" id="arg-count-sknf" class="calc-input" min="1" max="6" placeholder="Введите n от 1 до 6">
+                    <input type="number" id="arg-count-sknf" class="calc-input" min="1" max="6"
+                        placeholder="Введите n от 1 до 6">
                 </div>
                 <div id="calc-display-sknf" class="calc-display"></div>
                 <div class="calc-buttons">
@@ -190,7 +197,8 @@
             <h2 class="construction-title">Конструктор ДНФ</h2>
             <div class="construction-input-group">
                 <label for="dnf-input" class="construction-label">Введите ДНФ (например, ¬a∧¬b∧¬c ∨ ¬a∧¬b∧c):</label>
-                <input type="text" id="dnf-input" class="construction-input" placeholder="например, ¬a∧¬b∧¬c ∨ ¬a∧¬b∧c" maxlength="100">
+                <input type="text" id="dnf-input" class="construction-input" placeholder="например, ¬a∧¬b∧¬c ∨ ¬a∧¬b∧c"
+                    maxlength="100">
                 <div class="symbol-buttons">
                     <button class="symbol-btn" data-symbol="¬">¬</button>
                     <button class="symbol-btn" data-symbol="∧">∧</button>
@@ -220,14 +228,22 @@
     <div class="Title">Bool-helper</div>
     <div id="main-screen">
         <div class="image-container">
-            <img src="Photos/moonre.png" alt="Moonre" class="moonre" onload="this.classList.add('loaded')" onerror="this.classList.add('error')">
-            <img src="Photos/cloudmoon3.png" alt="Cloud Moon 3" class="cloudmoon3" onload="this.classList.add('loaded')" onerror="this.classList.add('error')">
-            <img src="Photos/stars1.png" alt="Stars1" class="stars1" loading="lazy" onload="this.classList.add('loaded')" onerror="this.classList.add('error')">
-            <img src="Photos/stars2.png" alt="Stars2" class="stars2" loading="lazy" onload="this.classList.add('loaded')" onerror="this.classList.add('error')">
-            <img src="Photos/cloudmoon1.png" alt="Cloud Moon 1" class="cloudmoon" onload="this.classList.add('loaded')" onerror="this.classList.add('error')">
-            <img src="Photos/cloudmoon2.png" alt="Cloud Moon 2" class="cloudmoon2" onload="this.classList.add('loaded')" onerror="this.classList.add('error')">
-            <img src="Photos/cloudmoon4.png" alt="Cloud Moon 4" class="cloudmoon4" onload="this.classList.add('loaded')" onerror="this.classList.add('error')">
-            <img src="Photos/cloudmoon5.png" alt="Cloud Moon 5" class="cloudmoon5" onload="this.classList.add('loaded')" onerror="this.classList.add('error')">
+            <img src="Photos/moonre.png" alt="Moonre" class="moonre" onload="this.classList.add('loaded')"
+                onerror="this.classList.add('error')">
+            <img src="Photos/cloudmoon3.png" alt="Cloud Moon 3" class="cloudmoon3" onload="this.classList.add('loaded')"
+                onerror="this.classList.add('error')">
+            <img src="Photos/stars1.png" alt="Stars1" class="stars1" loading="lazy"
+                onload="this.classList.add('loaded')" onerror="this.classList.add('error')">
+            <img src="Photos/stars2.png" alt="Stars2" class="stars2" loading="lazy"
+                onload="this.classList.add('loaded')" onerror="this.classList.add('error')">
+            <img src="Photos/cloudmoon1.png" alt="Cloud Moon 1" class="cloudmoon" onload="this.classList.add('loaded')"
+                onerror="this.classList.add('error')">
+            <img src="Photos/cloudmoon2.png" alt="Cloud Moon 2" class="cloudmoon2" onload="this.classList.add('loaded')"
+                onerror="this.classList.add('error')">
+            <img src="Photos/cloudmoon4.png" alt="Cloud Moon 4" class="cloudmoon4" onload="this.classList.add('loaded')"
+                onerror="this.classList.add('error')">
+            <img src="Photos/cloudmoon5.png" alt="Cloud Moon 5" class="cloudmoon5" onload="this.classList.add('loaded')"
+                onerror="this.classList.add('error')">
         </div>
         <button id="map-btn" class="map-btn" data-mode="normal">Play</button>
         <button id="right-arrow" class="right-arrow-btn">
@@ -235,10 +251,24 @@
         </button>
         <div id="transition-screen" class="transition-screen"></div>
     </div>
+
+    <!-- Окно с обучающим материалом -->
+    <div id="lecture-window" class="slide-window">
+        <div class="lecture-container">
+            <h2 class="lecture-title">Обучающий материал</h2>
+            <div class="lecture-content" id="lecture-content">
+        </div>
+        </div>
+        <button id="lecture-toggle" class="toggle-btn">
+            <img src="Photos/buch.png" alt="Lectures" class="icon">
+        </button>
+    </div>
+
     <script src="main.js"></script>
     <script src="settings.js"></script>
     <script src="calculator.js"></script>
     <script src="rating.js"></script>
     <script src="cons.js"></script>
 </body>
+
 </html>
