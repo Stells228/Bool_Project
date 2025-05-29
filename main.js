@@ -15,7 +15,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 cloud.style.animation = 'none';
             });
         });
- 
+
         toggleButtons.forEach((btn, index) => {
             const topPosition = startTop + index * (buttonHeight + fixedSpacing);
             btn.style.top = `${topPosition}px`;
@@ -25,25 +25,36 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function loadLectureContent() {
         const lectureContent = document.getElementById('lecture-content');
-        if (lectureContent) {
-            fetch('lec.html')
-                .then(response => response.text())
-                .then(html => {
-                    lectureContent.innerHTML = html;
-                    const lecCss = document.createElement('link');
-                    lecCss.rel = 'stylesheet';
-                    lecCss.href = 'lec.css';
-                    document.head.appendChild(lecCss);
-                    
-                    const lecJs = document.createElement('script');
-                    lecJs.src = 'lec.js';
-                    document.body.appendChild(lecJs);
-                })
-                .catch(error => {
-                    console.error('Error loading lecture content:', error);
-                    lectureContent.innerHTML = '<p>Не удалось загрузить обучающий материал.</p>';
-                });
-        }
+        if (!lectureContent) return;
+        lectureContent.innerHTML = '';
+
+        const lectures = [
+            { id: 1, title: '1. Двоичные наборы' },
+            { id: 2, title: '2. Булевы функции' },
+            { id: 3, title: '3. Остаточные функции и существенность переменных' },
+            { id: 4, title: '4. Суперпозиция и термы' },
+            { id: 5, title: '5. Дизъюнктивные нормальные формы (ДНФ)' },
+            { id: 6, title: '6. Полиномиальные формы и полином Жегалкина' },
+            { id: 7, title: '7. Замкнутость и полнота' },
+            { id: 8, title: '8. Классы булевых функций' },
+            { id: 9, title: '9. Минимизация ДНФ' }
+        ];
+
+        lectures.forEach(lecture => {
+            const block = document.createElement('div');
+            block.className = 'lecture-block';
+            block.innerHTML = `<h3>${lecture.title}</h3>`;
+
+            block.addEventListener('click', () => {
+                transitionOverlay.classList.add('active');
+
+                setTimeout(() => {
+                    window.location.href = `bool/lec${lecture.id}.html`;
+                }, 300);
+            });
+
+            lectureContent.appendChild(block);
+        });
     }
 
     // Вызываем функцию при загрузке
@@ -54,7 +65,7 @@ document.addEventListener('DOMContentLoaded', () => {
         { id: 'gear-window', btnId: 'gear-toggle' },
         { id: 'cup-window', btnId: 'cup-toggle' },
         { id: 'construction-window', btnId: 'construction-toggle' },
-        { id: 'lecture-window', btnId: 'lecture-toggle' } 
+        { id: 'lecture-window', btnId: 'lecture-toggle' }
     ];
 
     const transitionOverlay = document.createElement('div');
@@ -103,7 +114,7 @@ document.addEventListener('DOMContentLoaded', () => {
             slideWindow.style.left = getClosedPosition();
             slideWindow.classList.add('closed');
             console.log(`Button ${window.btnId} initialized and visible`);
-        } 
+        }
         else {
             console.warn(`Button ${window.btnId} or window ${window.id} not found`);
         }
@@ -118,7 +129,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 e.stopPropagation();
                 const closedPosition = getClosedPosition();
                 const isOpen = slideWindow.style.left === '0px' || slideWindow.classList.contains('open');
-                
+
                 if (!isOpen && window.id === 'lecture-window') {
                     loadLectureContent();
                 }
@@ -134,7 +145,7 @@ document.addEventListener('DOMContentLoaded', () => {
                             console.log(`Button ${otherWindow.btnId} shown`);
                         }
                     });
-                } 
+                }
                 else {
                     windows.forEach(otherWindow => {
                         const otherSlide = document.getElementById(otherWindow.id);
@@ -186,7 +197,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (isOverlapping && !button.classList.contains('hidden')) {
                 console.warn(`Text overlap detected with: ${button.id}`);
                 button.style.opacity = '0.5';
-            } 
+            }
             else if (!button.classList.contains('hidden')) {
                 button.style.opacity = '1';
             }
@@ -215,17 +226,17 @@ document.addEventListener('DOMContentLoaded', () => {
     function handleMapButtonClick() {
         const gameMode = mapBtn.dataset.mode;
         transitionOverlay.classList.add('active');
-        
+
         requestIdleCallback(() => {
-          history.pushState({ mode: gameMode }, '', `map.html?mode=${gameMode}`);
-          window.dispatchEvent(new Event('popstate'));
+            history.pushState({ mode: gameMode }, '', `map.html?mode=${gameMode}`);
+            window.dispatchEvent(new Event('popstate'));
         }, { timeout: 300 });
-      }
+    }
 
     if (mapBtn && mainScreen) {
         mapBtn.removeEventListener('click', handleMapButtonClick);
         mapBtn.addEventListener('click', handleMapButtonClick);
-    } 
+    }
     else {
         console.warn('Map button or main screen not found');
     }
@@ -247,7 +258,7 @@ document.addEventListener('DOMContentLoaded', () => {
                             btn.classList.remove('hidden');
                             console.log(`Button ${otherWindow.btnId} shown on outside click`);
                         }
-                    }); 
+                    });
                 }
             }
         });
@@ -260,11 +271,11 @@ document.addEventListener('DOMContentLoaded', () => {
     // Кнопка перехода
     const rightArrow = document.getElementById('right-arrow');
     const transitionScreen = document.getElementById('transition-screen');
-    
+
     rightArrow.addEventListener('click', () => {
         // Активируем шторку
         transitionScreen.classList.add('active');
-        
+
         // Через 500ms (когда анимация завершится) переходим на новую страницу
         setTimeout(() => {
             history.pushState({}, '', 'gmain.html');
@@ -274,17 +285,17 @@ document.addEventListener('DOMContentLoaded', () => {
 
     window.addEventListener('popstate', (event) => {
         if (event.state?.mode) {
-        handlePageTransition(event.state.mode);
-        } 
+            handlePageTransition(event.state.mode);
+        }
         else {
-        location.reload();
+            location.reload();
         }
     });
-    
+
     function handlePageTransition(mode) {
         transitionOverlay.classList.add('active');
         setTimeout(() => {
-        window.location.href = `map.html?mode=${mode}`;
+            window.location.href = `map.html?mode=${mode}`;
         }, 400);
     }
     // Плавное появление страницы

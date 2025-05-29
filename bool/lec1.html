@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Лекция 1. Двоичные наборы</title>
+
+    <link rel="preload" href="lec1.css" as="style">
+    <link rel="preload" href="../main.css" as="style">
+    <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/vis/4.21.0/vis.min.js" as="script">
+
+    <link href="lec1.css" rel="stylesheet">
+    <link rel="stylesheet" href="../main.css">
+    <link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <!-- PWA метаданные -->
+    <link rel="manifest" href="/favicon/site.webmanifest">
+    <meta name="theme-color" content="#416190">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+    <!-- Иконки -->
+    <link rel="icon" href="/favicon/favicon.ico" type="image/x-icon">
+    <link rel="apple-touch-icon" href="/favicon/apple-touch-icon.png" sizes="180x180">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vis/4.21.0/vis.min.js" defer></script>
+</head>
+<body>
+    <div class="lecture-decoration">
+        <img src="../Photos/cloudmoon1.png" alt="Cloud" class="decoration-cloud cloud1">
+        <img src="../Photos/cloudmoon2.png" alt="Cloud" class="decoration-cloud cloud2">
+        <img src="../Photos/cloudmoon3.png" alt="Cloud" class="decoration-cloud cloud3">
+        <img src="../Photos/stars1.png" alt="Stars" class="decoration-stars stars1">
+        <img src="../Photos/stars2.png" alt="Stars" class="decoration-stars stars2">
+    </div>
+    <div class="lecture-container">
+        <div class="back-button" onclick="window.history.back()">
+            <img src="../Photos/home.png" alt="Назад" class="back-icon">
+        </div>
+
+        <h1 class="lecture-title">🧩 Лекция 1. Двоичные наборы</h1>
+
+        <div class="toc-container">
+            <h3>Содержание:</h3>
+            <ul class="toc-list">
+                <li><a href="#section1">1. Что такое двоичный набор?</a></li>
+                <li><a href="#section2">2. Длина и вес двоичного набора</a></li>
+                <li><a href="#section3">3. Сколько существует двоичных наборов?</a></li>
+                <li><a href="#section4">4. Нулевой и единичный наборы</a></li>
+                <li><a href="#section5">5. Хэммингово расстояние</a></li>
+                <li><a href="#section6">6. Соседние и противоположные наборы</a></li>
+                <li><a href="#section7">7. Сфера радиуса r</a></li>
+                <li><a href="#section8">8. Натуральный порядок</a></li>
+                <li><a href="#summary">Краткое резюме</a></li>
+                <li><a href="#cards">Текстовые карточки</a></li>
+            </ul>
+        </div>
+
+        <div class="lecture-content">
+            <!-- Секция 1 -->
+            <div class="lecture-section" id="section1">
+                <h2>1. Что такое двоичный набор?</h2>
+                <div class="definition">
+                    <strong>Определение</strong>
+                    <p>Двоичным набором называется последовательность, состоящая только из 0 и 1.</p>
+                    <div class="examples">
+                        <p>Примеры:</p>
+                        <ul>
+                            <li>(0, 1, 0, 0, 1) — двоичный набор длины 5</li>
+                            <li>(1, 1) — двоичный набор длины 2</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="notation">
+                    <p>📌 <strong>Обозначения:</strong></p>
+                    <ul>
+                        <li>σ = (σ₁, σ₂, ..., σₙ)</li>
+                        <li>Или просто σ̃ (с волной)</li>
+                        <li>Каждый элемент σᵢ ∈ {0, 1}</li>
+                    </ul>
+                </div>
+                <div class="important">
+                    <p><strong>Важно:</strong> скобки часто опускают: (0, 1, 1) = 011</p>
+                </div>
+            </div>
+
+            <!-- Секция 2 -->
+            <div class="lecture-section" id="section2">
+                <h2>2. Длина и вес двоичного набора</h2>
+                <div class="concept-box">
+                    <h3>🔢 Длина</h3>
+                    <p>Количество символов (0 или 1) в наборе.</p>
+                    <p>Обозначается: |σ̃|</p>
+                    <div class="examples">
+                        <p>Примеры:</p>
+                        <ul>
+                            <li>|011| = 3</li>
+                            <li>|10101| = 5</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="concept-box">
+                    <h3>⚖️ Вес</h3>
+                    <p>Вес двоичного набора — это количество единиц в нём.</p>
+                    <p>Обозначается: ||σ̃||</p>
+                    <p>Формула:</p>
+                    <div class="formula">$$||σ̃|| = \sum_{i=1}^n σ_i$$</div>
+                    <div class="examples">
+                        <p>Примеры:</p>
+                        <ul>
+                            <li>||0011|| = 2</li>
+                            <li>||0000|| = 0</li>
+                            <li>||1111|| = 4</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Секция 3 -->
+            <div class="lecture-section" id="section3">
+                <h2>3. Сколько существует двоичных наборов?</h2>
+                <div class="theorem">
+                    <strong>Теорема</strong>
+                    <p>Число всех двоичных наборов длины n:</p>
+                    <div class="formula">$$2^n$$</div>
+                </div>
+
+                <div class="proof">
+                    <h3>📐 Доказательство по индукции:</h3>
+                    <ul>
+                        <li><strong>Базис:</strong> n = 1 → два набора: 0, 1</li>
+                        <li><strong>Переход:</strong> если длина n → 2ⁿ наборов, то к каждому можно добавить 0 или 1 и
+                            получить набор длины n+1:</li>
+                    </ul>
+                    <div class="formula">$$2^n \cdot 2 = 2^{n+1}$$</div>
+                </div>
+            </div>
+
+            <!-- Секция 4 -->
+            <div class="lecture-section" id="section4">
+                <h2>4. Нулевой и единичный наборы</h2>
+                <div class="concept-box">
+                    <ul>
+                        <li><b>Нулевой набор</b>: все нули. Обозначение: 0̃<br>Пример: 000</li>
+                        <li><b>Единичный набор</b>: все единицы. Обозначение: 1̃<br>Пример: 111</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Секция 5 -->
+            <div class="lecture-section" id="section5">
+                <h2>5. Хэммингово расстояние</h2>
+                <div class="definition">
+                    <strong>Определение</strong>
+                    <p>Хэммингово расстояние между двумя наборами σ̃ и τ̃ — это количество позиций, в которых они
+                        отличаются.</p>
+                    <div class="examples">
+                        <p>Пример:</p>
+                        <ul>
+                            <li>σ̃ = 0110</li>
+                            <li>τ̃ = 0011</li>
+                            <li>→ различаются в позициях 2 и 4 → расстояние = 2</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Секция 6 -->
+            <div class="lecture-section" id="section6">
+                <h2>6. Соседние и противоположные наборы</h2>
+                <div class="concept-box">
+                    <ul>
+                        <li><b>Соседние</b> — отличаются в ровно одной позиции.<br>Пример: 0011 и 0111 (различие в
+                            первой позиции)</li>
+                        <li><b>Противоположные</b> — отличаются во всех позициях.<br>Пример: 000 и 111</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Секция 7 -->
+            <div class="lecture-section" id="section7">
+                <h2>7. Сфера радиуса r</h2>
+                <div class="definition">
+                    <strong>Определение</strong>
+                    <p>Множество всех наборов, находящихся от σ̃ на расстоянии r, — это сфера радиуса r с центром в σ̃.
+                    </p>
+                    <p>Обозначение: S<sub>r</sub>(σ̃)</p>
+                    <p><b>Формула:</b></p>
+                    <div class="formula">$$|S_r(σ̃)| = \binom{n}{r}$$</div>
+                    <div class="examples">
+                        <p>Пример:</p>
+                        <p>S₂(0000) = все наборы, отличающиеся от 0000 ровно в 2 позициях:</p>
+                        <ul>
+                            <li>1100, 1010, 1001, 0110, 0101, 0011</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Секция 8 -->
+            <div class="lecture-section" id="section8">
+                <h2>8. Натуральный порядок</h2>
+                <div class="concept-box">
+                    <p><b>Идея:</b> Представим наборы как бинарные числа:</p>
+                    <ul>
+                        <li>(000) → 0</li>
+                        <li>(001) → 1</li>
+                        <li>(010) → 2</li>
+                        <li>...</li>
+                        <li>(111) → 7</li>
+                    </ul>
+                    <p><b>Как построить следующий набор?</b></p>
+                    <ol>
+                        <li>Ищем первый ноль справа налево</li>
+                        <li>Заменяем его на 1</li>
+                        <li>Все позиции правее — в 0</li>
+                    </ol>
+                    <div class="examples">
+                        <p>Пример при n = 3:</p>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Шаг</th>
+                                    <th>Набор</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>1</td>
+                                    <td>000</td>
+                                </tr>
+                                <tr>
+                                    <td>2</td>
+                                    <td>001</td>
+                                </tr>
+                                <tr>
+                                    <td>3</td>
+                                    <td>010</td>
+                                </tr>
+                                <tr>
+                                    <td>4</td>
+                                    <td>011</td>
+                                </tr>
+                                <tr>
+                                    <td>5</td>
+                                    <td>100</td>
+                                </tr>
+                                <tr>
+                                    <td>6</td>
+                                    <td>101</td>
+                                </tr>
+                                <tr>
+                                    <td>7</td>
+                                    <td>110</td>
+                                </tr>
+                                <tr>
+                                    <td>8</td>
+                                    <td>111</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="summary-section" id="summary">
+                <h2>📝 Краткое резюме</h2>
+                <ul>
+                    <li><strong>Двоичный набор</strong> — это последовательность из 0 и 1.</li>
+                    <li>Его длина — это количество элементов, а вес — число единиц.</li>
+                    <li>Всего наборов длины n: 2ⁿ.</li>
+                    <li>Расстояние между наборами — количество несовпадающих позиций (расстояние Хэмминга).</li>
+                    <li>Соседние наборы — расстояние 1.</li>
+                    <li>Сфера радиуса r — все наборы, отличающиеся ровно в r позициях.</li>
+                    <li>Натуральный порядок: от (000…0) до (111…1).</li>
+                </ul>
+            </div>
+
+            <!-- Карточки -->
+            <div class="cards-section" id="cards">
+                <h2>🃏 Пятисекундка</h2>
+                <div class="cards-container">
+                    <div class="card">
+                        <div class="card-front">Что такое двоичный набор?</div>
+                        <div class="card-back">Последовательность из 0 и 1.</div>
+                    </div>
+                    <div class="card">
+                        <div class="card-front">Сколько существует наборов длины n?</div>
+                        <div class="card-back">$$2^n$$</div>
+                    </div>
+                    <div class="card">
+                        <div class="card-front">Что такое вес набора?</div>
+                        <div class="card-back">Количество единиц в наборе.</div>
+                    </div>
+                    <div class="card">
+                        <div class="card-front">Что такое расстояние Хэмминга?</div>
+                        <div class="card-back">Количество позиций, в которых два набора различны.</div>
+                    </div>
+                    <div class="card">
+                        <div class="card-front">Какие наборы называются соседними?</div>
+                        <div class="card-back">Те, чьё расстояние Хэмминга равно 1.</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="up-button" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">
+        <img src="../Photos/up.png" alt="Вверх" class="up-icon">
+    </div>
+
+    <script src="lec1.js"></script>
+</body>
+</html>

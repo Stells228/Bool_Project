@@ -568,13 +568,42 @@ body {
     font-family: 'Comfortaa', cursive;
 }
 
-.lecture-content {
-    color: #ffffff;
-    line-height: 1.6;
+.lecture-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 15px;
+    padding: 10px;
 }
 
-.lecture-content iframe {
-    width: 100%;
-    height: 100%;
-    border: none;
+.lecture-block {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 10px;
+    padding: 15px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-align: center;
+    min-height: 80px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.lecture-block:hover {
+    background: rgba(97, 60, 192, 0.7);
+    transform: translateY(-3px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.lecture-block h3 {
+    margin: 0;
+    color: #ffffff;
+    font-size: 1.1rem;
+    font-family: 'Comfortaa', cursive;
+}
+
+@media (max-width: 600px) {
+    .lecture-grid {
+        grid-template-columns: 1fr;
+    }
 }
