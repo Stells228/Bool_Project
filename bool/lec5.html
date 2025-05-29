@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>🧩 Лекция 5. Дизъюнктивные нормальные формы (ДНФ)</title>
+
+    <link rel="preload" href="lec5.css" as="style">
+    <link rel="preload" href="../main.css" as="style">
+    <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/vis/4.21.0/vis.min.js" as="script">
+
+    <link href="lec5.css" rel="stylesheet">
+    <link rel="stylesheet" href="../main.css">
+    <link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <!-- PWA метаданные -->
+    <link rel="manifest" href="/favicon/site.webmanifest">
+    <meta name="theme-color" content="#416190">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+    <!-- Иконки -->
+    <link rel="icon" href="/favicon/favicon.ico" type="image/x-icon">
+    <link rel="apple-touch-icon" href="/favicon/apple-touch-icon.png" sizes="180x180">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vis/4.21.0/vis.min.js" defer></script>
+</head>
+<body>
+    <div class="lecture-decoration">
+        <img src="../Photos/cloudmoon1.png" alt="Cloud" class="decoration-cloud cloud1" />
+        <img src="../Photos/cloudmoon2.png" alt="Cloud" class="decoration-cloud cloud2" />
+        <img src="../Photos/cloudmoon3.png" alt="Cloud" class="decoration-cloud cloud3" />
+        <img src="../Photos/stars1.png" alt="Stars" class="decoration-stars stars1" />
+        <img src="../Photos/stars2.png" alt="Stars" class="decoration-stars stars2" />
+    </div>
+
+    <div class="lecture-container">
+        <div class="back-button" onclick="window.history.back()">
+            <img src="../Photos/home.png" alt="Назад" class="back-icon" />
+        </div>
+
+        <h1 class="lecture-title">🧩 Лекция 5. Дизъюнктивные нормальные формы (ДНФ)</h1>
+
+        <div class="toc-container">
+            <h3>Содержание:</h3>
+            <ul class="toc-list">
+                <li><a href="#section1">1. Что такое ДНФ?</a></li>
+                <li><a href="#section2">2. Элементарные конъюнкции</a></li>
+                <li><a href="#section3">3. Как построить СДНФ</a></li>
+                <li><a href="#section4">4. Свойства СДНФ</a></li>
+                <li><a href="#section5">5. Преобразование функции в СДНФ по таблице</a></li>
+                <li><a href="#section6">6. Сокращённые и минимальные ДНФ</a></li>
+                <li><a href="#summary">Краткое резюме</a></li>
+                <li><a href="#cards">Пятисекундка</a></li>
+                <li><a href="#table">Таблица — Пример построения СДНФ</a></li>
+            </ul>
+        </div>
+
+        <div class="lecture-content">
+            <!-- 1. Что такое ДНФ? -->
+            <div class="lecture-section" id="section1">
+                <h2>1. Что такое ДНФ?</h2>
+                <p><strong>Определение</strong></p>
+                <p>Дизъюнктивная нормальная форма (ДНФ) — это логическая формула, представляющая собой дизъюнкцию (ИЛИ)
+                    конъюнкций (И) переменных или их отрицаний.</p>
+                <p>Форма:</p>
+                <div class="formula">
+                    $$\Phi(x_1, ..., x_n) = K_1 \lor K_2 \lor \dots \lor K_s$$
+                </div>
+                <p>Где каждый \(K_i\) — элементарная конъюнкция (набор переменных или их отрицаний, соединённых через
+                    И).</p>
+            </div>
+
+            <!-- 2. Элементарные конъюнкции -->
+            <div class="lecture-section" id="section2">
+                <h2>2. Элементарные конъюнкции</h2>
+                <p>Каждое \(K_i\) соответствует одному конкретному набору входных значений, на котором функция \(f\)
+                    принимает значение 1.</p>
+                <p>Формула элементарной конъюнкции:</p>
+                <div class="formula">
+                    $$x_1^{\sigma_1} \wedge x_2^{\sigma_2} \wedge \dots \wedge x_n^{\sigma_n}$$
+                </div>
+                <p>Где:</p>
+                <ul>
+                    <li>\(x_i^1 = x_i\)</li>
+                    <li>\(x_i^0 = \neg x_i\)</li>
+                </ul>
+            </div>
+
+            <!-- 3. Как построить СДНФ -->
+            <div class="lecture-section" id="section3">
+                <h2>3. Как построить СДНФ (совершенную ДНФ)</h2>
+                <p>Алгоритм:</p>
+                <ol>
+                    <li>Возьмите все наборы \(\sigma = (\sigma_1, ..., \sigma_n)\), на которых функция \(f(\sigma) =
+                        1\).</li>
+                    <li>Для каждого такого набора составьте элементарную конъюнкцию.</li>
+                    <li>Соедините все конъюнкции через дизъюнкцию.</li>
+                </ol>
+                <p><strong>Пример:</strong></p>
+                <p>Пусть \(f = (10000001)\) — функция от 3 переменных. Значения 1 на наборах:</p>
+                <ul>
+                    <li>\((000)\)</li>
+                    <li>\((111)\)</li>
+                </ul>
+                <p>Тогда:</p>
+                <div class="formula">
+                    \[
+                    K_1 = \neg x_1 \wedge \neg x_2 \wedge \neg x_3, \quad
+                    K_2 = x_1 \wedge x_2 \wedge x_3
+                    \]
+                </div>
+                <p>СДНФ:</p>
+                <div class="formula">
+                    \[
+                    f(x_1, x_2, x_3) = \neg x_1 \wedge \neg x_2 \wedge \neg x_3 \lor x_1 \wedge x_2 \wedge x_3
+                    \]
+                </div>
+            </div>
+
+            <!-- 4. Свойства СДНФ -->
+            <div class="lecture-section" id="section4">
+                <h2>4. Свойства СДНФ</h2>
+                <ul>
+                    <li>Всегда существует. Любая булева функция имеет хотя бы одну ДНФ.</li>
+                    <li>Уникальность. Совершенная ДНФ (СДНФ) однозначна для фиксированного порядка наборов.</li>
+                    <li>Может быть длинной — до \(2^n\) слагаемых.</li>
+                </ul>
+            </div>
+
+            <!-- 5. Преобразование функции в СДНФ по таблице -->
+            <div class="lecture-section" id="section5">
+                <h2>5. Преобразование функции в СДНФ по таблице</h2>
+                <table class="residual-table">
+                    <thead>
+                        <tr>
+                            <th>\(x_1\)</th>
+                            <th>\(x_2\)</th>
+                            <th>\(x_3\)</th>
+                            <th>\(f(x_1,x_2,x_3)\)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>0</td>
+                            <td>0</td>
+                            <td>0</td>
+                            <td>1</td>
+                        </tr>
+                        <tr>
+                            <td>0</td>
+                            <td>0</td>
+                            <td>1</td>
+                            <td>0</td>
+                        </tr>
+                        <tr>
+                            <td>0</td>
+                            <td>1</td>
+                            <td>0</td>
+                            <td>0</td>
+                        </tr>
+                        <tr>
+                            <td>0</td>
+                            <td>1</td>
+                            <td>1</td>
+                            <td>0</td>
+                        </tr>
+                        <tr>
+                            <td>1</td>
+                            <td>0</td>
+                            <td>0</td>
+                            <td>0</td>
+                        </tr>
+                        <tr>
+                            <td>1</td>
+                            <td>0</td>
+                            <td>1</td>
+                            <td>0</td>
+                        </tr>
+                        <tr>
+                            <td>1</td>
+                            <td>1</td>
+                            <td>0</td>
+                            <td>0</td>
+                        </tr>
+                        <tr>
+                            <td>1</td>
+                            <td>1</td>
+                            <td>1</td>
+                            <td>1</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <p>→</p>
+                <div class="formula">
+                    \[
+                    f = \neg x_1 \wedge \neg x_2 \wedge \neg x_3 \lor x_1 \wedge x_2 \wedge x_3
+                    \]
+                </div>
+            </div>
+
+            <!-- 6. Сокращённые и минимальные ДНФ -->
+            <div class="lecture-section" id="section6">
+                <h2>6. Сокращённые и минимальные ДНФ</h2>
+                <p>Сокращённая ДНФ — это ДНФ, из которой удалены лишние или поглощаемые конъюнкции.</p>
+                <p>Минимальная ДНФ (МДНФ) — ДНФ с минимальным числом переменных и/или конъюнкций.</p>
+                <p>Минимизация — тема следующих лекций.</p>
+            </div>
+
+            <!-- Краткое резюме -->
+            <div class="lecture-section" id="summary">
+                <h2>📝 Краткое резюме</h2>
+                <ul>
+                    <li>ДНФ — это дизъюнкция конъюнкций переменных или их отрицаний.</li>
+                    <li>Совершенная ДНФ (СДНФ) строится по всем наборам, на которых функция равна 1.</li>
+                    <li>Любая булева функция может быть представлена в СДНФ.</li>
+                    <li>Для построения: переберите все наборы, где \(f=1\), составьте элементарные конъюнкции и
+                        объедините их через OR.</li>
+                    <li>Существуют сокращённые и минимальные формы ДНФ.</li>
+                </ul>
+            </div>
+
+            <!-- Карточки -->
+            <div class="cards-section" id="cards">
+                <h2>🃏 Пятисекундка</h2>
+                <div class="cards-container">
+                    <div class="card">
+                        <div class="card-front">Что такое ДНФ?</div>
+                        <div class="card-back">Формула вида дизъюнкции конъюнкций переменных и их отрицаний.</div>
+                    </div>
+                    <div class="card">
+                        <div class="card-front">Как составляется СДНФ?</div>
+                        <div class="card-back">По всем наборам, где \(f=1\), составляются элементарные конъюнкции и
+                            объединяются через OR.</div>
+                    </div>
+                    <div class="card">
+                        <div class="card-front">Что входит в элементарную конъюнкцию?</div>
+                        <div class="card-back">Каждая переменная — либо \(x_i\), либо \(\neg x_i\).</div>
+                    </div>
+                    <div class="card">
+                        <div class="card-front">Всегда ли можно построить ДНФ для булевой функции?</div>
+                        <div class="card-back">Да, любая булева функция имеет ДНФ.</div>
+                    </div>
+                    <div class="card">
+                        <div class="card-front">Чем отличается СДНФ от МДНФ?</div>
+                        <div class="card-back">СДНФ — полная, уникальная. МДНФ — кратчайшая по числу переменных и
+                            слагаемых.</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Таблица — Пример построения СДНФ -->
+            <div class="table-section residual-properties-table" id="table">
+                <h2>📊 Таблица — Пример построения СДНФ</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>\(x_1\)</th>
+                            <th>\(x_2\)</th>
+                            <th>\(x_3\)</th>
+                            <th>\(f\)</th>
+                            <th>Элементарная конъюнкция</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>0</td>
+                            <td>0</td>
+                            <td>0</td>
+                            <td>1</td>
+                            <td>$$\neg x_1 \wedge \neg x_2 \wedge \neg x_3$$</td>
+                        </tr>
+                        <tr>
+                            <td>0</td>
+                            <td>0</td>
+                            <td>1</td>
+                            <td>0</td>
+                            <td>—</td>
+                        </tr>
+                        <tr>
+                            <td>1</td>
+                            <td>1</td>
+                            <td>1</td>
+                            <td>1</td>
+                            <td>$$x_1 \wedge x_2 \wedge x_3$$</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="up-button">
+        <img src="../Photos/up.png" alt="Вверх" class="up-icon" />
+    </div>
+
+    <script src="lec5.js"></script>
+</body>
+</html>
