@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>🧩 Лекция 8. Классы булевых функций</title>
+    
+    <link rel="preload" href="lec8.css" as="style">
+    <link rel="preload" href="../main.css" as="style">
+    <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/vis/4.21.0/vis.min.js" as="script">
+
+    <link href="lec8.css" rel="stylesheet">
+    <link rel="stylesheet" href="../main.css">
+    <link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <!-- PWA метаданные -->
+    <link rel="manifest" href="/favicon/site.webmanifest">
+    <meta name="theme-color" content="#416190">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+    <!-- Иконки -->
+    <link rel="icon" href="/favicon/favicon.ico" type="image/x-icon">
+    <link rel="apple-touch-icon" href="/favicon/apple-touch-icon.png" sizes="180x180">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vis/4.21.0/vis.min.js" defer></script>
+</head>
+<body>
+    <div class="lecture-decoration">
+        <img src="../Photos/cloudmoon1.png" alt="Cloud" class="decoration-cloud cloud1" />
+        <img src="../Photos/cloudmoon2.png" alt="Cloud" class="decoration-cloud cloud2" />
+        <img src="../Photos/cloudmoon3.png" alt="Cloud" class="decoration-cloud cloud3" />
+        <img src="../Photos/stars1.png" alt="Stars" class="decoration-stars stars1" />
+        <img src="../Photos/stars2.png" alt="Stars" class="decoration-stars stars2" />
+    </div>
+
+    <div class="lecture-container">
+        <div class="back-button" onclick="window.history.back()">
+            <img src="../Photos/home.png" alt="Назад" class="back-icon" />
+        </div>
+
+        <h1 class="lecture-title">🧩 Лекция 8. Классы булевых функций</h1>
+
+        <div class="toc-container">
+            <h3>Содержание:</h3>
+            <ul class="toc-list">
+                <li><a href="#section1">1. Зачем нужны классы?</a></li>
+                <li><a href="#section2">2. Класс L — Линейные функции</a></li>
+                <li><a href="#section3">3. Класс M — Монотонные функции</a></li>
+                <li><a href="#section4">4. Класс S — Самодвойственные функции</a></li>
+                <li><a href="#section5">5. Классы T₀ и T₁</a></li>
+                <li><a href="#section6">6. Свойства классов</a></li>
+                <li><a href="#section7">7. Почему это важно?</a></li>
+                <li><a href="#summary">Краткое резюме</a></li>
+                <li><a href="#cards">Пятисекундка</a></li>
+                <li><a href="#table">Таблица — Сравнение классов</a></li>
+            </ul>
+        </div>
+
+        <div class="lecture-content">
+            <!-- 1 -->
+            <div class="lecture-section" id="section1">
+                <h2>1. Зачем нужны классы?</h2>
+                <p>Булевых функций очень много (миллионы уже при \(n=4\)), но их удобно группировать по общим свойствам. Такие группы называются классами функций.</p>
+                <p>В этом блоке мы рассмотрим 5 ключевых классов, используемых в теореме Поста:</p>
+                <ul>
+                    <li>Линейные (L)</li>
+                    <li>Монотонные (M)</li>
+                    <li>Самодвойственные (S)</li>
+                    <li>Сохраняющие 0 (T₀)</li>
+                    <li>Сохраняющие 1 (T₁)</li>
+                </ul>
+            </div>
+
+            <!-- 2 -->
+            <div class="lecture-section" id="section2">
+                <h2>2. Класс L — Линейные функции</h2>
+                <p><strong>Определение</strong></p>
+                <p>Функция \(f\) называется линейной, если её полином Жегалкина не содержит произведений переменных (то есть мономов степени &gt; 1).</p>
+                <p>Вид:</p>
+                <div class="formula">
+                    \[
+                    f(x_1, ..., x_n) = a_0 \oplus a_1 x_1 \oplus a_2 x_2 \oplus \dots \oplus a_n x_n
+                    \]
+                </div>
+                <p><strong>Примеры:</strong></p>
+                <ul>
+                    <li>\(f(x) = x\)</li>
+                    <li>\(f(x,y) = x \oplus y\)</li>
+                    <li>\(f(x,y,z) = 1 \oplus x \oplus y\)</li>
+                </ul>
+                <p><strong>Признак:</strong> Сложение по модулю 2 (XOR), без перемножений.</p>
+            </div>
+
+            <!-- 3 -->
+            <div class="lecture-section" id="section3">
+                <h2>3. Класс M — Монотонные функции</h2>
+                <p><strong>Определение</strong></p>
+                <p>Функция \(f\) — монотонная, если:</p>
+                <div class="formula">
+                    \[
+                    x \le y \implies f(x) \le f(y)
+                    \]
+                </div>
+                <p>(то есть увеличение входа не уменьшает выход)</p>
+                <p><strong>Примеры:</strong></p>
+                <ul>
+                    <li>\(x \wedge y\)</li>
+                    <li>\(x \vee y\)</li>
+                    <li>\(x\)</li>
+                    <li>\(x_1 \vee x_2 \vee x_3\)</li>
+                </ul>
+                <p><strong>❌ Не являются монотонными:</strong></p>
+                <ul>
+                    <li>\(\neg x\)</li>
+                    <li>\(x \oplus y\)</li>
+                </ul>
+                <p><strong>Признак:</strong> Только положительные влияния переменных (без отрицаний).</p>
+            </div>
+
+            <!-- 4 -->
+            <div class="lecture-section" id="section4">
+                <h2>4. Класс S — Самодвойственные функции</h2>
+                <p><strong>Определение</strong></p>
+                <p>Функция \(f\) — самодвойственная, если:</p>
+                <div class="formula">
+                    \[
+                    f(x_1, ..., x_n) = \neg f(\neg x_1, ..., \neg x_n)
+                    \]
+                </div>
+                <p>То есть значение на наборе противоположно значению на противоположном наборе.</p>
+                <p><strong>Пример:</strong></p>
+                <p>\(f(x,y) = x \oplus y\)</p>
+                <p><strong>Признак:</strong> Симметрия: \(f(x) = \neg f(\neg x)\)</p>
+            </div>
+
+            <!-- 5 -->
+            <div class="lecture-section" id="section5">
+                <h2>5. Классы T₀ и T₁</h2>
+                <p><strong>Класс \(T_0\) — сохраняющие 0</strong></p>
+                <p>
+                    \[
+                    f(0, ..., 0) = 0
+                    \]
+                </p>
+                <p><strong>Примеры:</strong></p>
+                <ul>
+                    <li>\(x \wedge y\)</li>
+                    <li>\(x \oplus y\)</li>
+                </ul>
+                <p><strong>Не входит:</strong> \(\neg x\) (потому что \(\neg 0 = 1\))</p>
+
+                <p><strong>Класс \(T_1\) — сохраняющие 1</strong></p>
+                <p>
+                    \[
+                    f(1, ..., 1) = 1
+                    \]
+                </p>
+                <p><strong>Примеры:</strong></p>
+                <ul>
+                    <li>\(x \vee y\)</li>
+                    <li>\(x \oplus y\)</li>
+                </ul>
+                <p><strong>Не входит:</strong> \(\neg x\)</p>
+            </div>
+
+            <!-- 6 -->
+            <div class="lecture-section" id="section6">
+                <h2>6. Свойства классов</h2>
+                <table class="residual-properties-table">
+                    <thead>
+                        <tr>
+                            <th>Класс</th>
+                            <th>Замкнут по суперпозиции?</th>
+                            <th>Подмножество всех функций?</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>L</td><td>Да</td><td>Да</td></tr>
+                        <tr><td>M</td><td>Да</td><td>Да</td></tr>
+                        <tr><td>S</td><td>Да</td><td>Да</td></tr>
+                        <tr><td>T₀</td><td>Да</td><td>Да</td></tr>
+                        <tr><td>T₁</td><td>Да</td><td>Да</td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- 7 -->
+            <div class="lecture-section" id="section7">
+                <h2>7. Почему это важно?</h2>
+                <p>Эти классы — строительные блоки в логике.</p>
+                <p>Чтобы множество было полным, оно не должно целиком лежать в любом из этих классов.</p>
+            </div>
+
+            <!-- Краткое резюме -->
+            <div class="lecture-section" id="summary">
+                <h2>📝 Краткое резюме</h2>
+                <ul>
+                    <li>Булевые функции можно группировать в классы по общим свойствам.</li>
+                    <li>Класс L — линейные, выражаются только через XOR.</li>
+                    <li>Класс M — монотонные, не убывают при увеличении входов.</li>
+                    <li>Класс S — самодвойственные, значение на наборе противоположно значению на противоположном.</li>
+                    <li>Класс T₀ — сохраняют 0 (f(0…0) = 0).</li>
+                    <li>Класс T₁ — сохраняют 1 (f(1…1) = 1).</li>
+                    <li>Каждый класс замкнут по суперпозиции.</li>
+                </ul>
+            </div>
+
+            <!-- Карточки -->
+            <div class="cards-section" id="cards">
+                <h2>🃏 Пятисекундка</h2>
+                <div class="cards-container">
+                    <div class="card">
+                        <div class="card-front">Что такое линейная булева функция?</div>
+                        <div class="card-back">Та, чей полином Жегалкина содержит только суммы, без произведений переменных.</div>
+                    </div>
+                    <div class="card">
+                        <div class="card-front">Признак монотонной функции?</div>
+                        <div class="card-back">Увеличение входа не уменьшает результат: \(x \le y \Rightarrow f(x) \le f(y)\)</div>
+                    </div>
+                    <div class="card">
+                        <div class="card-front">Как определить самодвойственность?</div>
+                        <div class="card-back">\(f(x) = \neg f(\neg x)\)</div>
+                    </div>
+                    <div class="card">
+                        <div class="card-front">Что означает «функция сохраняет 0»?</div>
+                        <div class="card-back">\(f(0, ..., 0) = 0\)</div>
+                    </div>
+                    <div class="card">
+                        <div class="card-front">Какие классы входят в теорему Поста?</div>
+                        <div class="card-back">\(T_0, T_1, S, M, L\)</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Таблица -->
+            <div class="table-section residual-properties-table" id="table">
+                <h2>📊 Таблица — Сравнение классов</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Класс</th>
+                            <th>Свойство</th>
+                            <th>Примеры функций</th>
+                            <th>Не входят функции</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>L</td>
+                            <td>Линейность</td>
+                            <td>\(x, x \oplus y\)</td>
+                            <td>\(x \wedge y\)</td>
+                        </tr>
+                        <tr>
+                            <td>M</td>
+                            <td>Монотонность</td>
+                            <td>\(x \vee y, x \wedge y\)</td>
+                            <td>\(\neg x, x \oplus y\)</td>
+                        </tr>
+                        <tr>
+                            <td>S</td>
+                            <td>Самодвойственность</td>
+                            <td>\(x \oplus y\)</td>
+                            <td>\(x \vee y\)</td>
+                        </tr>
+                        <tr>
+                            <td>T₀</td>
+                            <td>Сохраняет 0</td>
+                            <td>\(x \wedge y\)</td>
+                            <td>\(\neg x\)</td>
+                        </tr>
+                        <tr>
+                            <td>T₁</td>
+                            <td>Сохраняет 1</td>
+                            <td>\(x \vee y\)</td>
+                            <td>\(\neg x\)</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+    </div>
+
+    <div class="up-button">
+        <img src="../Photos/up.png" alt="Вверх" class="up-icon" />
+    </div>
+
+    <script src="lec8.js"></script>
+</body>
+</html>
