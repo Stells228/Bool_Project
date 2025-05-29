@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>компоненты связности графа</title>
+    
+  <link rel="preload" href="glvl3.css" as="style">
+  <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/vis/4.21.0/vis.min.js" as="script">
+    
+  <link href="glvl3.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+  <!-- PWA метаданные -->
+  <link rel="manifest" href="/favicon/site.webmanifest">
+  <meta name="theme-color" content="#416190">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    
+  <!-- Иконки -->
+  <link rel="icon" href="/favicon/favicon.ico" type="image/x-icon">
+  <link rel="apple-touch-icon" href="/favicon/apple-touch-icon.png" sizes="180x180">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/vis/4.21.0/vis.min.js" defer></script>
+</head>
+<body>
+  <img src="../Photos/stars1.png" alt="Stars" class="stars stars1">
+  <img src="../Photos/stars2.png" alt="Stars" class="stars stars2">
+  <img src="../Photos/moon.png" alt="Moon" class="moon">
+  <img src="../Photos/cloudmoon1.png" alt="Cloud" class="cloud cloud1">
+  <img src="../Photos/cloudmoon2.png" alt="Cloud" class="cloud cloud2">
+  <img src="../Photos/cloudmoon3.png" alt="Cloud" class="cloud cloud3">
+  <img src="../Photos/cloudmoon4.png" alt="Cloud" class="cloud cloud4">
+  <img src="../Photos/cloudmoon5.png" alt="Cloud" class="cloud cloud5">
+  <img src="../Photos/cloudmoon6.png" alt="Cloud" class="cloud cloud6">
+  <img src="../Photos/comet.png" alt="Comet 1" class="comet1">
+  <img src="../Photos/comet.png" alt="Comet 2" class="comet2">
+  <img src="../Photos/comet.png" alt="Comet 3" class="comet3">
+  <img src="../Photos/comet.png" alt="Comet 4" class="comet4">
+
+  <div class="level-container">
+    <div class="nav-buttons">
+      <button class="nav-icon-btn" id="toMap">
+        <img class="nav-icon" src="../Photos/list.png" alt="Map">
+      </button>
+      <button class="nav-icon-btn" id="toLevel2">
+        <img class="nav-icon" src="../Photos/left.png" alt="Previous">
+      </button>
+    </div>
+
+    <h1>Уровень 3</h1>
+    <p class="task-description">Определите количество сильно связных компонент в графе</p>
+
+    <div class="content-wrapper">
+      <div class="left-panel">
+        <div class="button-group matrix-controls">
+          <label>
+            Количество вершин:
+            <input type="number" id="vertices" min="1" max="20" value="5" required>
+          </label>
+          <button type="button" class="submit-btn" id="generateBtn">Создать матрицу</button>
+        </div>
+
+        <div id="matrixContainer"></div>
+
+        <div class="button-group answer-controls">
+          <input type="number" id="userAnswer" min="1" placeholder="Введите число компонент">
+          <button type="button" class="submit-btn" id="checkBtn">Проверить</button>
+          <button type="button" class="try-again-btn" id="tryAgainBtn" style="display:none">Ещё раз</button>
+        </div>
+      </div>
+
+      <div class="right-panel">
+        <div class="graph-scroll-container">
+          <div class="graph-container">
+            <div id="graph-visualization"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <div id="feedback" class="feedback"></div>
+  </div>
+</body>
+</html>

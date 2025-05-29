@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en"> 
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Level Selection</title>
+        
+    <link rel="preload" href="map.css" as="style">
+    <link rel="preload" href="Photos/moon.png" as="image">
+    <link rel="preload" href="Photos/stars1.png" as="image">
+    <link rel="preload" href="Photos/stars2.png" as="image">
+    <link rel="preload" href="Photos/cloudmoon1.png" as="image">
+    <link rel="preload" href="Photos/cloudmoon2.png" as="image">
+        
+    <link rel="stylesheet" href="map.css">
+    <link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@400&display=swap" rel="stylesheet">
+        
+    <!-- PWA метаданные -->
+    <link rel="manifest" href="/favicon/site.webmanifest">
+    <meta name="theme-color" content="#416190">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+        
+    <!-- Иконки -->
+    <link rel="icon" href="/favicon/favicon.ico" type="image/x-icon">
+    <link rel="icon" type="image/png" href="/favicon/favicon-96x96.png" sizes="96x96">
+    <link rel="apple-touch-icon" href="/favicon/apple-touch-icon.png" sizes="180x180">
+</head>
+<body>
+    <div class="background">
+        <img src="Photos/stars1.png" alt="Stars" class="stars1" loading="lazy" onload="this.classList.add('loaded')" onerror="this.classList.add('error')">
+        <img src="Photos/stars2.png" alt="Stars" class="stars2" loading="lazy" onload="this.classList.add('loaded')" onerror="this.classList.add('error')">
+        <img src="Photos/moon.png" alt="Moon" class="moon" onload="this.classList.add('loaded')" onerror="this.classList.add('error')">
+        <img src="Photos/cloudmoon1.png" alt="Cloud" class="cloud1" onload="this.classList.add('loaded')" onerror="this.classList.add('error')">
+        <img src="Photos/cloudmoon2.png" alt="Cloud" class="cloud2" onload="this.classList.add('loaded')" onerror="this.classList.add('error')">
+        <img src="Photos/cloudmoon3.png" alt="Cloud" class="cloud3" onload="this.classList.add('loaded')" onerror="this.classList.add('error')">
+        <img src="Photos/cloudmoon4.png" alt="Cloud" class="cloud4" onload="this.classList.add('loaded')" onerror="this.classList.add('error')">
+        <img src="Photos/cloudmoon5.png" alt="Cloud" class="cloud5" onload="this.classList.add('loaded')" onerror="this.classList.add('error')">
+    </div>
+    <div class="map-container">
+        <h1 class="map-title">Выбор уровня</h1>
+        <div class="level-scroll">
+            <a href="level/level1.html" target="_parent" class="level-block-link">
+                <div class="level-block" data-level="1">
+                    <span class="level-title">Уровень 1</span>
+                    <p>Нахождение имени ф-ии <br>с 2 аргументами</br></p>
+                </div>
+            </a>
+            <a href="level/level2.html" target="_parent" class="level-block-link">
+                <div class="level-block" data-level="2">
+                    <span class="level-title">Уровень 2</span>
+                    <p>Существенные и фиктивные переменные</p>
+                </div>
+            </a>
+            <a href="level/level3.html" target="_parent" class="level-block-link">
+                <div class="level-block" data-level="3">
+                    <span class="level-title">Уровень 3</span>
+                    <p>ДНФ</p>
+                </div>
+            </a> 
+            <a href="level/level4.html" target="_parent" class="level-block-link">
+                <div class="level-block" data-level="4">
+                    <span class="level-title">Уровень 4</span>
+                    <p>КНФ</p>
+                </div>
+            </a>
+            <a href="level/level5.html" target="_parent" class="level-block-link">
+                <div class="level-block" data-level="5">
+                    <span class="level-title">Уровень 5</span>
+                    <p>Предполные классы булевой ф-ии</p>
+                </div>
+            </a>
+            <a href="level/level6.html" target="_parent" class="level-block-link">
+                <div class="level-block" data-level="6">
+                    <span class="level-title">Уровень 6</span>
+                    <p>Полные системы булевой <br>ф-ии</br></p>
+                </div>
+            </a>
+        </div>
+    </div>
+    <button class="main-menu-btn" id="main-menu-btn">
+        <img src="Photos/home.png" alt="Home" class="home-icon">
+        В главное меню
+    </button>
+    <script src="map.js"></script>
+</body>
+</html>

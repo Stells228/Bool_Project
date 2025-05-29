@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Оффлайн режим</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      padding: 20px;
+      background: linear-gradient(to bottom, #416190, #776f98);
+      color: white;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    }
+    h1 {
+      font-size: 24px;
+    }
+    p {
+      font-size: 16px;
+      margin-bottom: 20px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Оффлайн режим</h1>
+  <p>Приложение работает без интернета, но некоторые функции могут быть недоступны.</p>
+  <button onclick="window.location.reload()">Попробовать снова</button>
+
+  <script>
+    // Конфиг Firebase (тот же, что и в основном приложении)
+    const firebaseConfig = {
+      apiKey: "AIzaSyDlHLCPtlITZ4ezjYWbUYA3r70BgensOl8",
+      authDomain: "hehe-63f6d.firebaseapp.com",
+      projectId: "hehe-63f6d",
+      storageBucket: "hehe-63f6d.appspot.com",
+      messagingSenderId: "54586209991",
+      appId: "1:54586209991:web:ecaa663106b0160a1cb0e2",
+      measurementId: "G-F190E6ZZVY"
+    };
+  
+    // Инициализация Firebase
+    firebase.initializeApp(firebaseConfig);
+  
+    // Если нужен Analytics
+    if (firebase.analytics) {
+      firebase.analytics();
+    }
+  
+    // Если используешь Firestore и хочешь оффлайн-поддержку:
+    if (firebase.firestore) {
+      const db = firebase.firestore();
+      db.enablePersistence()
+        .catch((err) => {
+          console.warn("Оффлайн-поддержка Firestore не доступна:", err.code);
+        });
+    }
+  </script>
+  
+
+  <!-- Firebase App -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+<!-- Firebase Analytics -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-analytics-compat.js"></script>
+<!-- Firestore -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
+</body>
+</html>

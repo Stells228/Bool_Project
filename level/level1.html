@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Уровень 1 - узнай имя функции</title>
+      
+    <link rel="preload" href="lvl1.css" as="style">
+    <link rel="preload" href="../Photos/moon.png" as="image">
+      
+    <link rel="stylesheet" href="lvl1.css">
+    <link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@400&display=swap" rel="stylesheet">
+      
+    <!-- PWA метаданные -->
+    <link rel="manifest" href="/favicon/site.webmanifest">
+    <meta name="theme-color" content="#416190">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+      
+    <!-- Иконки -->
+    <link rel="icon" href="/favicon/favicon.ico" type="image/x-icon">
+    <link rel="apple-touch-icon" href="/favicon/apple-touch-icon.png" sizes="180x180">
+</head>
+<body>
+    <img src="../Photos/stars1.png" alt="Stars" class="stars stars1">
+    <img src="../Photos/stars2.png" alt="Stars" class="stars stars2">
+    <img src="../Photos/moon.png" alt="Moon" class="moon">
+    <img src="../Photos/cloudmoon1.png" alt="Cloud" class="cloud cloud1">
+    <img src="../Photos/cloudmoon2.png" alt="Cloud" class="cloud cloud2">
+    <img src="../Photos/cloudmoon3.png" alt="Cloud" class="cloud cloud3">
+    <img src="../Photos/cloudmoon4.png" alt="Cloud" class="cloud cloud4">
+    <img src="../Photos/cloudmoon5.png" alt="Cloud" class="cloud cloud5">
+    <img src="../Photos/cloudmoon6.png" alt="Cloud" class="cloud cloud6">
+    <img src="../Photos/comet.png" alt="Comet 1" class="comet1">
+    <img src="../Photos/comet.png" alt="Comet 2" class="comet2">
+    <img src="../Photos/comet.png" alt="Comet 3" class="comet3">
+    <img src="../Photos/comet.png" alt="Comet 4" class="comet4">
+
+    <div class="level-container">
+        <div class="nav-buttons">
+            <button class="nav-icon-btn" id="back-to-level-menu">
+                <img src="../Photos/list.png" alt="Menu" class="nav-icon" loading="lazy">
+            </button>
+            <button class="nav-icon-btn" id="next-level">
+                <img src="../Photos/right.png" alt="Next" class="nav-icon" loading="lazy">
+            </button>
+        </div>
+
+        <h1>Уровень 1</h1>
+        <p class="task-description">Узнай имя функции от 2 аргументов</p>
+        <div class="function-vector" id="function-vector"></div>
+        
+        <div class="content-wrapper">
+            <div class="left-panel">
+                <div class="truth-table-container" id="truth-table-container"></div>
+            </div>
+            
+            <div class="right-panel">
+                <div class="function-select-container">
+                    <div class="custom-select">
+                        <div class="select-header" id="select-header">
+                            <span>Выбор функции</span>
+                            <span class="arrow">▼</span>
+                        </div>
+                        <div class="select-options" id="select-options">
+                            <div class="option" data-value="Нулевая функция">Нулевая функция</div>
+                            <div class="option" data-value="Конъюнкция">Конъюнкция</div>
+                            <div class="option" data-value="Запрет по x">Запрет по x</div>
+                            <div class="option" data-value="функция по x">функция по x</div>
+                            <div class="option" data-value="Запрет по y">Запрет по y</div>
+                            <div class="option" data-value="функция по y">функция по y</div>
+                            <div class="option" data-value="Сложение">Сложение</div>
+                            <div class="option" data-value="Дизъюнкция">Дизъюнкция</div>
+                            <div class="option" data-value="Стрелка Пирса">Стрелка Пирса</div>
+                            <div class="option" data-value="Эквивалентность">Эквивалентность</div>
+                            <div class="option" data-value="Отрицание y">Отрицание y</div>
+                            <div class="option" data-value="Обратная импликация">Обратная импликация</div>
+                            <div class="option" data-value="Отрицание x">Отрицание x</div>
+                            <div class="option" data-value="Импликация">Импликация</div>
+                            <div class="option" data-value="Штрих Шеффера">Штрих Шеффера</div>
+                            <div class="option" data-value="Единичная функция">Единичная функция</div>
+                        </div>
+                        <select id="function-select" style="display: none;">
+                            <option value="">Select function</option>
+                            <option value="Нулевая функция">Нулевая функция</option>
+                            <option value="Конъюнкция">Конъюнкция</option>
+                            <option value="Запрет по x">Запрет по x</option>
+                            <option value="функция по x">функция по x</option>
+                            <option value="Запрет по y">Запрет по y</option>
+                            <option value="функция по y">функция по y</option>
+                            <option value="Сложение">Сложение</option>
+                            <option value="Дизъюнкция">Дизъюнкция</option>
+                            <option value="Стрелка Пирса">Стрелка Пирса</option>
+                            <option value="Эквивалентность">Эквивалентность</option>
+                            <option value="Отрицание y">Отрицание y</option>
+                            <option value="Обратная импликация">Обратная импликация</option>
+                            <option value="Отрицание x">Отрицание x</option>
+                            <option value="Импликация">Импликация</option>
+                            <option value="Штрих Шеффера">Штрих Шеффера</option>
+                            <option value="Единичная функция">Единичная функция</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="button-group">
+                    <button class="submit-btn" id="submit-btn">Найти</button>
+                    <button class="try-again-btn" id="try-again-btn" style="display: none;">Ещё раз</button>
+                </div>
+                
+                <div class="feedback" id="feedback" style="display: none;"></div>
+            </div>
+        </div>
+    </div>
+
+    <script defer src="lvl1.js"></script>
+</body>
+</html>

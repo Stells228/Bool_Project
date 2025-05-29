@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Graph-calc</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        
+    <!-- Предзагрузка критических ресурсов -->
+    <link rel="preload" href="try.css" as="style">
+    <link rel="preload" href="Photos/moon.png" as="image">
+    <link rel="preload" href="Photos/stars1.png" as="image">
+    <link rel="preload" href="Photos/stars2.png" as="image">
+    <link rel="preload" href="Photos/cloudmoon2.png" as="image">
+    <link rel="preload" href="Photos/cloudmoon4.png" as="image">
+        
+    <!-- Основные стили -->
+    <link rel="stylesheet" href="try.css">
+    <link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@400&display=swap" rel="stylesheet">
+        
+    <!-- PWA метаданные -->
+    <link rel="manifest" href="/favicon/site.webmanifest">
+    <meta name="theme-color" content="#416190">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+        
+    <!-- Иконки -->
+    <link rel="icon" href="/favicon/favicon.ico" type="image/x-icon">
+    <link rel="icon" type="image/png" href="/favicon/favicon-96x96.png" sizes="96x96">
+    <link rel="apple-touch-icon" href="/favicon/apple-touch-icon.png" sizes="180x180">
+       
+    <!-- Скрипт vis-network  -->
+    <script src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js" defer></script>
+</head>
+<body>
+    <div class="background">
+        <img src="Photos/stars1.png" alt="Stars" class="stars1" loading="lazy" onload="this.classList.add('loaded')" onerror="this.classList.add('error')">
+        <img src="Photos/stars2.png" alt="Stars" class="stars2" loading="lazy" onload="this.classList.add('loaded')" onerror="this.classList.add('error')">
+        <img src="Photos/moon.png" alt="Moon" class="moon" onload="this.classList.add('loaded')" onerror="this.classList.add('error')">
+        <img src="Photos/cloudmoon2.png" alt="Cloud" class="cloud2" onload="this.classList.add('loaded')" onerror="this.classList.add('error')">
+        <img src="Photos/cloudmoon4.png" alt="Cloud" class="cloud4" onload="this.classList.add('loaded')" onerror="this.classList.add('error')">
+    </div>
+    <div id="confirm-modal" class="modal">
+        <div class="modal-content">
+            <h3>Подтверждение</h3>
+            <p id="confirm-message">Вы действительно хотите сбросить граф?</p>
+            <div class="modal-buttons">
+                <button id="confirm-cancel">Отмена</button>
+                <button id="confirm-ok">Подтвердить</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="Title">Graph-calc</div>
+    
+    <div class="main-container">
+        <div id="graph-container"></div>
+        
+        <div class="panel">
+            <div class="section">
+                <h3>Управление графом</h3>
+                <div class="button-group">
+                    <button id="color-graph">Раскрасить граф</button>
+                    <button id="add-node">+ вершина</button>
+                    <button id="add-edge">+ ребро</button>
+                    <button id="count-components">Компоненты связности</button>
+                    <button id="show-info">Информация о графе</button>
+                    <button id="reset-graph">Сбросить граф</button>
+                </div>
+            </div>
+            
+            <div class="section">
+                <h3>Матрица смежности</h3>
+                <div class="button-group">
+                    <label>
+                        Вершин:
+                        <input type="number" id="vertices" min="1" max="20" value="4" required>
+                    </label>
+                    <button id="generate-matrix">Создать матрицу</button>
+                    <button id="apply-matrix">Применить к графу</button>
+                    <button id="count-components">Показать компоненты связности</button>
+                </div>
+                
+                <div id="matrixContainer" class="matrix-container"></div>
+            </div>
+            
+            <div class="section">
+                <button id="toggle-traversal" class="dropdown-btn">Алгоритмы обхода</button>
+                <div id="traversal-section" class="dropdown-content">
+                    <div class="button-group">
+                        <label for="startVertex">Начальная вершина:</label>
+                        <select id="startVertex"></select>
+                    </div>
+                    <div class="button-group">
+                        <button id="run-dfs">Выполнить DFS</button>
+                        <button id="run-bfs">Выполнить BFS</button>
+                    </div>
+                </div>
+                <div class="section">
+                    <button id="toggle-other" class="dropdown-btn">+ Другие алгоритмы</button>
+                    <div id="other-section" class="dropdown-content">
+                        <div class="button-group">
+                            <button id="run-kruskal">Алгоритм Краскала (MST)</button>
+                        </div>
+                        <div class="button-group">
+                            <button id="run-dijkstra">Алгоритм Дейкстры (кратчайшие пути)</button>
+                        </div>
+                        <div class="button-group">
+                            <button id="run-floyd-warshall">Алгоритм Флойда-Уоршелла</button>
+                        </div>
+                        <div class="button-group">
+                            <button id="run-prufer">Кодирование Прюфера</button>
+                        </div>
+                        <div class="button-group">
+                            <button id="run-prufer-decode">Декодирование Прюфера</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div id="result-container" class="section">
+                <h3>Результаты операций</h3>
+                <div id="resultMessage" class="result-message"></div>
+                <button id="clear-history">Очистить историю</button>
+            </div>
+        </div>
+    </div>
+    <div id="prufer-modal" class="modal">
+        <div class="modal-content">
+            <h3>Декодирование кода Прюфера</h3>
+            <p>Введите код Прюфера через пробел (например: "1 2 3 3")</p>
+            <input type="text" id="prufer-code-input" placeholder="1 2 3 3">
+            <div class="modal-buttons">
+                <button id="prufer-cancel">Отмена</button>
+                <button id="prufer-ok">Применить</button>
+            </div>
+        </div>
+    </div>
+    <div id="graph-notification"></div>
+    <button class="main-menu-btn" id="main-menu-btn">
+        <img src="Photos/home.png" alt="Home" class="home-icon">
+    </button>
+    <div id="transitionOverlay" class="transition-overlay"></div>
+    <script src="try.js"></script>
+</body>
+</html>
+ 

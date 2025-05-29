@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en"> 
+<head>
+    <meta charset="UTF-8">
+    <title>Bool-helper</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <link rel="preload" href="main.css" as="style">
+    <link rel="stylesheet" href="main.css">
+    <link rel="stylesheet" href="calculator.css">
+    <link rel="stylesheet" href="settings.css">
+    <link rel="stylesheet" href="rating.css">
+    <link rel="stylesheet" href="cons.css">
+    <link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@400&display=swap" rel="stylesheet">
+    
+    <link rel="preload" href="Photos/moonre.png" as="image">
+    <link rel="preload" href="Photos/stars1.png" as="image">
+    <link rel="preload" href="Photos/cloudmoon1.png" as="image">
+    
+    <!-- PWA метаданные -->
+    <link rel="manifest" href="/favicon/site.webmanifest">
+    <meta name="theme-color" content="#416190">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    
+    <!-- Иконки -->
+    <link rel="icon" href="/favicon/favicon.ico" type="image/x-icon">
+    <link rel="icon" type="image/png" href="/favicon/favicon-96x96.png" sizes="96x96">
+    <link rel="apple-touch-icon" href="/favicon/apple-touch-icon.png" sizes="180x180">
+</head>
+<body> 
+    <!-- Выдвижное окно с калькулятором -->
+    <!-- Задания: 1,2,3,8,9 -->
+    <div id="calc-window" class="slide-window"> 
+        <div class="calculator">
+            <div class="Calc-name">Bool's Calculator</div>
+            <div class="Calc-name2">Boolean Functions</div>
+            <!-- Выбор задания -->
+            <div class="mode-selection">
+                <select id="mode-select" class="mode-dropdown">
+                    <option value="random">Рандом функция</option>
+                    <option value="residual">Остаточная ф-я</option>
+                    <option value="reconstruct">Реконструкция ф-и</option>
+                    <option value="sdnf">СДНФ</option>
+                    <option value="sknf">СКНФ</option>
+                </select>
+            </div>
+            <!-- Блок рандомной функции (кнопки и внутрянка) -->
+            <!-- Задание 1 -->
+            <div class="calc-mode" id="random-mode">
+                <div class="calc-input-group">
+                    <label for="arg-count" class="calc-label">Число аргументов (n):</label>
+                    <input type="number" id="arg-count" class="calc-input" min="1" max="6" placeholder="Введите n от 1 до 6">
+                </div>
+                <div id="calc-display-random" class="calc-display"></div>
+                <div class="calc-buttons">
+                    <button class="calc-btn generate" id="generate">Построить</button>
+                    <button class="calc-btn clear" id="clear-random">C</button>
+                </div>
+            </div>
+            <!-- Остаточная функция -->
+            <!-- Задание 2 -->
+            <div class="calc-mode" id="residual-mode" style="display: none;">
+                <div class="calc-input-group">
+                    <label for="func-vector" class="calc-label">Вектор функции (0 и 1):</label>
+                    <input type="text" id="func-vector" class="calc-input" placeholder="например, 10110010">
+                </div>
+                <div class="calc-input-group">
+                    <label for="arg-count-residual" class="calc-label">Число аргументов (n):</label>
+                    <input type="number" id="arg-count-residual" class="calc-input" min="1" max="6" placeholder="Введите n от 1 до 6">
+                </div>
+                <div class="calc-input-group">
+                    <label for="fix-arg" class="calc-label">Номер аргумента (например, 1 для x1):</label>
+                    <input type="number" id="fix-arg" class="calc-input" min="1" placeholder="Номер аргумента">
+                </div>
+                <div class="calc-input-group">
+                    <label for="fix-value" class="calc-label">Значение аргумента (0 или 1):</label>
+                    <select id="fix-value" class="calc-input">
+                        <option value="0">0</option>
+                        <option value="1">1</option>
+                    </select>
+                </div>
+                <div id="calc-display-residual" class="calc-display"></div>
+                <div class="calc-buttons">
+                    <button class="calc-btn compute" id="compute-residual">Вычислить</button>
+                    <button class="calc-btn clear" id="clear-residual">C</button>
+                </div>
+            </div>
+            <!-- Реконструкция функции -->
+            <!-- Задание 3 --> 
+            <div class="calc-mode" id="reconstruct-mode" style="display: none;">
+                <div class="calc-input-group">
+                    <label for="vector0" class="calc-label">Нулевая остаточная (x_k = 0):</label>
+                    <input type="text" id="vector0" class="calc-input" placeholder="например, 0101">
+                </div>
+                <div class="calc-input-group">
+                    <label for="vector1" class="calc-label">Еденичная остаточная (x_k = 1):</label>
+                    <input type="text" id="vector1" class="calc-input" placeholder="например, 1010">
+                </div>
+                <div class="calc-input-group">
+                    <label for="arg-count-reconstruct" class="calc-label">Число аргументов (n):</label>
+                    <input type="number" id="arg-count-reconstruct" class="calc-input" min="1" max="6" placeholder="Введите n от 1 до 6">
+                </div>
+                <div class="calc-input-group">
+                    <label for="fixed-arg" class="calc-label">Номер аргумента (например, 1 для x1):</label>
+                    <input type="number" id="fixed-arg" class="calc-input" min="1" placeholder="Номер аргумента">
+                </div>
+                <div id="calc-display-reconstruct" class="calc-display"></div>
+                <div class="calc-buttons">
+                    <button class="calc-btn reconstruct" id="reconstruct">Реконструкция</button>
+                    <button class="calc-btn clear" id="clear-reconstruct">C</button>
+                </div>
+            </div>
+            <!-- СДНФ -->
+            <!-- Задание 8 -->
+            <div class="calc-mode" id="sdnf-mode" style="display: none;">
+                <div class="calc-input-group">
+                    <label for="func-vector-sdnf" class="calc-label">Вектор функции (0 и 1):</label>
+                    <input type="text" id="func-vector-sdnf" class="calc-input" placeholder="например, 01011010">
+                </div>
+                <div class="calc-input-group">
+                    <label for="arg-count-sdnf" class="calc-label">Число аргументов (n):</label>
+                    <input type="number" id="arg-count-sdnf" class="calc-input" min="1" max="6" placeholder="Введите n от 1 до 6">
+                </div>
+                <div id="calc-display-sdnf" class="calc-display"></div>
+                <div class="calc-buttons">
+                    <button class="calc-btn build" id="build-sdnf">Построить СДНФ</button>
+                    <button class="calc-btn clear" id="clear-sdnf">C</button>
+                </div>
+            </div>
+            <!-- СКНФ -->
+            <!-- Задание 9 -->
+            <div class="calc-mode" id="sknf-mode" style="display: none;">
+                <div class="calc-input-group">
+                    <label for="func-vector-sknf" class="calc-label">Вектор функции (0 и 1):</label>
+                    <input type="text" id="func-vector-sknf" class="calc-input" placeholder="например, 01011010">
+                </div>
+                <div class="calc-input-group">
+                    <label for="arg-count-sknf" class="calc-label">Число аргументов (n):</label>
+                    <input type="number" id="arg-count-sknf" class="calc-input" min="1" max="6" placeholder="Введите n от 1 до 6">
+                </div>
+                <div id="calc-display-sknf" class="calc-display"></div>
+                <div class="calc-buttons">
+                    <button class="calc-btn build" id="build-sknf">Построить СКНФ</button>
+                    <button class="calc-btn clear" id="clear-sknf">C</button>
+                </div>
+            </div>
+        </div>
+        <button id="calc-toggle" class="toggle-btn">
+            <img src="Photos/calculator.png" alt="Calculator" class="icon">
+        </button>
+    </div>
+    <div id="gear-window" class="slide-window">
+        <div class="settings-container">
+            <h2 class="settings-title">Настройки</h2>
+            <div class="mode-toggle">
+                <button class="mode-btn" id="normal-mode">Свободный</button>
+                <button class="mode-btn" id="passing-mode">Прохождение</button>
+                <button class="mode-btn" id="competition-mode">Соревнование</button>
+            </div>
+            <button id="new-game-btn" class="new-game-btn">
+                <img src="Photos/restart.png" alt="New Game" class="reset-icon">
+                Новая игра
+            </button>
+        </div>
+        <!-- Настройки -->
+        <button id="gear-toggle" class="toggle-btn">
+            <img src="Photos/gear.png" alt="Gear" class="icon">
+        </button>
+    </div>
+    <div id="cup-window" class="slide-window">
+        <div class="rating-container">
+            <h2 class="rating-title">Рейтинг</h2>
+            <div class="rating-summary">
+                <span id="total-score">Общий счёт: 0</span>
+            </div>
+            <div class="rating-details">
+                <ul id="level-scores" class="level-scores"></ul>
+            </div>
+        </div>
+        <button id="cup-toggle" class="toggle-btn">
+            <img src="Photos/cup.png" alt="Cup" class="icon">
+        </button>
+    </div>
+
+    <!-- 12 задание -->
+    <div id="construction-window" class="slide-window">
+        <div class="construction-container">
+            <h2 class="construction-title">Конструктор ДНФ</h2>
+            <div class="construction-input-group">
+                <label for="dnf-input" class="construction-label">Введите ДНФ (например, ¬a∧¬b∧¬c ∨ ¬a∧¬b∧c):</label>
+                <input type="text" id="dnf-input" class="construction-input" placeholder="например, ¬a∧¬b∧¬c ∨ ¬a∧¬b∧c" maxlength="100">
+                <div class="symbol-buttons">
+                    <button class="symbol-btn" data-symbol="¬">¬</button>
+                    <button class="symbol-btn" data-symbol="∧">∧</button>
+                    <button class="symbol-btn" data-symbol="∨">∨</button>
+                    <button class="symbol-btn" data-symbol="a">a</button>
+                    <button class="symbol-btn" data-symbol="b">b</button>
+                    <button class="symbol-btn" data-symbol="c">c</button>
+                    <button class="symbol-btn" data-symbol="d">d</button>
+                    <button class="symbol-btn" data-symbol="(">(</button>
+                    <button class="symbol-btn" data-symbol=")">)</button>
+                    <button class="symbol-btn delete-btn" id="delete-btn">C</button>
+                </div>
+            </div>
+            <div id="construction-display" class="construction-display"></div>
+            <div class="buttons-feedback-container">
+                <div class="construction-buttons">
+                    <button class="construction-btn simplify" id="simplify-dnf">Упростить</button>
+                    <button class="construction-btn clear" id="clear-dnf">C</button>
+                </div>
+                <div class="feedback" id="construction-feedback"></div>
+            </div>
+        </div>
+        <button id="construction-toggle" class="toggle-btn">
+            <img src="Photos/table.png" alt="Table" class="icon">
+        </button>
+    </div>
+    <div class="Title">Bool-helper</div>
+    <div id="main-screen">
+        <div class="image-container">
+            <img src="Photos/moonre.png" alt="Moonre" class="moonre" onload="this.classList.add('loaded')" onerror="this.classList.add('error')">
+            <img src="Photos/cloudmoon3.png" alt="Cloud Moon 3" class="cloudmoon3" onload="this.classList.add('loaded')" onerror="this.classList.add('error')">
+            <img src="Photos/stars1.png" alt="Stars1" class="stars1" loading="lazy" onload="this.classList.add('loaded')" onerror="this.classList.add('error')">
+            <img src="Photos/stars2.png" alt="Stars2" class="stars2" loading="lazy" onload="this.classList.add('loaded')" onerror="this.classList.add('error')">
+            <img src="Photos/cloudmoon1.png" alt="Cloud Moon 1" class="cloudmoon" onload="this.classList.add('loaded')" onerror="this.classList.add('error')">
+            <img src="Photos/cloudmoon2.png" alt="Cloud Moon 2" class="cloudmoon2" onload="this.classList.add('loaded')" onerror="this.classList.add('error')">
+            <img src="Photos/cloudmoon4.png" alt="Cloud Moon 4" class="cloudmoon4" onload="this.classList.add('loaded')" onerror="this.classList.add('error')">
+            <img src="Photos/cloudmoon5.png" alt="Cloud Moon 5" class="cloudmoon5" onload="this.classList.add('loaded')" onerror="this.classList.add('error')">
+        </div>
+        <button id="map-btn" class="map-btn" data-mode="normal">Play</button>
+        <button id="right-arrow" class="right-arrow-btn">
+            <img src="Photos/right.png" alt="Next" class="arrow-icon">
+        </button>
+        <div id="transition-screen" class="transition-screen"></div>
+    </div>
+    <script src="main.js"></script>
+    <script src="settings.js"></script>
+    <script src="calculator.js"></script>
+    <script src="rating.js"></script>
+    <script src="cons.js"></script>
+</body>
+</html>

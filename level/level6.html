@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Уровень 6 - Полные системы б.ф.</title>
+                     
+    <link rel="preload" href="lvl6.css" as="style">
+    <link rel="preload" href="../Photos/moon.png" as="image">
+                      
+    <link rel="stylesheet" href="lvl6.css">
+    <link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@400&display=swap" rel="stylesheet">
+                      
+    <!-- PWA метаданные -->
+    <link rel="manifest" href="/favicon/site.webmanifest">
+    <meta name="theme-color" content="#416190">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+                      
+    <!-- Иконки -->
+    <link rel="icon" href="/favicon/favicon.ico" type="image/x-icon">
+    <link rel="apple-touch-icon" href="/favicon/apple-touch-icon.png" sizes="180x180">
+</head>
+<body>
+    <img src="../Photos/stars1.png" alt="Stars" class="stars stars1">
+    <img src="../Photos/stars2.png" alt="Stars" class="stars stars2">
+    <img src="../Photos/moon.png" alt="Moon" class="moon">
+    <img src="../Photos/cloudmoon1.png" alt="Cloud" class="cloud cloud1">
+    <img src="../Photos/cloudmoon2.png" alt="Cloud" class="cloud cloud2">
+    <img src="../Photos/cloudmoon3.png" alt="Cloud" class="cloud cloud3">
+    <img src="../Photos/cloudmoon4.png" alt="Cloud" class="cloud cloud4">
+    <img src="../Photos/cloudmoon5.png" alt="Cloud" class="cloud cloud5">
+    <img src="../Photos/cloudmoon6.png" alt="Cloud" class="cloud cloud6">
+    <img src="../Photos/comet.png" alt="Comet 1" class="comet1">
+    <img src="../Photos/comet.png" alt="Comet 2" class="comet2">
+    <img src="../Photos/comet.png" alt="Comet 3" class="comet3">
+    <img src="../Photos/comet.png" alt="Comet 4" class="comet4">
+
+    <div class="level-container">
+        <div class="nav-buttons">
+            <button class="nav-icon-btn" id="back-to-level-menu">
+                <img src="../Photos/list.png" alt="Menu" class="nav-icon">
+            </button>
+            <button class="nav-icon-btn" id="prev-level">
+                <img src="../Photos/left.png" alt="Prev" class="nav-icon">
+            </button>
+        </div>
+        <h1>Уровень 6</h1>
+        <p class="task-description">Определите, является ли набор функций полной системой. Если нет, укажите замкнутый класс.</p>
+        <div class="content-wrapper">
+            <div class="left-panel">
+                <div class="function-vectors" id="function-vectors"></div>
+            </div>
+            <div class="right-panel">
+                <div class="completeness-container">
+                    <label class="completeness-label">Полная система?</label>
+                    <input type="checkbox" id="is-complete-yes" class="completeness-checkbox">
+                    <label for="is-complete-yes" class="class-label">Да</label>
+                    <input type="checkbox" id="is-complete-no" class="completeness-checkbox">
+                    <label for="is-complete-no" class="class-label">Нет</label>
+                </div>
+                <div class="classes-container" id="classes-container">
+                    <label for="closed-classes">Замкнутый класс (например, T0T1SML):</label>
+                    <input type="text" id="closed-classes" class="classes-input" placeholder="Введите классы">
+                </div>
+                <div class="button-group">
+                    <button class="submit-btn" id="submit-btn">Проверить</button>
+                    <button class="try-again-btn" id="try-again-btn" style="display: none;">Ещё раз</button>
+                </div>
+                <div class="feedback" id="feedback"></div>
+            </div>
+        </div>
+    </div>
+    <script src="../level/lvl6.js"></script>
+</body>
+</html>

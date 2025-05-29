@@ -1,0 +1,286 @@
+.construction-window {
+    position: fixed;
+    top: 0;
+    left: -80vw;
+    width: 80vw;
+    max-width: 600px;
+    height: 100vh;
+    background: linear-gradient(to bottom, rgba(97, 60, 192, 0.9), rgba(70, 30, 169, 0.9));
+    border-radius: 0 10px 10px 0;
+    z-index: 5;
+    transition: left 0.3s ease-in-out;
+    will-change: left;
+    box-sizing: border-box;
+    padding-right: 8px;
+}
+
+.construction-window.open {
+    left: 0;
+}
+
+.construction-container {
+    padding: clamp(20px, 5vw, 30px);
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    box-sizing: border-box;
+    overflow-y: auto;
+}
+
+.construction-title {
+    font-family: 'Comfortaa', cursive;
+    font-size: clamp(1.5rem, 5vw, 2.5rem);
+    color: #ffffff;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+    margin-bottom: clamp(15px, 4vw, 25px);
+    text-align: center;
+}
+
+.construction-input-group {
+    width: 100%;
+    max-width: 500px;
+    margin-bottom: clamp(15px, 4vw, 25px);
+    display: flex;
+    flex-direction: column;
+    gap: clamp(8px, 2vw, 12px);
+    position: relative;
+}
+
+.construction-label {
+    font-family: 'Comfortaa', cursive;
+    font-size: clamp(0.9rem, 3vw, 1.2rem);
+    color: #ffffff;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+    margin-bottom: clamp(5px, 1vw, 8px);
+}
+
+.construction-input {
+    width: 100%;
+    padding: clamp(10px, 2vw, 15px);
+    background: rgba(255, 255, 255, 0.2);
+    border: 1px solid #ffffff;
+    border-radius: 8px;
+    font-family: 'Comfortaa', cursive;
+    font-size: clamp(0.9rem, 3vw, 1.1rem);
+    color: #ffffff;
+    box-sizing: border-box;
+    text-align: center;
+}
+
+.construction-input::placeholder {
+    color: rgba(255, 255, 255, 0.6);
+    text-align: center;
+}
+
+.construction-input:focus {
+    outline: none;
+    background: rgba(255, 255, 255, 0.3);
+    border-color: #ab90ef;
+}
+
+.construction-display {
+    width: 100%;
+    max-width: 500px;
+    min-height: 60px;
+    background: rgba(255, 255, 255, 0.2);
+    border: 1px solid #ffffff;
+    border-radius: 8px;
+    padding: clamp(10px, 2vw, 15px);
+    margin-bottom: clamp(15px, 4vw, 25px);
+    font-family: 'Comfortaa', cursive;
+    font-size: clamp(0.9rem, 3vw, 1.1rem);
+    color: #ffffff;
+    text-align: center;
+    word-wrap: break-word;
+    box-sizing: border-box;
+}
+
+.buttons-feedback-container {
+    width: 100%;
+    max-width: 500px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: clamp(10px, 2vh, 15px);
+    margin-bottom: clamp(10px, 2vw, 15px);
+}
+
+.construction-buttons {
+    display: flex;
+    justify-content: center;
+    gap: clamp(10px, 3vw, 20px);
+    width: 100%;
+}
+
+.construction-btn {
+    padding: clamp(8px, 2vw, 12px) clamp(15px, 4vw, 25px);
+    background: rgba(97, 60, 192, 0.9);
+    border: 2px solid #ffffff;
+    border-radius: 8px;
+    font-family: 'Comfortaa', cursive;
+    font-size: clamp(0.9rem, 3vw, 1.2rem);
+    color: #ffffff;
+    cursor: pointer;
+    transition: background 0.3s ease;
+    box-sizing: border-box;
+}
+
+.construction-btn:hover {
+    background: rgba(171, 144, 239, 0.9);
+}
+
+.construction-btn.clear {
+    background: rgba(150, 150, 150, 0.9);
+}
+
+.construction-btn.clear:hover {
+    background: rgba(200, 200, 200, 0.9);
+}
+
+.construction-btn:disabled {
+    background: rgba(100, 100, 100, 0.5);
+    cursor: not-allowed;
+    opacity: 0.6;
+}
+
+.symbol-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: clamp(5px, 1vw, 8px);
+    margin-top: clamp(5px, 1vh, 10px);
+    justify-content: center;
+}
+
+.symbol-btn {
+    width: clamp(30px, 8vw, 35px);
+    height: clamp(30px, 8vw, 35px);
+    background: rgba(97, 60, 192, 0.9);
+    border: 1px solid #ffffff;
+    border-radius: 8px;
+    font-family: 'Comfortaa', cursive;
+    font-size: clamp(0.7rem, 2.5vw, 0.9rem);
+    color: #ffffff;
+    cursor: pointer;
+    transition: background 0.3s, transform 0.2s;
+    box-sizing: border-box;
+}
+
+.symbol-btn:hover {
+    background: rgba(171, 144, 239, 0.9);
+    transform: scale(1.05);
+}
+
+.symbol-btn:disabled {
+    background: rgba(100, 100, 100, 0.5);
+    cursor: not-allowed;
+    opacity: 0.6;
+}
+
+.delete-btn {
+    width: clamp(50px, 12vw, 60px);
+    background: rgba(231, 76, 60, 0.8);
+}
+
+.delete-btn:hover {
+    background: rgba(255, 99, 71, 0.9);
+}
+
+.feedback {
+    width: 100%;
+    max-width: clamp(200px, 80vw, 280px);
+    padding: clamp(8px, 2vw, 10px);
+    border-radius: 8px;
+    text-align: center;
+    display: none;
+    font-family: 'Comfortaa', cursive;
+    font-size: clamp(0.9rem, 3vw, 1.1rem);
+    box-sizing: border-box;
+}
+
+.feedback.show {
+    display: block;
+}
+
+.feedback.correct {
+    background: rgba(46, 204, 113, 0.8);
+    color: white;
+}
+
+.feedback.incorrect {
+    background: rgba(231, 76, 60, 0.8);
+    color: white;
+}
+
+.feedback.error {
+    background: rgba(241, 196, 15, 0.8);
+    color: white;
+}
+
+.error-popup {
+    position: absolute;
+    bottom: calc(100% + clamp(5px, 1vw, 8px));
+    left: 0;
+    right: 0;
+    background: rgba(231, 76, 60, 0.9);
+    color: #ffffff;
+    font-family: 'Comfortaa', cursive;
+    font-size: clamp(0.7rem, 2.5vw, 0.9rem);
+    padding: clamp(5px, 1vw, 8px);
+    border-radius: 4px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    z-index: 14;
+    text-align: center;
+    display: none;
+}
+
+.error-popup.show {
+    display: block;
+}
+
+.toggle-btn {
+    transition: background 0.3s, transform 0.2s;
+    z-index: 10;
+}
+
+.toggle-btn:hover {
+    background: rgba(171, 144, 239, 0.9);
+    transform: scale(1.05);
+}
+
+@media (max-width: 507px) {
+    .construction-window {
+        width: 90vw;
+        max-width: none;
+    }
+    
+    .construction-container {
+        padding: clamp(15px, 4vw, 20px);
+    }
+    
+    .buttons-feedback-container {
+        gap: 8px;
+    }
+    
+    .construction-buttons {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .construction-btn {
+        width: 100%;
+    }
+}
+
+@media (min-width: 508px) and (max-width: 754px) {
+    .construction-window {
+        width: 85vw;
+    }
+}
+
+@media (min-width: 1025px) {
+    .construction-window {
+        width: 50vw;
+        max-width: 600px;
+    }
+}

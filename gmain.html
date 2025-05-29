@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en"> 
+<head>
+    <meta charset="UTF-8">
+    <title>Graph-helper</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        
+    <link rel="stylesheet" href="gmain.css">
+    <link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@400&display=swap" rel="stylesheet">
+        
+    <!-- PWA метаданные -->
+    <link rel="manifest" href="/favicon/site.webmanifest">
+    <meta name="theme-color" content="#416190">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+       
+    <!-- Иконки -->
+    <link rel="icon" href="/favicon/favicon.ico" type="image/x-icon">
+    <link rel="icon" type="image/png" href="/favicon/favicon-96x96.png" sizes="96x96">
+    <link rel="apple-touch-icon" href="/favicon/apple-touch-icon.png" sizes="180x180">
+</head>
+<body> 
+    <div class="Title">Graph-helper</div>
+    <div id="main-screen">
+        <div class="image-container">
+            <img src="Photos/moonre.png" alt="Moonre" class="moonre">
+            <img src="Photos/cloudmoon3.png" alt="Cloud Moon 3" class="cloudmoon3">
+            <img src="Photos/stars1.png" alt="Stars1" class="stars1" loading="lazy">
+            <img src="Photos/stars2.png" alt="Stars2" class="stars2" loading="lazy">
+            <img src="Photos/cloudmoon1.png" alt="Cloud Moon 1" class="cloudmoon">
+            <img src="Photos/cloudmoon2.png" alt="Cloud Moon 2" class="cloudmoon2">
+            <img src="Photos/cloudmoon4.png" alt="Cloud Moon 4" class="cloudmoon4">
+            <img src="Photos/cloudmoon5.png" alt="Cloud Moon 5" class="cloudmoon5">
+        </div>
+        <button id="gmap-btn" class="map-btn" data-mode="normal">Play</button>
+        <button id="try-btn" class="map-btn try-btn">Try</button>
+        <button id="left-arrow" class="left-arrow-btn">
+            <img src="Photos/left.png" alt="Back" class="arrow-icon">
+        </button>
+        <div id="transition-screen" class="transition-screen"></div>
+        <div class="left-transition-screen"></div>
+    </div>
+    <script src="gmain.js"></script>
+</body>
+</html>
