@@ -621,3 +621,133 @@ body {
 .residual-properties-table tr:hover {
     background: rgba(255, 255, 255, 0.08);
 }
+
+.test-section {
+    text-align: center;
+    margin: 40px 0;
+}
+
+.test-button {
+    background: linear-gradient(to bottom right, #7e57c2, #5c6bc0);
+    color: white;
+    border: none;
+    padding: 15px 30px;
+    border-radius: 30px;
+    font-size: 1.1rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+}
+
+.test-button:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+}
+
+.test-container, .result-container {
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 15px;
+    padding: 25px;
+    margin-top: 20px;
+    text-align: left;
+}
+
+.question {
+    margin-bottom: 20px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.question-text {
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.answer-option {
+    display: block;
+    margin: 8px 0;
+    cursor: pointer;
+}
+
+.answer-option input {
+    margin-right: 10px;
+}
+
+.submit-btn, .close-btn {
+    background: linear-gradient(to bottom right, #613cc0, #416190);
+    color: white;
+    border: none;
+    padding: 12px 25px;
+    border-radius: 25px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-top: 15px;
+}
+
+.submit-btn:hover, .close-btn:hover {
+    background: linear-gradient(to bottom right, #7e57c2, #5c6bc0);
+}
+
+.stars-rating {
+    font-size: 2rem;
+    color: #ffcc00;
+    margin: 15px 0;
+    text-align: center;
+}
+
+.star {
+    opacity: 0.3;
+    transition: all 0.3s ease;
+}
+
+.star.filled {
+    opacity: 1;
+}
+
+.hidden {
+    display: none;
+}
+
+.correct-answer {
+    color: #a5d6a7;
+    font-weight: bold;
+}
+
+.wrong-answer {
+    color: #ef9a9a;
+    text-decoration: line-through;
+}
+
+.lecture-nav {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 1000;
+    display: flex;
+    gap: 10px;
+}
+
+.lecture-nav-btn {
+    width: 40px;
+    height: 40px;
+    background: linear-gradient(to bottom right, #613cc0, #416190);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.lecture-nav-btn:hover {
+    transform: scale(1.1);
+    background: linear-gradient(to bottom right, #7e57c2, #5c6bc0);
+}
+
+.lecture-nav-btn img {
+    width: 55%;
+    height: 55%;
+    filter: brightness(0) invert(1) drop-shadow(0 0 2px rgba(0, 0, 0, 0.3));
+}

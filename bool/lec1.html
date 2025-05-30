@@ -6,11 +6,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Лекция 1. Двоичные наборы</title>
 
-    <link rel="preload" href="lec1.css" as="style">
+    <link rel="preload" href="lec.css" as="style">
     <link rel="preload" href="../main.css" as="style">
     <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/vis/4.21.0/vis.min.js" as="script">
 
-    <link href="lec1.css" rel="stylesheet">
+    <link href="lec.css" rel="stylesheet">
     <link rel="stylesheet" href="../main.css">
     <link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
@@ -30,11 +30,11 @@
 </head>
 <body>
     <div class="lecture-decoration">
-        <img src="../Photos/cloudmoon1.png" alt="Cloud" class="decoration-cloud cloud1">
-        <img src="../Photos/cloudmoon2.png" alt="Cloud" class="decoration-cloud cloud2">
-        <img src="../Photos/cloudmoon3.png" alt="Cloud" class="decoration-cloud cloud3">
-        <img src="../Photos/stars1.png" alt="Stars" class="decoration-stars stars1">
-        <img src="../Photos/stars2.png" alt="Stars" class="decoration-stars stars2">
+        <img src="../Photos/cloudmoon1.png" alt="Cloud" class="decoration-cloud cloud1" loading="lazy">
+        <img src="../Photos/cloudmoon2.png" alt="Cloud" class="decoration-cloud cloud2" loading="lazy">
+        <img src="../Photos/cloudmoon3.png" alt="Cloud" class="decoration-cloud cloud3" loading="lazy">
+        <img src="../Photos/stars1.png" alt="Stars" class="decoration-stars stars1" loading="lazy">
+        <img src="../Photos/stars2.png" alt="Stars" class="decoration-stars stars2" loading="lazy">
     </div>
     <div class="lecture-container">
         <div class="back-button" id="homeButton">
@@ -281,6 +281,26 @@
                 </ul>
             </div>
 
+            <div class="test-section" id="test">
+                <button class="test-button" id="start-test">Пройти тест</button>
+                <div class="test-container hidden" id="test-container">
+                    <h2>Тест по лекции</h2>
+                    <div class="questions" id="questions-container"></div>
+                    <button class="submit-btn" id="submit-test">Проверить</button>
+                </div>
+                <div class="result-container hidden" id="result-container">
+                    <h2>Результаты теста</h2>
+                    <div class="stars-rating">
+                        <span class="star">★</span>
+                        <span class="star">★</span>
+                        <span class="star">★</span>
+                    </div>
+                    <p class="result-text"></p>
+                    <button class="close-btn" id="close-test">Закрыть</button>
+                    <button class="close-btn" id="go-to-main">На главную</button>
+                </div>
+            </div>
+
             <!-- Карточки -->
             <div class="cards-section" id="cards">
                 <h2>🃏 Пятисекундка</h2>
@@ -310,8 +330,14 @@
         </div>
     </div>
 
+    <div class="lecture-nav">
+        <a href="lec2.html" class="lecture-nav-btn">
+            <img src="../Photos/right.png" alt="Следующая лекция">
+        </a>
+    </div>
+    
     <div class="up-button" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">
-        <img src="../Photos/up.png" alt="Вверх" class="up-icon">
+        <img src="../Photos/up.png" alt="Вверх" class="up-icon" loading="lazy">
     </div>
 
     <script src="lec1.js"></script>

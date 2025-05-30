@@ -585,6 +585,7 @@ body {
     text-align: center;
     min-height: 80px;
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
 }
@@ -596,7 +597,7 @@ body {
 }
 
 .lecture-block h3 {
-    margin: 0;
+    margin: 0 0 10px 0;
     color: #ffffff;
     font-size: 1.1rem;
     font-family: 'Comfortaa', cursive;
@@ -625,4 +626,21 @@ body {
 
 ::-webkit-scrollbar-thumb:hover {
     background: linear-gradient(to bottom, #7e57c2, #5c6bc0);
+}
+
+.lecture-stars {
+    display: flex;
+    gap: 5px;
+    justify-content: center;
+}
+
+.lecture-star {
+    color: #ffcc00;
+    opacity: 0.3;
+    transition: opacity 0.3s ease;
+    font-size: 1.2rem;
+}
+
+.lecture-star.filled {
+    opacity: 1;
 }

@@ -5,11 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>🧩 Лекция 9. Минимизация ДНФ и метод Квайна</title>
     
-    <link rel="preload" href="lec9.css" as="style">
+    <link rel="preload" href="lec.css" as="style">
     <link rel="preload" href="../main.css" as="style">
     <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/vis/4.21.0/vis.min.js" as="script">
 
-    <link href="lec9.css" rel="stylesheet">
+    <link href="lec.css" rel="stylesheet">
     <link rel="stylesheet" href="../main.css">
     <link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@300;400;500;600;700&display=swap"
         rel="stylesheet">
@@ -170,6 +170,26 @@
                 </ul>
             </div>
 
+            <div class="test-section" id="test">
+                <button class="test-button" id="start-test">Пройти тест</button>
+                <div class="test-container hidden" id="test-container">
+                    <h2>Тест по лекции</h2>
+                    <div class="questions" id="questions-container"></div>
+                    <button class="submit-btn" id="submit-test">Проверить</button>
+                </div>
+                <div class="result-container hidden" id="result-container">
+                    <h2>Результаты теста</h2>
+                    <div class="stars-rating">
+                        <span class="star">★</span>
+                        <span class="star">★</span>
+                        <span class="star">★</span>
+                    </div>
+                    <p class="result-text"></p>
+                    <button class="close-btn" id="close-test">Закрыть</button>
+                    <button class="close-btn" id="go-to-main">На главную</button>
+                </div>
+            </div>
+
             <!-- Карточки -->
             <div class="cards-section" id="cards">
                 <h2>🃏 Пятисекундка</h2>
@@ -221,6 +241,12 @@
                 </table>
             </div>
         </div>
+    </div>
+
+    <div class="lecture-nav">
+        <a href="lec8.html" class="lecture-nav-btn">
+            <img src="../Photos/left.png" alt="Предыдущая лекция">
+        </a>
     </div>
 
     <div class="up-button">

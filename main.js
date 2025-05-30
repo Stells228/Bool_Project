@@ -43,18 +43,29 @@ document.addEventListener('DOMContentLoaded', () => {
         lectures.forEach(lecture => {
             const block = document.createElement('div');
             block.className = 'lecture-block';
-            block.innerHTML = `<h3>${lecture.title}</h3>`;
-
+            block.dataset.lectureId = lecture.id;
+            
+            // Добавляем заголовок
+            const title = document.createElement('h3');
+            title.textContent = lecture.title;
+            block.appendChild(title);
+            
+            // Добавляем контейнер для звёзд (изначально пустой)
+            const starsContainer = document.createElement('div');
+            starsContainer.className = 'lecture-stars';
+            block.appendChild(starsContainer);
+            
+            // Обработчик клика
             block.addEventListener('click', () => {
                 transitionOverlay.classList.add('active');
-
-                setTimeout(() => {
-                    window.location.href = `bool/lec${lecture.id}.html`;
-                }, 300);
+                setTimeout(() => { window.location.href = `bool/lec${lecture.id}.html`; }, 300);
             });
-
+    
             lectureContent.appendChild(block);
         });
+        
+        // Обновляем звёзды после создания блоков
+        updateLectureBlocks();
     }
 
     // Вызываем функцию при загрузке
@@ -298,6 +309,51 @@ document.addEventListener('DOMContentLoaded', () => {
             window.location.href = `map.html?mode=${mode}`;
         }, 400);
     }
+
+    // Функция обновления звёзд
+window.updateLectureBlocks = function() {
+    const results = JSON.parse(localStorage.getItem('lectureTestResults') || '{}');
+    
+    document.querySelectorAll('.lecture-block').forEach(block => {
+        const lectureId = block.dataset.lectureId;
+        const result = results[`lecture${lectureId}`];
+        const starsContainer = block.querySelector('.lecture-stars');
+        
+        if (!starsContainer) return;
+        
+        starsContainer.innerHTML = '';
+        
+        if (result) {
+            const percentage = (result.correct / result.total) * 100;
+            
+            for (let i = 0; i < 3; i++) {
+                const star = document.createElement('span');
+                star.className = 'lecture-star';
+                star.textContent = '★';
+                
+                if (percentage === 100 && i < 3 || 
+                    percentage >= 50 && i < 2 || 
+                    percentage >= 30 && i < 1) {
+                    star.classList.add('filled');
+                }
+                
+                starsContainer.appendChild(star);
+            }
+        }
+    });
+};
+    
+    document.addEventListener('DOMContentLoaded', () => {
+        if (typeof updateLectureBlocks === 'function') {
+            updateLectureBlocks();
+        }
+    });
+
+    document.addEventListener('DOMContentLoaded', () => {
+        updateLectureBlocks(); // Добавьте эту строку
+        document.body.style.opacity = '1';
+    });
+
     // Плавное появление страницы
     document.body.style.opacity = '1';
 });

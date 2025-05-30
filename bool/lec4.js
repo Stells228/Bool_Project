@@ -7,8 +7,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     homeButton?.addEventListener('click', () => window.location.href = '../main.html');
 
-
-
     if (upButton) {
         upButton.style.opacity = '1';
         upButton.style.visibility = 'visible';
@@ -27,7 +25,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // движуха для карточек
+    // Анимация карточек
     const cards = document.querySelectorAll('.card');
     cards.forEach(card => {
         card.addEventListener('click', function () {
@@ -35,7 +33,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // Плавное скроллирование 
+    // Плавный скроллинг по якорям
     document.querySelectorAll('.toc-list a').forEach(anchor => {
         anchor.addEventListener('click', function (e) {
             e.preventDefault();
@@ -50,4 +48,215 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     });
+
+    // Тест
+    const testQuestions = [
+        {
+            question: "Что такое терм?",
+            answers: [
+                "таблица значений",
+                "логическое выражение, построенное из функций",
+                "вес функции",
+                "сокращённая ДНФ"
+            ],
+            correct: 1
+        },
+        {
+            question: "Суперпозиция — это:",
+            answers: [
+                "подстановка функций в другую функцию",
+                "представление функции в таблице",
+                "объединение двух функций через XOR",
+                "сокращение ДНФ"
+            ],
+            correct: 0
+        },
+        {
+            question: "Какие функции называют внешними в терме?",
+            answers: [
+                "те, что содержат переменные",
+                "те, что составляют терм",
+                "те, что применяются последними",
+                "те, что не линейны"
+            ],
+            correct: 2
+        },
+        {
+            question: "Что означает эквивалентность термов?",
+            answers: [
+                "одинаковая запись",
+                "одинаковые значения на всех входах",
+                "равенство длин формул",
+                "одинаковые внешние функции"
+            ],
+            correct: 1
+        },
+        {
+            question: "Формула де Моргана:",
+            answers: [
+                "!(a||b) = !a & !b",
+                "a || a = a",
+                "a -> b = !a || b",
+                "a + b = !(a <-> b)"
+            ],
+            correct: 0
+        }
+    ];
+    
+    const startTestBtn = document.getElementById('start-test');
+    const testContainer = document.getElementById('test-container');
+    const questionsContainer = document.getElementById('questions-container');
+    const submitTestBtn = document.getElementById('submit-test');
+    const resultContainer = document.getElementById('result-container');
+    const closeTestBtn = document.getElementById('close-test');
+    const stars = document.querySelectorAll('.star');
+    const resultText = document.querySelector('.result-text');
+    const goToMainBtn = document.getElementById('go-to-main');
+    
+    startTestBtn?.addEventListener('click', () => {
+        testContainer.classList.remove('hidden');
+        startTestBtn.classList.add('hidden');
+        renderQuestions();
+    });
+    
+    closeTestBtn?.addEventListener('click', () => {
+        testContainer.classList.add('hidden');
+        resultContainer.classList.add('hidden');
+        startTestBtn.classList.remove('hidden');
+    });
+
+    goToMainBtn?.addEventListener('click', () => {
+        window.location.href = '../main.html';
+    });
+    
+    function renderQuestions() {
+        questionsContainer.innerHTML = '';
+        testQuestions.forEach((q, index) => {
+            const questionDiv = document.createElement('div');
+            questionDiv.className = 'question';
+            questionDiv.innerHTML = `
+                <p class="question-text">${index + 1}. ${q.question}</p>
+                ${q.answers.map((a, i) => `
+                    <label class="answer-option">
+                        <input type="radio" name="q${index}" value="${i}">
+                        ${a}
+                    </label>
+                `).join('')}
+            `;
+            questionsContainer.appendChild(questionDiv);
+        });
+    }
+    
+    submitTestBtn?.addEventListener('click', () => {
+        const results = checkTest();
+        showResults(results);
+    });
+    
+    function checkTest() {
+        const results = [];
+        let correctCount = 0;
+        
+        testQuestions.forEach((q, index) => {
+            const selectedOption = document.querySelector(`input[name="q${index}"]:checked`);
+            const isCorrect = selectedOption && parseInt(selectedOption.value) === q.correct;
+            
+            if (isCorrect) correctCount++;
+            
+            results.push({
+                question: q.question,
+                selected: selectedOption ? parseInt(selectedOption.value) : null,
+                correct: q.correct,
+                isCorrect
+            });
+        });
+        
+        return { results, correctCount, total: testQuestions.length };
+    }
+
+    function saveTestResult(lectureId, correct, total) {
+        const results = JSON.parse(localStorage.getItem('lectureTestResults') || '{}');
+        results[`lecture${lectureId}`] = { correct, total };
+        localStorage.setItem('lectureTestResults', JSON.stringify(results));
+    
+        // Обновляем звёзды на главной странице
+        if (window.opener && typeof window.opener.updateLectureBlocks === 'function') {
+            window.opener.updateLectureBlocks();
+        } 
+        else if (window.parent && typeof window.parent.updateLectureBlocks === 'function') {
+            window.parent.updateLectureBlocks();
+        }
+    }
+    
+    function showResults({ results, correctCount, total }) {
+        // Показываем правильные ответы
+        results.forEach((res, index) => {
+            const questionDiv = questionsContainer.children[index];
+            const correctAnswer = questionDiv.querySelector(`label:nth-child(${res.correct + 2})`);
+            correctAnswer.classList.add('correct-answer');
+            
+            if (res.selected !== null && !res.isCorrect) {
+                const selectedAnswer = questionDiv.querySelector(`label:nth-child(${res.selected + 2})`);
+                selectedAnswer.classList.add('wrong-answer');
+            }
+        });
+    
+        // Устанавливаем звёздочки
+        const percentage = (correctCount / total) * 100;
+        stars.forEach((star, index) => {
+            star.classList.remove('filled');
+            
+            if (percentage === 100 && index < 3 || 
+                percentage >= 50 && index < 2 || 
+                percentage >= 30 && index < 1) {
+                star.classList.add('filled');
+            }
+        });
+    
+        // Текст результата
+        resultText.textContent = `Вы ответили правильно на ${correctCount} из ${total} вопросов.`;
+    
+        testContainer.classList.add('hidden');
+        resultContainer.classList.remove('hidden');
+        
+        // в localStorage
+        saveTestResult(4, correctCount, total); 
+    }
+    
+    // Функция для обновления блоков лекций
+    window.updateLectureBlocks = function() {
+        const results = JSON.parse(localStorage.getItem('lectureTestResults') || '{}');
+        
+        document.querySelectorAll('.lecture-block').forEach(block => {
+            const lectureId = block.dataset.lectureId;
+            const result = results[`lecture${lectureId}`];
+            
+            if (result) {
+                const starsContainer = block.querySelector('.lecture-stars') || 
+                    (() => {
+                        const stars = document.createElement('div');
+                        stars.className = 'lecture-stars';
+                        block.appendChild(stars);
+                        return stars;
+                    })();
+                
+                starsContainer.innerHTML = '';
+                const percentage = (result.correct / result.total) * 100;
+                
+                for (let i = 0; i < 3; i++) {
+                    const star = document.createElement('span');
+                    star.className = 'lecture-star';
+                    star.textContent = '★';
+                    
+                    if (percentage === 100 && i < 3 || 
+                        percentage >= 50 && i < 2 || 
+                        percentage >= 30 && i < 1) {
+                        star.classList.add('filled');
+                    }
+                    
+                    starsContainer.appendChild(star);
+                }
+            }
+        });
+    };
+    updateLectureBlocks();
 });
