@@ -4,20 +4,20 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Уровень 6 - Полные системы б.ф.</title>
-                     
+
     <link rel="preload" href="lvl6.css" as="style">
     <link rel="preload" href="../Photos/moon.png" as="image">
-                      
+
     <link rel="stylesheet" href="lvl6.css">
     <link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@400&display=swap" rel="stylesheet">
-                      
+
     <!-- PWA метаданные -->
     <link rel="manifest" href="/favicon/site.webmanifest">
     <meta name="theme-color" content="#416190">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-                      
+
     <!-- Иконки -->
     <link rel="icon" href="/favicon/favicon.ico" type="image/x-icon">
     <link rel="apple-touch-icon" href="/favicon/apple-touch-icon.png" sizes="180x180">
@@ -47,7 +47,8 @@
             </button>
         </div>
         <h1>Уровень 6</h1>
-        <p class="task-description">Определите, является ли набор функций полной системой. Если нет, укажите замкнутый класс.</p>
+        <p class="task-description">Определите, является ли набор функций полной системой. Если нет, укажите замкнутый
+            класс.</p>
         <div class="content-wrapper">
             <div class="left-panel">
                 <div class="function-vectors" id="function-vectors"></div>
@@ -70,6 +71,18 @@
                 </div>
                 <div class="feedback" id="feedback"></div>
             </div>
+        </div>
+    </div>
+    <div class="info-panel">
+        <div class="info-icon">i</div>
+        <div class="info-content">
+            Система неполная, если все её функции принадлежат одному замкнутому классу:<br>
+            <b>T0</b> — ноль сохраняется<br>
+            <b>T1</b> — единица сохраняется<br>
+            <b>S</b> — симметрия<br>
+            <b>M</b> — монотонность<br>
+            <b>L</b> — линейность<br>
+            Полная система нарушает хотя бы один из этих классов.
         </div>
     </div>
     <script src="../level/lvl6.js"></script>
