@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Лекция 5. Пути в графе</title>
+
+    <link rel="preload" href="../bool/lec.css" as="style">
+    <link rel="preload" href="../main.css" as="style">
+    <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/vis/4.21.0/vis.min.js" as="script">
+
+    <link href="../bool/lec.css" rel="stylesheet">
+    <link rel="stylesheet" href="../main.css">
+    <link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <!-- PWA метаданные -->
+    <link rel="manifest" href="/favicon/site.webmanifest">
+    <meta name="theme-color" content="#416190">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+    <!-- Иконки -->
+    <link rel="icon" href="/favicon/favicon.ico" type="image/x-icon">
+    <link rel="apple-touch-icon" href="/favicon/apple-touch-icon.png" sizes="180x180">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vis/4.21.0/vis.min.js" defer></script>
+</head>
+<body>
+    <div class="lecture-decoration">
+        <img src="../Photos/cloudmoon1.png" alt="Cloud" class="decoration-cloud cloud1">
+        <img src="../Photos/cloudmoon2.png" alt="Cloud" class="decoration-cloud cloud2">
+        <img src="../Photos/cloudmoon3.png" alt="Cloud" class="decoration-cloud cloud3">
+        <img src="../Photos/stars1.png" alt="Stars" class="decoration-stars stars1">
+        <img src="../Photos/stars2.png" alt="Stars" class="decoration-stars stars2">
+    </div>
+    <div class="lecture-container">
+        <div class="back-button" onclick="window.history.back()">
+            <img src="../Photos/home.png" alt="Назад" class="back-icon">
+        </div>
+
+        <h1 class="lecture-title">🛣️ Лекция 5. Пути в графе</h1>
+
+        <div class="toc-container">
+            <h3>Содержание:</h3>
+            <ul class="toc-list">
+                <li><a href="#section1">1. Что такое путь в графе</a></li>
+                <li><a href="#section2">2. Виды путей</a></li>
+                <li><a href="#section3">3. Связность в графе</a></li>
+                <li><a href="#section4">4. Сильная связность</a></li>
+                <li><a href="#section5">5. Примеры циклов</a></li>
+                <li><a href="#summary">Краткое резюме</a></li>
+                <li><a href="#cards">Пятисекундка</a></li>
+                <li><a href="#table">Таблица-резюме</a></li>
+            </ul>
+        </div>
+
+        <div class="lecture-content">
+            <!-- Секция 1 -->
+            <div class="lecture-section" id="section1">
+                <h2>1. Что такое путь в графе</h2>
+                <div class="definition">
+                    <p><strong>Определение:</strong></p>
+                    <p>Путь (маршрут) в графе — это последовательность вершин и ребер, чередующихся между собой, где:</p>
+                    <ul>
+                        <li>Каждое ребро соединяет предыдущую и следующую вершины</li>
+                        <li>Путь может быть ориентированным (в орграфах) или неориентированным</li>
+                    </ul>
+                    <p><strong>Формально:</strong></p>
+                    <div class="formula">
+                        Путь = v₁ → r₁ → v₂ → r₂ → v₃ → ... → rₖ₋₁ → vₖ
+                    </div>
+                </div>
+            </div>
+
+            <!-- Секция 2 -->
+            <div class="lecture-section" id="section2">
+                <h2>2. Виды путей</h2>
+                <div class="types-table residual-table">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Тип</th>
+                                <th>Условие</th>
+                                <th>Название</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Повторяются ребра</td>
+                                <td>❌</td>
+                                <td>Цепь</td>
+                            </tr>
+                            <tr>
+                                <td>Повторяются вершины (не начальная и конечная)</td>
+                                <td>❌</td>
+                                <td>Простая цепь</td>
+                            </tr>
+                            <tr>
+                                <td>Начальная = конечная вершина</td>
+                                <td>✅</td>
+                                <td>Цикл</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="note">
+                    <p class="warning">⚠️ <strong>Важно:</strong> цикл — это замкнутая цепь.</p>
+                </div>
+            </div>
+
+            <!-- Секция 3 -->
+            <div class="lecture-section" id="section3">
+                <h2>3. Связность в графе</h2>
+                
+                <div class="concept-box">
+                    <h3>Компоненты связности</h3>
+                    <p>Группа вершин, между которыми существует путь.</p>
+                    <p>Граф может состоять из одной или нескольких компонент.</p>
+                </div>
+
+                <div class="concept-box">
+                    <h3>Связный граф</h3>
+                    <p>Граф, в котором любой вершины можно достичь из любой другой.</p>
+                    <p>Если только одна компонента связности → граф связный.</p>
+                </div>
+            </div>
+
+            <!-- Секция 4 -->
+            <div class="lecture-section" id="section4">
+                <h2>4. Сильная связность (для орграфов)</h2>
+                
+                <div class="concept-box">
+                    <h3>Сильно связный граф</h3>
+                    <p>Ориентированный граф, в котором:</p>
+                    <ul>
+                        <li>Из любой вершины s можно добраться в любую t</li>
+                        <li>И из t обратно в s</li>
+                    </ul>
+                </div>
+
+                <div class="concept-box">
+                    <h3>Компоненты сильной связности</h3>
+                    <p>Максимальные (по включению) подграфы, в которых все вершины сильно связны между собой.</p>
+                </div>
+            </div>
+
+            <!-- Секция 5 -->
+            <div class="lecture-section" id="section5">
+                <h2>5. Примеры циклов</h2>
+                <div class="graph-example">
+                    <p><strong>Простой граф:</strong></p>
+                    <pre>
+x1 — x2 — x3
+|     |     |
+x4 — x5 — x6
+                    </pre>
+                    <p><strong>Примеры простых циклов:</strong></p>
+                    <ul>
+                        <li>x1 → x2 → x3 → x1 (длина 3)</li>
+                        <li>x1 → x2 → x5 → x4 → x1 (длина 4)</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Краткое резюме -->
+            <div class="lecture-section" id="summary">
+                <h2>📝 Краткое резюме</h2>
+                <ul>
+                    <li><strong>Путь</strong> — основа движения по графу, используется в алгоритмах поиска и маршрутов</li>
+                    <li><strong>Простая цепь</strong> — путь без повторений вершин (кроме начала и конца)</li>
+                    <li><strong>Цикл</strong> — замкнутый путь, где начальная и конечная вершины совпадают</li>
+                    <li><strong>Связный граф</strong> — граф, где между любыми двумя вершинами существует путь</li>
+                    <li><strong>Сильная связность</strong> — в орграфах означает наличие пути туда и обратно между всеми парами вершин</li>
+                </ul>
+            </div>
+
+            <div class="test-section" id="test">
+                <button class="test-button" id="start-test">Пройти тест</button>
+                <div class="test-container hidden" id="test-container">
+                    <h2>Тест по лекции</h2>
+                    <div class="questions" id="questions-container"></div>
+                    <button class="submit-btn" id="submit-test">Проверить</button>
+                </div>
+                <div class="result-container hidden" id="result-container">
+                    <h2>Результаты теста</h2>
+                    <div class="stars-rating">
+                        <span class="star">★</span>
+                        <span class="star">★</span>
+                        <span class="star">★</span>
+                    </div>
+                    <p class="result-text"></p>
+                    <button class="close-btn" id="close-test">Закрыть</button>
+                    <button class="close-btn" id="go-to-main">На главную</button>
+                </div>
+            </div>
+
+            <!-- Карточки -->
+            <div class="cards-section" id="cards">
+                <h2>🃏 Пятисекундка</h2>
+                <div class="cards-container">
+                    <div class="card">
+                        <div class="card-front">Что такое путь?</div>
+                        <div class="card-back">Последовательность чередующихся вершин и ребер</div>
+                    </div>
+                    <div class="card">
+                        <div class="card-front">Что такое цепь?</div>
+                        <div class="card-back">Путь без повторяющихся ребер</div>
+                    </div>
+                    <div class="card">
+                        <div class="card-front">Когда путь — простой?</div>
+                        <div class="card-back">Когда нет повторяющихся вершин (кроме начала и конца)</div>
+                    </div>
+                    <div class="card">
+                        <div class="card-front">Что такое цикл?</div>
+                        <div class="card-back">Путь, где начальная и конечная вершины совпадают</div>
+                    </div>
+                    <div class="card">
+                        <div class="card-front">Что такое связный граф?</div>
+                        <div class="card-back">В любой вершину можно попасть из любой другой</div>
+                    </div>
+                    <div class="card">
+                        <div class="card-front">Что значит "сильно связный"?</div>
+                        <div class="card-back">В орграфе есть путь туда и обратно между всеми парами</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Таблица -->
+            <div class="table-section" id="table">
+                <h2>📊 Таблица-резюме</h2>
+                <div class="summary-table">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Тип структуры</th>
+                                <th>Условия</th>
+                                <th>Пример</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Путь</td>
+                                <td>Последовательность вершин и ребер</td>
+                                <td>A → B → C</td>
+                            </tr>
+                            <tr>
+                                <td>Цепь</td>
+                                <td>Без повторений ребер</td>
+                                <td>A — B — C — D</td>
+                            </tr>
+                            <tr>
+                                <td>Простая цепь</td>
+                                <td>Без повторений вершин</td>
+                                <td>A — B — C</td>
+                            </tr>
+                            <tr>
+                                <td>Цикл</td>
+                                <td>Начало = конец</td>
+                                <td>A → B → C → A</td>
+                            </tr>
+                            <tr>
+                                <td>Связный граф</td>
+                                <td>Между любой парой вершин есть путь</td>
+                                <td>Любая сеть без "разрывов"</td>
+                            </tr>
+                            <tr>
+                                <td>Сильно связный</td>
+                                <td>В орграфе: путь туда и обратно между всеми вершинами</td>
+                                <td>Дорожная сеть с движением в обе стороны</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="lecture-nav">
+        <a href="glec4.html" class="lecture-nav-btn">
+            <img src="../Photos/left.png" alt="Предыдущая лекция">
+        </a>
+        <a href="glec6.html" class="lecture-nav-btn">
+            <img src="../Photos/right.png" alt="Следующая лекция">
+        </a>
+    </div>
+
+    <div class="up-button">
+        <img src="../Photos/up.png" alt="Вверх" class="up-icon">
+    </div>
+
+    <script src="glec5.js"></script>
+</body>
+</html>

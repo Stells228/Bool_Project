@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Лекция 4. Операции над графами</title>
+
+    <link rel="preload" href="../bool/lec.css" as="style">
+    <link rel="preload" href="../main.css" as="style">
+    <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/vis/4.21.0/vis.min.js" as="script">
+
+    <link href="../bool/lec.css" rel="stylesheet">
+    <link rel="stylesheet" href="../main.css">
+    <link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <!-- PWA метаданные -->
+    <link rel="manifest" href="/favicon/site.webmanifest">
+    <meta name="theme-color" content="#416190">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+    <!-- Иконки -->
+    <link rel="icon" href="/favicon/favicon.ico" type="image/x-icon">
+    <link rel="apple-touch-icon" href="/favicon/apple-touch-icon.png" sizes="180x180">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vis/4.21.0/vis.min.js" defer></script>
+</head>
+<body>
+    <div class="lecture-decoration">
+        <img src="../Photos/cloudmoon1.png" alt="Cloud" class="decoration-cloud cloud1">
+        <img src="../Photos/cloudmoon2.png" alt="Cloud" class="decoration-cloud cloud2">
+        <img src="../Photos/cloudmoon3.png" alt="Cloud" class="decoration-cloud cloud3">
+        <img src="../Photos/stars1.png" alt="Stars" class="decoration-stars stars1">
+        <img src="../Photos/stars2.png" alt="Stars" class="decoration-stars stars2">
+    </div>
+    <div class="lecture-container">
+        <div class="back-button" onclick="window.history.back()">
+            <img src="../Photos/home.png" alt="Назад" class="back-icon">
+        </div>
+
+        <h1 class="lecture-title">🔧 Лекция 4. Операции над графами</h1>
+
+        <div class="toc-container">
+            <h3>Содержание:</h3>
+            <ul class="toc-list">
+                <li><a href="#section1">1. Зачем нужны операции над графами</a></li>
+                <li><a href="#section2">2. Локальные операции</a></li>
+                <li><a href="#section3">3. Глобальные операции</a></li>
+                <li><a href="#summary">Краткое резюме</a></li>
+                <li><a href="#cards">Пятисекундка</a></li>
+                <li><a href="#table">Таблица-резюме</a></li>
+            </ul>
+        </div>
+
+        <div class="lecture-content">
+            <!-- Секция 1 -->
+            <div class="lecture-section" id="section1">
+                <h2>1. Зачем нужны операции над графами</h2>
+                <div class="definition">
+                    <p>Операции над графами используются для:</p>
+                    <ul>
+                        <li>Упрощения графа</li>
+                        <li>Моделирования изменений (например, отключение узла в сети)</li>
+                        <li>Построения новых графов на основе существующих</li>
+                        <li>Работы алгоритмов (например, при построении остова)</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Секция 2 -->
+            <div class="lecture-section" id="section2">
+                <h2>2. Локальные операции</h2>
+                
+                <div class="operation">
+                    <h3>Удаление вершины</h3>
+                    <p>Удаляется вершина v и все ребра, инцидентные ей.</p>
+                    <p><strong>Обозначение:</strong> G − v</p>
+                    <p><strong>Пример:</strong> если удалить вершину 3, пропадут и ребра (3,1), (3,4)</p>
+                </div>
+
+                <div class="operation">
+                    <h3>Удаление ребра</h3>
+                    <p>Удаляется только указанное ребро, вершины сохраняются.</p>
+                    <p><strong>Пример:</strong> удалить ребро (2,3) — связь между 2 и 3 исчезает.</p>
+                </div>
+
+                <div class="operation">
+                    <h3>Добавление вершины/ребра</h3>
+                    <ul>
+                        <li>Добавление вершины — новая точка без связей (изолированная)</li>
+                        <li>Добавление ребра — соединяет уже существующие вершины</li>
+                    </ul>
+                </div>
+
+                <div class="operation">
+                    <h3>Стягивание ребра (контракция)</h3>
+                    <p>Объединяет вершины a и b, соединённые ребром r, в новую вершину c.</p>
+                    <p>Все ребра, инцидентные a или b, теперь соединяются с c.</p>
+                    <p class="warning">⚠️ <strong>Важно:</strong> может создавать петли или кратные ребра!</p>
+                </div>
+
+                <div class="operation">
+                    <h3>Подразбиение ребра</h3>
+                    <p>Вставка новой вершины c в ребро (a, b):</p>
+                    <p>Старое ребро удаляется, добавляются два новых: (a, c), (b, c)</p>
+                    <p><strong>Использование:</strong> для подготовки графа к алгоритмам или преобразованиям.</p>
+                </div>
+            </div>
+
+            <!-- Секция 3 -->
+            <div class="lecture-section" id="section3">
+                <h2>3. Глобальные операции</h2>
+                
+                <div class="operation">
+                    <h3>Объединение графов</h3>
+                    <p>Все вершины и ребра из двух графов объединяются в один.</p>
+                    <p><strong>Обозначение:</strong> G₁ ∪ G₂</p>
+                </div>
+
+                <div class="operation">
+                    <h3>Пересечение графов</h3>
+                    <p>Новый граф содержит только те вершины и ребра, которые есть и в G₁, и в G₂.</p>
+                    <p><strong>Обозначение:</strong> G₁ ∩ G₂</p>
+                </div>
+
+                <div class="operation">
+                    <h3>Разность графов</h3>
+                    <p>Вершины и ребра G₁, которых нет в G₂.</p>
+                    <p><strong>Обозначение:</strong> G₁ − G₂</p>
+                    <p><strong>Пример:</strong> если G₂ — подграф G₁, то разность — это «удаление» G₂ из G₁.</p>
+                </div>
+            </div>
+
+            <!-- Краткое резюме -->
+            <div class="lecture-section" id="summary">
+                <h2>📝 Краткое резюме</h2>
+                <ul>
+                    <li><strong>Локальные операции:</strong>
+                        <ul>
+                            <li>Удаление вершины/ребра — базовые преобразования</li>
+                            <li>Стягивание — используется при анализе планарности</li>
+                            <li>Подразбиение — вводится для построения плоских графов</li>
+                        </ul>
+                    </li>
+                    <li><strong>Глобальные операции:</strong>
+                        <ul>
+                            <li>Объединение и пересечение — аналогия с множествами</li>
+                            <li>Разность — полезна при вырезании лишних элементов</li>
+                        </ul>
+                    </li>
+                    <li>Операции позволяют трансформировать графы для решения различных задач</li>
+                </ul>
+            </div>
+
+            <div class="test-section" id="test">
+                <button class="test-button" id="start-test">Пройти тест</button>
+                <div class="test-container hidden" id="test-container">
+                    <h2>Тест по лекции</h2>
+                    <div class="questions" id="questions-container"></div>
+                    <button class="submit-btn" id="submit-test">Проверить</button>
+                </div>
+                <div class="result-container hidden" id="result-container">
+                    <h2>Результаты теста</h2>
+                    <div class="stars-rating">
+                        <span class="star">★</span>
+                        <span class="star">★</span>
+                        <span class="star">★</span>
+                    </div>
+                    <p class="result-text"></p>
+                    <button class="close-btn" id="close-test">Закрыть</button>
+                    <button class="close-btn" id="go-to-main">На главную</button>
+                </div>
+            </div>
+
+            <!-- Карточки -->
+            <div class="cards-section" id="cards">
+                <h2>🃏 Пятисекундка</h2>
+                <div class="cards-container">
+                    <div class="card">
+                        <div class="card-front">Что происходит при стягивании ребра?</div>
+                        <div class="card-back">Вершины a и b объединяются в одну, инцидентные ребра переподключаются</div>
+                    </div>
+                    <div class="card">
+                        <div class="card-front">Как обозначается удаление вершины v?</div>
+                        <div class="card-back">G − v</div>
+                    </div>
+                    <div class="card">
+                        <div class="card-front">Что делает операция подразбиения?</div>
+                        <div class="card-back">Вставляет вершину в середину ребра</div>
+                    </div>
+                    <div class="card">
+                        <div class="card-front">Когда используется пересечение графов?</div>
+                        <div class="card-back">Чтобы оставить только общие вершины и ребра</div>
+                    </div>
+                    <div class="card">
+                        <div class="card-front">Что делает объединение графов?</div>
+                        <div class="card-back">Объединяет все вершины и ребра двух графов</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Таблица -->
+            <div class="table-section" id="table">
+                <h2>📊 Таблица-резюме</h2>
+                <div class="summary-table residual-table">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Операция</th>
+                                <th>Обозначение</th>
+                                <th>Описание</th>
+                                <th>Использование</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Удаление вершины</td>
+                                <td>G − v</td>
+                                <td>Удаляет вершину и её связи</td>
+                                <td>При сбоях в сети</td>
+                            </tr>
+                            <tr>
+                                <td>Удаление ребра</td>
+                                <td>—</td>
+                                <td>Удаляет только ребро</td>
+                                <td>Изменение маршрутов</td>
+                            </tr>
+                            <tr>
+                                <td>Стягивание ребра</td>
+                                <td>—</td>
+                                <td>Слияние двух вершин</td>
+                                <td>При анализе циклов</td>
+                            </tr>
+                            <tr>
+                                <td>Подразбиение ребра</td>
+                                <td>—</td>
+                                <td>Вставка вершины в ребро</td>
+                                <td>Построение плоских графов</td>
+                            </tr>
+                            <tr>
+                                <td>Объединение</td>
+                                <td>G₁ ∪ G₂</td>
+                                <td>Все вершины и ребра</td>
+                                <td>Объединение двух систем</td>
+                            </tr>
+                            <tr>
+                                <td>Пересечение</td>
+                                <td>G₁ ∩ G₂</td>
+                                <td>Общие элементы</td>
+                                <td>Анализ схожести структур</td>
+                            </tr>
+                            <tr>
+                                <td>Разность</td>
+                                <td>G₁ − G₂</td>
+                                <td>Удаление подграфа</td>
+                                <td>Выделение отличий</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="lecture-nav">
+        <a href="glec3.html" class="lecture-nav-btn">
+            <img src="../Photos/left.png" alt="Предыдущая лекция">
+        </a>
+        <a href="glec5.html" class="lecture-nav-btn">
+            <img src="../Photos/right.png" alt="Следующая лекция">
+        </a>
+    </div>
+
+    <div class="up-button">
+        <img src="../Photos/up.png" alt="Вверх" class="up-icon">
+    </div>
+
+    <script src="glec4.js"></script>
+</body>
+</html>

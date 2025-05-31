@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Лекция 8. Планарные графы</title>
+
+    <link rel="preload" href="../bool/lec.css" as="style">
+    <link rel="preload" href="../main.css" as="style">
+    <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/vis/4.21.0/vis.min.js" as="script">
+
+    <link href="../bool/lec.css" rel="stylesheet">
+    <link rel="stylesheet" href="../main.css">
+    <link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <!-- PWA метаданные -->
+    <link rel="manifest" href="/favicon/site.webmanifest">
+    <meta name="theme-color" content="#416190">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+    <!-- Иконки -->
+    <link rel="icon" href="/favicon/favicon.ico" type="image/x-icon">
+    <link rel="apple-touch-icon" href="/favicon/apple-touch-icon.png" sizes="180x180">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vis/4.21.0/vis.min.js" defer></script>
+</head>
+<body>
+    <div class="lecture-decoration">
+        <img src="../Photos/cloudmoon1.png" alt="Cloud" class="decoration-cloud cloud1">
+        <img src="../Photos/cloudmoon2.png" alt="Cloud" class="decoration-cloud cloud2">
+        <img src="../Photos/cloudmoon3.png" alt="Cloud" class="decoration-cloud cloud3">
+        <img src="../Photos/stars1.png" alt="Stars" class="decoration-stars stars1">
+        <img src="../Photos/stars2.png" alt="Stars" class="decoration-stars stars2">
+    </div>
+    <div class="lecture-container">
+        <div class="back-button" onclick="window.history.back()">
+            <img src="../Photos/home.png" alt="Назад" class="back-icon">
+        </div>
+
+        <h1 class="lecture-title">🖼️ Лекция 8. Планарные графы</h1>
+
+        <div class="toc-container">
+            <h3>Содержание:</h3>
+            <ul class="toc-list">
+                <li><a href="#section1">1. Что такое планарный граф</a></li>
+                <li><a href="#section2">2. Плоский граф</a></li>
+                <li><a href="#section3">3. Критерии планарности</a></li>
+                <li><a href="#section4">4. Формула Эйлера</a></li>
+                <li><a href="#section5">5. Примеры</a></li>
+                <li><a href="#section6">6. Применение планарности</a></li>
+                <li><a href="#summary">Краткое резюме</a></li>
+                <li><a href="#cards">Пятисекундка</a></li>
+                <li><a href="#table">Таблица-резюме</a></li>
+            </ul>
+        </div>
+
+        <div class="lecture-content">
+            <!-- Секция 1 -->
+            <div class="lecture-section" id="section1">
+                <h2>1. Что такое планарный граф</h2>
+                <div class="definition">
+                    <p>Планарный граф — граф, который можно нарисовать на плоскости так, чтобы его ребра не пересекались (кроме как в вершинах).</p>
+                    <p><strong>То есть</strong> — можно перерисовать граф, убрав пересечения.</p>
+                    <p><strong>Пример:</strong></p>
+                    <p>Граф с вершинами A, B, C, D, E, в котором есть "пересекающиеся" ребра — может быть планарным, если можно найти другое представление без пересечений.</p>
+                </div>
+            </div>
+
+            <!-- Секция 2 -->
+            <div class="lecture-section" id="section2">
+                <h2>2. Плоский граф</h2>
+                <div class="definition">
+                    <p>Плоский граф — это конкретное изображение планарного графа на плоскости без пересечений.</p>
+                    <p><strong>Важно:</strong> Планарный граф может иметь несколько плоских представлений.</p>
+                </div>
+            </div>
+
+            <!-- Секция 3 -->
+            <div class="lecture-section" id="section3">
+                <h2>3. Критерии планарности</h2>
+                <div class="theorem">
+                    <h3>Теорема Куратовского:</h3>
+                    <p>Граф не является планарным тогда и только тогда, когда он содержит подграф, гомеоморфный одному из графов:</p>
+                    <ul>
+                        <li>K₅ (полный граф на 5 вершинах)</li>
+                        <li>K₃,₃ (полный двудольный граф: 3 вершины ↔ 3 вершины)</li>
+                    </ul>
+                    <div class="note">
+                        <p>📌 <strong>Гомеоморфный</strong> = можно получить из K₅ или K₃,₃ добавлением/удалением вершин степени 2 (вставка в ребро).</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Секция 4 -->
+            <div class="lecture-section" id="section4">
+                <h2>4. Формула Эйлера</h2>
+                <div class="theorem">
+                    <p>Для связных плоских графов:</p>
+                    <div class="formula">
+                        v − r + g = 2
+                    </div>
+                    <p>где:</p>
+                    <ul>
+                        <li>v — число вершин</li>
+                        <li>r — число ребер</li>
+                        <li>g — число граней (включая внешнюю область)</li>
+                    </ul>
+                    <div class="note">
+                        <p>📌 Применяется только для связных плоских графов</p>
+                    </div>
+                </div>
+                <div class="corollary">
+                    <h3>Следствия из формулы Эйлера:</h3>
+                    <p>Для планарного графа без кратных ребер и петель:</p>
+                    <ul>
+                        <li>Если v ≥ 3, то: r ≤ 3v − 6</li>
+                        <li>Если граф двудольный и без циклов длины 3 (треугольников): r ≤ 2v − 4</li>
+                    </ul>
+                    <p>Эти оценки помогают проверить планарность.</p>
+                </div>
+            </div>
+
+            <!-- Секция 5 -->
+            <div class="lecture-section" id="section5">
+                <h2>5. Примеры</h2>
+                <div class="examples">
+                    <div class="example">
+                        <p>❌ <strong>K₅ не планарен:</strong></p>
+                        <p>5 вершин, каждая соединена с каждой → 10 ребер</p>
+                        <p>r = 10 > 3·5 − 6 = 9 → нарушено</p>
+                    </div>
+                    <div class="example">
+                        <p>❌ <strong>K₃,₃ не планарен:</strong></p>
+                        <p>Двудольный граф, 6 вершин, 9 ребер</p>
+                        <p>r = 9 > 2·6 − 4 = 8 → нарушено</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Секция 6 -->
+            <div class="lecture-section" id="section6">
+                <h2>6. Применение планарности</h2>
+                <div class="applications">
+                    <p>Планарные графы используются в:</p>
+                    <ul>
+                        <li>схемотехнике (печатные платы)</li>
+                        <li>географии (карты)</li>
+                        <li>визуализации (удобные графики и диаграммы)</li>
+                    </ul>
+                    <p>Связаны с:</p>
+                    <ul>
+                        <li>раскраской карт</li>
+                        <li>разбиением графов на области</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Краткое резюме -->
+            <div class="lecture-section" id="summary">
+                <h2>📝 Краткое резюме</h2>
+                <ul>
+                    <li><strong>Планарный граф</strong> — можно нарисовать без пересечений ребер</li>
+                    <li><strong>Плоский граф</strong> — конкретное изображение планарного графа без пересечений</li>
+                    <li><strong>Теорема Куратовского</strong> — граф не планарен, если содержит подграф, гомеоморфный K₅ или K₃,₃</li>
+                    <li><strong>Формула Эйлера</strong> (v − r + g = 2) — основной инструмент анализа планарных графов</li>
+                    <li>Планарность важна в схематике, картографии и визуализации данных</li>
+                </ul>
+            </div>
+
+            <div class="test-section" id="test">
+                <button class="test-button" id="start-test">Пройти тест</button>
+                <div class="test-container hidden" id="test-container">
+                    <h2>Тест по лекции</h2>
+                    <div class="questions" id="questions-container"></div>
+                    <button class="submit-btn" id="submit-test">Проверить</button>
+                </div>
+                <div class="result-container hidden" id="result-container">
+                    <h2>Результаты теста</h2>
+                    <div class="stars-rating">
+                        <span class="star">★</span>
+                        <span class="star">★</span>
+                        <span class="star">★</span>
+                    </div>
+                    <p class="result-text"></p>
+                    <button class="close-btn" id="close-test">Закрыть</button>
+                    <button class="close-btn" id="go-to-main">На главную</button>
+                </div>
+            </div>
+
+            <!-- Карточки -->
+            <div class="cards-section" id="cards">
+                <h2>🃏 Пятисекундка</h2>
+                <div class="cards-container">
+                    <div class="card">
+                        <div class="card-front">Что такое планарный граф?</div>
+                        <div class="card-back">Граф, который можно изобразить без пересечений</div>
+                    </div>
+                    <div class="card">
+                        <div class="card-front">Что такое плоский граф?</div>
+                        <div class="card-back">Представление планарного графа на плоскости</div>
+                    </div>
+                    <div class="card">
+                        <div class="card-front">Какие два графа не являются планарными?</div>
+                        <div class="card-back">K₅ и K₃,₃</div>
+                    </div>
+                    <div class="card">
+                        <div class="card-front">Формула Эйлера?</div>
+                        <div class="card-back">v − r + g = 2</div>
+                    </div>
+                    <div class="card">
+                        <div class="card-front">Условие планарности по ребрам?</div>
+                        <div class="card-back">r ≤ 3v − 6 (для простых графов)</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Таблица -->
+            <div class="table-section" id="table">
+                <h2>📊 Таблица-резюме</h2>
+                <div class="summary-table">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Понятие</th>
+                                <th>Определение</th>
+                                <th>Пример</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Планарный граф</td>
+                                <td>Можно нарисовать без пересечений</td>
+                                <td>Графы без подграфов K₅, K₃,₃</td>
+                            </tr>
+                            <tr>
+                                <td>Плоский граф</td>
+                                <td>Конкретное изображение на плоскости</td>
+                                <td>Любой рисунок без пересечений</td>
+                            </tr>
+                            <tr>
+                                <td>K₅</td>
+                                <td>Полный граф на 5 вершинах</td>
+                                <td>❌ не планарен</td>
+                            </tr>
+                            <tr>
+                                <td>K₃,₃</td>
+                                <td>Полный двудольный граф (3×3)</td>
+                                <td>❌ не планарен</td>
+                            </tr>
+                            <tr>
+                                <td>Формула Эйлера</td>
+                                <td>v − r + g = 2</td>
+                                <td>Проверка планарности</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="lecture-nav">
+        <a href="glec7.html" class="lecture-nav-btn">
+            <img src="../Photos/left.png" alt="Предыдущая лекция">
+        </a>
+        <a href="glec9.html" class="lecture-nav-btn">
+            <img src="../Photos/right.png" alt="Следующая лекция">
+        </a>
+    </div>
+
+    <div class="up-button">
+        <img src="../Photos/up.png" alt="Вверх" class="up-icon">
+    </div>
+
+    <script src="glec8.js"></script>
+</body>
+</html>

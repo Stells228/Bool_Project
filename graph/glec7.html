@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Лекция 7. Гамильтоновы графы</title>
+
+    <link rel="preload" href="../bool/lec.css" as="style">
+    <link rel="preload" href="../main.css" as="style">
+    <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/vis/4.21.0/vis.min.js" as="script">
+
+    <link href="../bool/lec.css" rel="stylesheet">
+    <link rel="stylesheet" href="../main.css">
+    <link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <!-- PWA метаданные -->
+    <link rel="manifest" href="/favicon/site.webmanifest">
+    <meta name="theme-color" content="#416190">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+    <!-- Иконки -->
+    <link rel="icon" href="/favicon/favicon.ico" type="image/x-icon">
+    <link rel="apple-touch-icon" href="/favicon/apple-touch-icon.png" sizes="180x180">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vis/4.21.0/vis.min.js" defer></script>
+</head>
+<body>
+    <div class="lecture-decoration">
+        <img src="../Photos/cloudmoon1.png" alt="Cloud" class="decoration-cloud cloud1">
+        <img src="../Photos/cloudmoon2.png" alt="Cloud" class="decoration-cloud cloud2">
+        <img src="../Photos/cloudmoon3.png" alt="Cloud" class="decoration-cloud cloud3">
+        <img src="../Photos/stars1.png" alt="Stars" class="decoration-stars stars1">
+        <img src="../Photos/stars2.png" alt="Stars" class="decoration-stars stars2">
+    </div>
+    <div class="lecture-container">
+        <div class="back-button" onclick="window.history.back()">
+            <img src="../Photos/home.png" alt="Назад" class="back-icon">
+        </div>
+
+        <h1 class="lecture-title">🔄 Лекция 7. Гамильтоновы графы</h1>
+
+        <div class="toc-container">
+            <h3>Содержание:</h3>
+            <ul class="toc-list">
+                <li><a href="#section1">1. История</a></li>
+                <li><a href="#section2">2. Основные определения</a></li>
+                <li><a href="#section3">3. Отличие от эйлерова цикла</a></li>
+                <li><a href="#section4">4. Теорема Дирака</a></li>
+                <li><a href="#section5">5. Пример</a></li>
+                <li><a href="#section6">6. Проблема гамильтонова пути</a></li>
+                <li><a href="#summary">Краткое резюме</a></li>
+                <li><a href="#cards">Пятисекундка</a></li>
+                <li><a href="#table">Таблица-резюме</a></li>
+            </ul>
+        </div>
+
+        <div class="lecture-content">
+            <!-- Секция 1 -->
+            <div class="lecture-section" id="section1">
+                <h2>1. История</h2>
+                <div class="historical-context">
+                    <p>Гамильтонов путь впервые появился в задаче, придуманной математиком Уильямом Гамильтоном в 1857 году.</p>
+                    <p>Он предложил «головоломку» — пройти по вершинам додекаэдра, посетив каждую ровно один раз.</p>
+                </div>
+            </div>
+
+            <!-- Секция 2 -->
+            <div class="lecture-section" id="section2">
+                <h2>2. Основные определения</h2>
+                <div class="definitions-table">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Термин</th>
+                                <th>Определение</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Гамильтонов путь</td>
+                                <td>Путь, проходящий через все вершины графа ровно один раз</td>
+                            </tr>
+                            <tr>
+                                <td>Гамильтонов цикл</td>
+                                <td>Гамильтонов путь, возвращающийся в начальную вершину</td>
+                            </tr>
+                            <tr>
+                                <td>Гамильтонов граф</td>
+                                <td>Граф, в котором существует гамильтонов цикл</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="note">
+                    <p>📌 <strong>Важно:</strong> В отличие от эйлерова пути, в гамильтоновом пути ребра могут повторяться, но вершины — нет (кроме начальной и конечной для цикла).</p>
+                </div>
+            </div>
+
+            <!-- Секция 3 -->
+            <div class="lecture-section" id="section3">
+                <h2>3. Отличие от эйлерова цикла</h2>
+                <div class="comparison-table">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Характеристика</th>
+                                <th>Эйлеров цикл</th>
+                                <th>Гамильтонов цикл</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Что нужно пройти?</td>
+                                <td>Все ребра</td>
+                                <td>Все вершины</td>
+                            </tr>
+                            <tr>
+                                <td>Условия</td>
+                                <td>Все степени четные</td>
+                                <td>Строгих условий нет, но есть теоремы</td>
+                            </tr>
+                            <tr>
+                                <td>Связность</td>
+                                <td>Обязательна</td>
+                                <td>Обязательна</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Секция 4 -->
+            <div class="lecture-section" id="section4">
+                <h2>4. Теорема Дирака</h2>
+                <div class="theorem">
+                    <p><strong>Теорема (Дирак, 1952):</strong></p>
+                    <p>Если граф G имеет n ≥ 3 вершин, и степень каждой вершины ≥ n/2,</p>
+                    <p>то G — гамильтонов.</p>
+                    <div class="note">
+                        <p>📌 Это достаточное, но не необходимое условие.</p>
+                        <p>То есть если условие выполнено → цикл точно есть,</p>
+                        <p>но если не выполнено — это не значит, что цикла нет.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Секция 5 -->
+            <div class="lecture-section" id="section5">
+                <h2>5. Пример</h2>
+                <div class="example">
+                    <p>Граф с 6 вершинами:</p>
+                    <pre>
+Степени: 3, 3, 3, 4, 4, 4  
+→ каждая степень ≥ 3 = 6/2  
+→ по теореме Дирака: граф — гамильтонов
+                    </pre>
+                </div>
+                <div class="concept-box">
+                    <h3>Как «достраивают» граф до гамильтонова</h3>
+                    <p>Иногда в задачи добавляют новые вершины и ребра, чтобы получился гамильтонов цикл.</p>
+                    <p>Это удобно, например, в компьютерной обработке графов, когда нужно «пройти через все».</p>
+                </div>
+            </div>
+
+            <!-- Секция 6 -->
+            <div class="lecture-section" id="section6">
+                <h2>6. Проблема гамильтонова пути</h2>
+                <div class="complexity">
+                    <p>Задача нахождения гамильтонова пути — NP-полная.</p>
+                    <p>То есть нет известного быстрого алгоритма для любого графа.</p>
+                </div>
+            </div>
+
+            <!-- Краткое резюме -->
+            <div class="lecture-section" id="summary">
+                <h2>📝 Краткое резюме</h2>
+                <ul>
+                    <li><strong>Гамильтонов путь</strong> — проходит через все вершины ровно один раз</li>
+                    <li><strong>Гамильтонов цикл</strong> — замкнутый путь по всем вершинам</li>
+                    <li>Теорема Дирака: если степени всех вершин ≥ n/2 (n ≥ 3), то граф гамильтонов</li>
+                    <li>Гамильтоновы пути отличаются от эйлеровых — в них важны вершины, а не ребра</li>
+                    <li>Задача нахождения гамильтонова пути является NP-полной</li>
+                </ul>
+            </div>
+
+            <div class="test-section" id="test">
+                <button class="test-button" id="start-test">Пройти тест</button>
+                <div class="test-container hidden" id="test-container">
+                    <h2>Тест по лекции</h2>
+                    <div class="questions" id="questions-container"></div>
+                    <button class="submit-btn" id="submit-test">Проверить</button>
+                </div>
+                <div class="result-container hidden" id="result-container">
+                    <h2>Результаты теста</h2>
+                    <div class="stars-rating">
+                        <span class="star">★</span>
+                        <span class="star">★</span>
+                        <span class="star">★</span>
+                    </div>
+                    <p class="result-text"></p>
+                    <button class="close-btn" id="close-test">Закрыть</button>
+                    <button class="close-btn" id="go-to-main">На главную</button>
+                </div>
+            </div>
+
+            <!-- Карточки -->
+            <div class="cards-section" id="cards">
+                <h2>🃏 Пятисекундка</h2>
+                <div class="cards-container">
+                    <div class="card">
+                        <div class="card-front">Что такое гамильтонов путь?</div>
+                        <div class="card-back">Путь, проходящий по всем вершинам ровно один раз</div>
+                    </div>
+                    <div class="card">
+                        <div class="card-front">Чем отличается гамильтонов путь от эйлерова?</div>
+                        <div class="card-back">В гамильтоновом важны вершины, в эйлеровом — ребра</div>
+                    </div>
+                    <div class="card">
+                        <div class="card-front">Что такое гамильтонов цикл?</div>
+                        <div class="card-back">Гамильтонов путь, возвращающийся в начальную вершину</div>
+                    </div>
+                    <div class="card">
+                        <div class="card-front">Условие теоремы Дирака?</div>
+                        <div class="card-back">Все степени ≥ n/2, при n ≥ 3</div>
+                    </div>
+                    <div class="card">
+                        <div class="card-front">Что делать, если граф не гамильтонов?</div>
+                        <div class="card-back">Можно добавить вершины/ребра или искать подграф</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Таблица -->
+            <div class="table-section" id="table">
+                <h2>📊 Таблица-резюме</h2>
+                <div class="summary-table">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Свойство</th>
+                                <th>Эйлеров граф</th>
+                                <th>Гамильтонов граф</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Проходит через</td>
+                                <td>Все ребра</td>
+                                <td>Все вершины</td>
+                            </tr>
+                            <tr>
+                                <td>Может повторять</td>
+                                <td>Вершины</td>
+                                <td>Ребра</td>
+                            </tr>
+                            <tr>
+                                <td>Степени вершины</td>
+                                <td>Все четные / 2 нечётные</td>
+                                <td>≥ n/2 (Дирак) — достаточное</td>
+                            </tr>
+                            <tr>
+                                <td>Проверка наличия</td>
+                                <td>Легко (по степеням)</td>
+                                <td>Трудно (NP-полная)</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="lecture-nav">
+        <a href="glec6.html" class="lecture-nav-btn">
+            <img src="../Photos/left.png" alt="Предыдущая лекция">
+        </a>
+        <a href="glec8.html" class="lecture-nav-btn">
+            <img src="../Photos/right.png" alt="Следующая лекция">
+        </a>
+    </div>
+
+    <div class="up-button">
+        <img src="../Photos/up.png" alt="Вверх" class="up-icon">
+    </div>
+
+    <script src="glec7.js"></script>
+</body>
+</html>

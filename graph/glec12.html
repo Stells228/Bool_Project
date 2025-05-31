@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Лекция 12. Ориентированные деревья</title>
+
+    <link rel="preload" href="../bool/lec.css" as="style">
+    <link rel="preload" href="../main.css" as="style">
+    <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/vis/4.21.0/vis.min.js" as="script">
+
+    <link href="../bool/lec.css" rel="stylesheet">
+    <link rel="stylesheet" href="../main.css">
+    <link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <!-- PWA метаданные -->
+    <link rel="manifest" href="/favicon/site.webmanifest">
+    <meta name="theme-color" content="#416190">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+    <!-- Иконки -->
+    <link rel="icon" href="/favicon/favicon.ico" type="image/x-icon">
+    <link rel="apple-touch-icon" href="/favicon/apple-touch-icon.png" sizes="180x180">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vis/4.21.0/vis.min.js" defer></script>
+</head>
+<body>
+    <div class="lecture-decoration">
+        <img src="../Photos/cloudmoon1.png" alt="Cloud" class="decoration-cloud cloud1">
+        <img src="../Photos/cloudmoon2.png" alt="Cloud" class="decoration-cloud cloud2">
+        <img src="../Photos/cloudmoon3.png" alt="Cloud" class="decoration-cloud cloud3">
+        <img src="../Photos/stars1.png" alt="Stars" class="decoration-stars stars1">
+        <img src="../Photos/stars2.png" alt="Stars" class="decoration-stars stars2">
+    </div>
+    <div class="lecture-container">
+        <div class="back-button" onclick="window.history.back()">
+            <img src="../Photos/home.png" alt="Назад" class="back-icon">
+        </div>
+
+        <h1 class="lecture-title">🎯 Лекция 12. Ориентированные деревья</h1>
+
+        <div class="toc-container">
+            <h3>Содержание:</h3>
+            <ul class="toc-list">
+                <li><a href="#section1">1. Что такое ориентированное дерево</a></li>
+                <li><a href="#section2">2. Термины и структура</a></li>
+                <li><a href="#section3">3. Свойства</a></li>
+                <li><a href="#section4">4. Поддеревья</a></li>
+                <li><a href="#section5">5. Применения</a></li>
+                <li><a href="#section6">6. Представление в коде</a></li>
+                <li><a href="#summary">Краткое резюме</a></li>
+                <li><a href="#cards">Пятисекундка</a></li>
+                <li><a href="#table">Таблица-резюме</a></li>
+            </ul>
+        </div>
+
+        <div class="lecture-content">
+            <!-- Секция 1 -->
+            <div class="lecture-section" id="section1">
+                <h2>1. Что такое ориентированное дерево</h2>
+                <div class="definition">
+                    <p>Ориентированное дерево — это ориентированный граф (орграф), который:</p>
+                    <ul>
+                        <li>Связен как неориентированный граф (если игнорировать направления)</li>
+                        <li>Не содержит ориентированных циклов</li>
+                        <li>Имеет одну вершину без входящих дуг — корень</li>
+                        <li>Все остальные вершины имеют ровно одну входящую дугу</li>
+                    </ul>
+                    <div class="note">
+                        <p>📌 <strong>Это означает:</strong> Существует единственный путь от корня к любой другой вершине.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Секция 2 -->
+            <div class="lecture-section" id="section2">
+                <h2>2. Термины и структура</h2>
+                <div class="definition">
+                    <table>
+                        <tr>
+                            <th>Элемент</th>
+                            <th>Объяснение</th>
+                        </tr>
+                        <tr>
+                            <td>Корень</td>
+                            <td>Вершина, из которой исходят дуги; нет входящих дуг</td>
+                        </tr>
+                        <tr>
+                            <td>Потомки</td>
+                            <td>Вершины, достижимые из данной</td>
+                        </tr>
+                        <tr>
+                            <td>Предок</td>
+                            <td>Вершина, из которой можно дойти до данной</td>
+                        </tr>
+                        <tr>
+                            <td>Родитель</td>
+                            <td>Непосредственный предок</td>
+                        </tr>
+                        <tr>
+                            <td>Дочерняя вершина (ребенок)</td>
+                            <td>Смежная вершина, на которую указывает дуга</td>
+                        </tr>
+                        <tr>
+                            <td>Лист</td>
+                            <td>Вершина без исходящих дуг</td>
+                        </tr>
+                        <tr>
+                            <td>Уровень</td>
+                            <td>Расстояние от корня</td>
+                        </tr>
+                        <tr>
+                            <td>Высота дерева</td>
+                            <td>Максимальный уровень среди всех вершин</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Секция 3 -->
+            <div class="lecture-section" id="section3">
+                <h2>3. Свойства ориентированных деревьев</h2>
+                <div class="theorem">
+                    <p>В ориентированном дереве с n вершинами:</p>
+                    <ul>
+                        <li>Ровно n − 1 дуга</li>
+                        <li>Только один корень</li>
+                        <li>Все остальные вершины имеют по одной входящей дуге</li>
+                    </ul>
+                    <div class="note">
+                        <p>📌 Это позволяет однозначно определять «кто чей родитель».</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Секция 4 -->
+            <div class="lecture-section" id="section4">
+                <h2>4. Поддеревья</h2>
+                <div class="definition">
+                    <p>Поддерево вершины v — это ориентированное дерево, в котором:</p>
+                    <ul>
+                        <li>v становится корнем</li>
+                        <li>Включены все её потомки</li>
+                    </ul>
+                    <div class="note">
+                        <p>📌 Используется, например, в рекурсивных алгоритмах на деревьях.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Секция 5 -->
+            <div class="lecture-section" id="section5">
+                <h2>5. Применения</h2>
+                <div class="applications">
+                    <ul>
+                        <li>Файловые системы (каталоги → подпапки)</li>
+                        <li>Структура веб-сайта</li>
+                        <li>Организационные схемы</li>
+                        <li>Парсинг выражений</li>
+                        <li>Родословные и иерархии в биологии и лингвистике</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Секция 6 -->
+            <div class="lecture-section" id="section6">
+                <h2>6. Представление в коде</h2>
+                <div class="definition">
+                    <p>Обычно хранится:</p>
+                    <ul>
+                        <li>Как список смежности, где у каждой вершины указаны дети</li>
+                        <li>Или в виде массива родителей: parent[i] = x означает, что вершина i — потомок вершины x</li>
+                    </ul>
+                    <div class="code-example">
+                        <p><strong>Пример массива родителей:</strong></p>
+                        <pre>
+parent = [None, 0, 0, 1, 1, 2, 2]
+// 0 - корень
+// 1 и 2 - дети 0
+// 3 и 4 - дети 1
+// 5 и 6 - дети 2</pre>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Краткое резюме -->
+            <div class="lecture-section" id="summary">
+                <h2>📝 Краткое резюме</h2>
+                <ul>
+                    <li><strong>Ориентированное дерево</strong> — иерархический орграф с корнем и единственным путем к каждой вершине</li>
+                    <li><strong>Свойства:</strong> n вершин → n-1 дуга, один корень, у каждой вершины один родитель</li>
+                    <li><strong>Термины:</strong> корень, листья, родители, дети, уровни, высота</li>
+                    <li><strong>Поддерево</strong> — дерево, начинающееся с определенной вершины</li>
+                    <li><strong>Применение:</strong> файловые системы, веб-структуры, организационные схемы</li>
+                    <li><strong>Хранение:</strong> список смежности или массив родителей</li>
+                </ul>
+            </div>
+
+            <div class="test-section" id="test">
+                <button class="test-button" id="start-test">Пройти тест</button>
+                <div class="test-container hidden" id="test-container">
+                    <h2>Тест по лекции</h2>
+                    <div class="questions" id="questions-container"></div>
+                    <button class="submit-btn" id="submit-test">Проверить</button>
+                </div>
+                <div class="result-container hidden" id="result-container">
+                    <h2>Результаты теста</h2>
+                    <div class="stars-rating">
+                        <span class="star">★</span>
+                        <span class="star">★</span>
+                        <span class="star">★</span>
+                    </div>
+                    <p class="result-text"></p>
+                    <button class="close-btn" id="close-test">Закрыть</button>
+                    <button class="close-btn" id="go-to-main">На главную</button>
+                </div>
+            </div>
+
+            <!-- Карточки -->
+            <div class="cards-section" id="cards">
+                <h2>🃏 Пятисекундка</h2>
+                <div class="cards-container">
+                    <div class="card">
+                        <div class="card-front">Что такое ориентированное дерево?</div>
+                        <div class="card-back">Орграф с корнем и единственным путем к каждой вершине</div>
+                    </div>
+                    <div class="card">
+                        <div class="card-front">Сколько дуг в ориентированном дереве на n вершинах?</div>
+                        <div class="card-back">n − 1</div>
+                    </div>
+                    <div class="card">
+                        <div class="card-front">Что такое корень дерева?</div>
+                        <div class="card-back">Вершина без входящих дуг</div>
+                    </div>
+                    <div class="card">
+                        <div class="card-front">Что такое лист?</div>
+                        <div class="card-back">Вершина без исходящих дуг</div>
+                    </div>
+                    <div class="card">
+                        <div class="card-front">Что такое поддерево вершины v?</div>
+                        <div class="card-back">Дерево, где v — корень, включающее её потомков</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Таблица -->
+            <div class="table-section" id="table">
+                <h2>📊 Таблица-резюме</h2>
+                <div class="summary-table">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Понятие</th>
+                                <th>Определение</th>
+                                <th>Пример</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Ориентированное дерево</td>
+                                <td>Иерархический орграф с корнем</td>
+                                <td>Структура папок</td>
+                            </tr>
+                            <tr>
+                                <td>Корень</td>
+                                <td>Вершина без входящих дуг</td>
+                                <td>Начало дерева</td>
+                            </tr>
+                            <tr>
+                                <td>Лист</td>
+                                <td>Вершина без исходящих дуг</td>
+                                <td>Файл в папке</td>
+                            </tr>
+                            <tr>
+                                <td>Родитель</td>
+                                <td>Вершина, из которой ведет дуга</td>
+                                <td>Категория → подкатегория</td>
+                            </tr>
+                            <tr>
+                                <td>Поддерево</td>
+                                <td>Все потомки вершины</td>
+                                <td>Ветка в иерархии</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="lecture-nav">
+        <a href="glec11.html" class="lecture-nav-btn">
+            <img src="../Photos/left.png" alt="Предыдущая лекция">
+        </a>
+        <a href="glec13.html" class="lecture-nav-btn">
+            <img src="../Photos/right.png" alt="Следующая лекция">
+        </a>
+    </div>
+
+    <div class="up-button">
+        <img src="../Photos/up.png" alt="Вверх" class="up-icon">
+    </div>
+
+    <script src="glec12.js"></script>
+</body>
+</html>

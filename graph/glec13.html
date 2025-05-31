@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Лекция 13. Расстояния в графе</title>
+
+    <link rel="preload" href="../bool/lec.css" as="style">
+    <link rel="preload" href="../main.css" as="style">
+    <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/vis/4.21.0/vis.min.js" as="script">
+
+    <link href="../bool/lec.css" rel="stylesheet">
+    <link rel="stylesheet" href="../main.css">
+    <link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <!-- PWA метаданные -->
+    <link rel="manifest" href="/favicon/site.webmanifest">
+    <meta name="theme-color" content="#416190">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+    <!-- Иконки -->
+    <link rel="icon" href="/favicon/favicon.ico" type="image/x-icon">
+    <link rel="apple-touch-icon" href="/favicon/apple-touch-icon.png" sizes="180x180">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vis/4.21.0/vis.min.js" defer></script>
+</head>
+<body>
+    <div class="lecture-decoration">
+        <img src="../Photos/cloudmoon1.png" alt="Cloud" class="decoration-cloud cloud1">
+        <img src="../Photos/cloudmoon2.png" alt="Cloud" class="decoration-cloud cloud2">
+        <img src="../Photos/cloudmoon3.png" alt="Cloud" class="decoration-cloud cloud3">
+        <img src="../Photos/stars1.png" alt="Stars" class="decoration-stars stars1">
+        <img src="../Photos/stars2.png" alt="Stars" class="decoration-stars stars2">
+    </div>
+    <div class="lecture-container">
+        <div class="back-button" onclick="window.history.back()">
+            <img src="../Photos/home.png" alt="Назад" class="back-icon">
+        </div>
+
+        <h1 class="lecture-title">📏 Лекция 13. Расстояния в графе</h1>
+
+        <div class="toc-container">
+            <h3>Содержание:</h3>
+            <ul class="toc-list">
+                <li><a href="#section1">1. Что такое расстояние</a></li>
+                <li><a href="#section2">2. Способы измерения</a></li>
+                <li><a href="#section3">3. Эксцентриситет</a></li>
+                <li><a href="#section4">4. Центр графа</a></li>
+                <li><a href="#section5">5. Пример</a></li>
+                <li><a href="#section6">6. Применение</a></li>
+                <li><a href="#section7">7. Свойства</a></li>
+                <li><a href="#summary">Краткое резюме</a></li>
+                <li><a href="#cards">Пятисекундка</a></li>
+                <li><a href="#table">Таблица-резюме</a></li>
+            </ul>
+        </div>
+
+        <div class="lecture-content">
+            <!-- Секция 1 -->
+            <div class="lecture-section" id="section1">
+                <h2>1. Что такое расстояние в графе</h2>
+                <div class="definition">
+                    <p>Расстояние между двумя вершинами u и v, обозначается d(u, v), — это длина кратчайшего пути между ними (в количестве ребер).</p>
+                    <div class="note">
+                        <p>📌 <strong>В невзвешенном графе</strong> — это просто количество шагов (ребер).</p>
+                        <p>📌 <strong>В взвешенном графе</strong> — сумма весов ребер кратчайшего пути.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Секция 2 -->
+            <div class="lecture-section" id="section2">
+                <h2>2. Способы измерения расстояний</h2>
+                <div class="definition">
+                    <ul>
+                        <li>d(u, v) = минимальное число ребер в пути от u до v</li>
+                        <li>Если пути нет: d(u, v) = ∞</li>
+                        <li>В ориентированном графе: направление важно!</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Секция 3 -->
+            <div class="lecture-section" id="section3">
+                <h2>3. Эксцентриситет вершины</h2>
+                <div class="definition">
+                    <p>Эксцентриситет вершины x, обозначается ε(x), — это максимальное расстояние от x до любой другой вершины графа.</p>
+                    <div class="note">
+                        <p>📌 <strong>То есть:</strong> насколько «удалён» x от самого далекого узла.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Секция 4 -->
+            <div class="lecture-section" id="section4">
+                <h2>4. Центр графа</h2>
+                <div class="definition">
+                    <p><strong>Определения:</strong></p>
+                    <ul>
+                        <li><strong>Диаметр графа (D)</strong> — максимальное значение эксцентриситета среди всех вершин: D = max ε(x)</li>
+                        <li><strong>Радиус графа (r)</strong> — минимальное значение эксцентриситета: r = min ε(x)</li>
+                        <li><strong>Центр графа</strong> — множество всех вершин, у которых эксцентриситет равен радиусу</li>
+                    </ul>
+                    <div class="note">
+                        <p>📌 <strong>Центр</strong> — наиболее «близкая ко всем» точка графа.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Секция 5 -->
+            <div class="lecture-section" id="section5">
+                <h2>5. Пример</h2>
+                <div class="example">
+                    <p><strong>Граф:</strong></p>
+                    <pre>
+1 — 2 — 3 — 4
+    |
+    5</pre>
+                    <ul>
+                        <li>d(1,4) = 3</li>
+                        <li>d(2,5) = 1</li>
+                        <li>ε(2) = 2</li>
+                        <li>ε(1) = 3</li>
+                        <li>Диаметр D = 3</li>
+                        <li>Радиус r = 2</li>
+                        <li>Центр = вершина 2</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Секция 6 -->
+            <div class="lecture-section" id="section6">
+                <h2>6. Применение</h2>
+                <div class="applications">
+                    <ul>
+                        <li>Поиск центрального узла в сети (например, для серверов, хранилищ)</li>
+                        <li>Минимизация времени доступа в логистике и транспорте</li>
+                        <li>Оценка надежности: чем меньше диаметр — тем плотнее и «быстрее» граф</li>
+                        <li>Маркетинг и социология: анализ центра влияния</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Секция 7 -->
+            <div class="lecture-section" id="section7">
+                <h2>7. Свойства</h2>
+                <div class="theorem">
+                    <p>В любом связном графе:</p>
+                    <div class="formula">
+                        r ≤ D ≤ 2r
+                    </div>
+                    <p><strong>Центр может состоять из:</strong></p>
+                    <ul>
+                        <li>одной вершины (например, в звезде)</li>
+                        <li>двух или более вершин (например, в цикле)</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Краткое резюме -->
+            <div class="lecture-section" id="summary">
+                <h2>📝 Краткое резюме</h2>
+                <ul>
+                    <li><strong>Расстояние</strong> — минимальное количество шагов между вершинами</li>
+                    <li><strong>Эксцентриситет</strong> показывает, насколько «удалённой» может быть вершина</li>
+                    <li><strong>Радиус и диаметр</strong> позволяют понять «плотность» и центр графа</li>
+                    <li><strong>Центр</strong> — точка, откуда до всех других «ближе всего в среднем»</li>
+                    <li>Применяется в сетевых технологиях, логистике, социологии</li>
+                </ul>
+            </div>
+
+            <div class="test-section" id="test">
+                <button class="test-button" id="start-test">Пройти тест</button>
+                <div class="test-container hidden" id="test-container">
+                    <h2>Тест по лекции</h2>
+                    <div class="questions" id="questions-container"></div>
+                    <button class="submit-btn" id="submit-test">Проверить</button>
+                </div>
+                <div class="result-container hidden" id="result-container">
+                    <h2>Результаты теста</h2>
+                    <div class="stars-rating">
+                        <span class="star">★</span>
+                        <span class="star">★</span>
+                        <span class="star">★</span>
+                    </div>
+                    <p class="result-text"></p>
+                    <button class="close-btn" id="close-test">Закрыть</button>
+                    <button class="close-btn" id="go-to-main">На главную</button>
+                </div>
+            </div>
+
+            <!-- Карточки -->
+            <div class="cards-section" id="cards">
+                <h2>🃏 Пятисекундка</h2>
+                <div class="cards-container">
+                    <div class="card">
+                        <div class="card-front">Что такое d(u, v)?</div>
+                        <div class="card-back">Минимальное количество ребер между вершинами u и v</div>
+                    </div>
+                    <div class="card">
+                        <div class="card-front">Что такое эксцентриситет вершины?</div>
+                        <div class="card-back">Максимальное расстояние до других вершин</div>
+                    </div>
+                    <div class="card">
+                        <div class="card-front">Что такое диаметр графа?</div>
+                        <div class="card-back">Наибольший эксцентриситет</div>
+                    </div>
+                    <div class="card">
+                        <div class="card-front">Что такое радиус графа?</div>
+                        <div class="card-back">Наименьший эксцентриситет</div>
+                    </div>
+                    <div class="card">
+                        <div class="card-front">Что такое центр графа?</div>
+                        <div class="card-back">Вершины с эксцентриситетом, равным радиусу</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Таблица -->
+            <div class="table-section" id="table">
+                <h2>📊 Таблица-резюме</h2>
+                <div class="summary-table">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Понятие</th>
+                                <th>Обозначение</th>
+                                <th>Определение</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Расстояние</td>
+                                <td>d(u, v)</td>
+                                <td>Длина кратчайшего пути от u до v</td>
+                            </tr>
+                            <tr>
+                                <td>Эксцентриситет</td>
+                                <td>ε(x)</td>
+                                <td>Максимум d(x, y) по всем y</td>
+                            </tr>
+                            <tr>
+                                <td>Диаметр</td>
+                                <td>D</td>
+                                <td>max ε(x)</td>
+                            </tr>
+                            <tr>
+                                <td>Радиус</td>
+                                <td>r</td>
+                                <td>min ε(x)</td>
+                            </tr>
+                            <tr>
+                                <td>Центр</td>
+                                <td>—</td>
+                                <td>Вершины, где ε(x) = r</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="lecture-nav">
+        <a href="glec12.html" class="lecture-nav-btn">
+            <img src="../Photos/left.png" alt="Предыдущая лекция">
+        </a>
+        <a href="glec14.html" class="lecture-nav-btn">
+            <img src="../Photos/right.png" alt="Следующая лекция">
+        </a>
+    </div>
+
+    <div class="up-button">
+        <img src="../Photos/up.png" alt="Вверх" class="up-icon">
+    </div>
+
+    <script src="glec13.js"></script>
+</body>
+</html>

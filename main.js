@@ -114,16 +114,16 @@ document.addEventListener('DOMContentLoaded', () => {
     fabMain.addEventListener('click', (e) => {
         e.stopPropagation();
         fabMenu.classList.toggle('open');
-        
+
         // Анимация "покачивания" при открытии/закрытии
-        fabMain.style.transform = fabMenu.classList.contains('open') 
-            ? 'scale(1.1) rotate(90deg)' 
+        fabMain.style.transform = fabMenu.classList.contains('open')
+            ? 'scale(1.1) rotate(90deg)'
             : 'scale(1) rotate(0)';
-        
+
         // Добавляем/удаляем класс для анимации
         if (fabMenu.classList.contains('open')) {
             fabMain.classList.add('active');
-        } 
+        }
         else {
             fabMain.classList.remove('active');
         }
@@ -137,7 +137,8 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     function openSlideWindow(id) {
-        // Закрыть все окна
+        document.getElementById('fab-close').style.display = 'flex';
+        document.getElementById('fab-main').style.display = 'none';
         ['calc-window', 'gear-window', 'cup-window', 'construction-window', 'lecture-window'].forEach(winId => {
             const win = document.getElementById(winId);
             if (win) {
@@ -146,7 +147,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 win.classList.add('closed');
             }
         });
-        // Открыть нужное окно
         const win = document.getElementById(id);
         if (win) {
             win.style.left = '0px';
@@ -154,8 +154,22 @@ document.addEventListener('DOMContentLoaded', () => {
             win.classList.remove('closed');
         }
         fabMenu.classList.remove('open');
-        fabMain.querySelector('img').src = 'Photos/up.png';
     }
+
+    document.getElementById('fab-close').addEventListener('click', () => {
+        // Закрыть all окна
+        ['calc-window', 'gear-window', 'cup-window', 'construction-window', 'lecture-window'].forEach(winId => {
+            const win = document.getElementById(winId);
+            if (win) {
+                win.style.left = getClosedPosition();
+                win.classList.remove('open');
+                win.classList.add('closed');
+            }
+        });
+        
+        document.getElementById('fab-main').style.display = 'flex';
+        document.getElementById('fab-close').style.display = 'none';
+    });
 
     document.getElementById('fab-calc').onclick = () => openSlideWindow('calc-window');
     document.getElementById('fab-gear').onclick = () => openSlideWindow('gear-window');
@@ -224,7 +238,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (mapBtn && mainScreen) {
         mapBtn.removeEventListener('click', handleMapButtonClick);
         mapBtn.addEventListener('click', handleMapButtonClick);
-    } 
+    }
     else {
         console.warn('Map button or main screen not found');
     }
@@ -239,6 +253,22 @@ document.addEventListener('DOMContentLoaded', () => {
                     slideWindow.style.left = getClosedPosition();
                     slideWindow.classList.remove('open');
                     slideWindow.classList.add('closed');
+                }
+            }
+        });
+    });
+
+    document.addEventListener('click', (e) => {
+        ['calc-window', 'gear-window', 'cup-window', 'construction-window', 'lecture-window'].forEach(id => {
+            const slideWindow = document.getElementById(id);
+            if (slideWindow && slideWindow.classList.contains('open')) {
+                const isClickInside = slideWindow.contains(e.target) || fabMenu.contains(e.target);
+                if (!isClickInside) {
+                    slideWindow.style.left = getClosedPosition();
+                    slideWindow.classList.remove('open');
+                    slideWindow.classList.add('closed');
+                    document.getElementById('fab-main').style.display = 'flex';
+                    document.getElementById('fab-close').style.display = 'none';
                 }
             }
         });
@@ -262,7 +292,7 @@ document.addEventListener('DOMContentLoaded', () => {
     window.addEventListener('popstate', (event) => {
         if (event.state?.mode) {
             handlePageTransition(event.state.mode);
-        } 
+        }
         else {
             location.reload();
         }
@@ -275,7 +305,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }, 400);
     }
 
-    window.updateLectureBlocks = function() {
+    window.updateLectureBlocks = function () {
         const results = JSON.parse(localStorage.getItem('lectureTestResults') || '{}');
 
         document.querySelectorAll('.lecture-block').forEach(block => {

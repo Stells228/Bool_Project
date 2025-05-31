@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Лекция 9. Раскраска графа</title>
+
+    <link rel="preload" href="../bool/lec.css" as="style">
+    <link rel="preload" href="../main.css" as="style">
+    <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/vis/4.21.0/vis.min.js" as="script">
+
+    <link href="../bool/lec.css" rel="stylesheet">
+    <link rel="stylesheet" href="../main.css">
+    <link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <!-- PWA метаданные -->
+    <link rel="manifest" href="/favicon/site.webmanifest">
+    <meta name="theme-color" content="#416190">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+    <!-- Иконки -->
+    <link rel="icon" href="/favicon/favicon.ico" type="image/x-icon">
+    <link rel="apple-touch-icon" href="/favicon/apple-touch-icon.png" sizes="180x180">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vis/4.21.0/vis.min.js" defer></script>
+</head>
+<body>
+    <div class="lecture-decoration">
+        <img src="../Photos/cloudmoon1.png" alt="Cloud" class="decoration-cloud cloud1">
+        <img src="../Photos/cloudmoon2.png" alt="Cloud" class="decoration-cloud cloud2">
+        <img src="../Photos/cloudmoon3.png" alt="Cloud" class="decoration-cloud cloud3">
+        <img src="../Photos/stars1.png" alt="Stars" class="decoration-stars stars1">
+        <img src="../Photos/stars2.png" alt="Stars" class="decoration-stars stars2">
+    </div>
+    <div class="lecture-container">
+        <div class="back-button" onclick="window.history.back()">
+            <img src="../Photos/home.png" alt="Назад" class="back-icon">
+        </div>
+
+        <h1 class="lecture-title">🎨 Лекция 9. Раскраска графа</h1>
+
+        <div class="toc-container">
+            <h3>Содержание:</h3>
+            <ul class="toc-list">
+                <li><a href="#section1">1. Что такое раскраска графа</a></li>
+                <li><a href="#section2">2. Хроматическое число</a></li>
+                <li><a href="#section3">3. Пример раскраски</a></li>
+                <li><a href="#section4">4. Теоремы о раскраске</a></li>
+                <li><a href="#section5">5. Варианты раскраски</a></li>
+                <li><a href="#section6">6. Прикладные задачи</a></li>
+                <li><a href="#summary">Краткое резюме</a></li>
+                <li><a href="#cards">Пятисекундка</a></li>
+                <li><a href="#table">Таблица-резюме</a></li>
+            </ul>
+        </div>
+
+        <div class="lecture-content">
+            <!-- Секция 1 -->
+            <div class="lecture-section" id="section1">
+                <h2>1. Что такое раскраска графа</h2>
+                <div class="definition">
+                    <p>Раскраска графа — это способ присвоить каждой вершине цвет так, чтобы никакие две смежные вершины не были одного цвета.</p>
+                    <p><strong>Применение:</strong></p>
+                    <ul>
+                        <li>планирование (экзамены, расписания, ресурсы)</li>
+                        <li>раскраска карт (смежные регионы — разные цвета)</li>
+                        <li>назначение частот в беспроводных сетях</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Секция 2 -->
+            <div class="lecture-section" id="section2">
+                <h2>2. Хроматическое число графа</h2>
+                <div class="definition">
+                    <p><strong>Хроматическое число графа (χ(Γ))</strong> — минимальное количество цветов, необходимое для правильной раскраски его вершин.</p>
+                    <p><strong>Примеры:</strong></p>
+                    <ul>
+                        <li>Пустой граф (без ребер): χ = 1</li>
+                        <li>Полный граф K<sub>n</sub>: χ = n (все вершины соединены — нужны разные цвета)</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Секция 3 -->
+            <div class="lecture-section" id="section3">
+                <h2>3. Пример раскраски</h2>
+                <div class="example">
+                    <p>Рассмотрим граф:</p>
+                    <pre>
+A — B — C
+|       |
+D — E — F</pre>
+                    <ul>
+                        <li>A и B смежны ⇒ разные цвета</li>
+                        <li>A и D смежны ⇒ цвет D ≠ A</li>
+                        <li>Можно раскрасить в 3 цвета</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Секция 4 -->
+            <div class="lecture-section" id="section4">
+                <h2>4. Теоремы о раскраске</h2>
+                <div class="theorem">
+                    <h3>Теорема Брукса:</h3>
+                    <p>Если граф не является полным или не содержит нечетного цикла, то χ(Γ) ≤ Δ(Γ), где Δ — максимальная степень вершины.</p>
+                </div>
+                <div class="theorem">
+                    <h3>Теорема Хивуда (для планарных графов):</h3>
+                    <p>Любой планарный граф можно раскрасить в не более чем 5 цветов.</p>
+                </div>
+                <div class="theorem">
+                    <h3>Теорема о четырех красках:</h3>
+                    <p>Каждую карту (и, следовательно, планарный граф) можно раскрасить в 4 цвета, чтобы соседние регионы отличались.</p>
+                    <div class="note">
+                        <p>📌 Это знаменитая теорема, доказанная с помощью компьютеров в 1976 году.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Секция 5 -->
+            <div class="lecture-section" id="section5">
+                <h2>5. Варианты раскраски</h2>
+                <div class="definition">
+                    <table>
+                        <tr>
+                            <th>Тип</th>
+                            <th>Описание</th>
+                        </tr>
+                        <tr>
+                            <td>Вершинная</td>
+                            <td>Стандартная — смежные вершины в разные цвета</td>
+                        </tr>
+                        <tr>
+                            <td>Реберная</td>
+                            <td>Смежные ребра в разные цвета (менее распространена)</td>
+                        </tr>
+                        <tr>
+                            <td>Раскраска графа расстояний</td>
+                            <td>С учётом расстояний между вершинами</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Секция 6 -->
+            <div class="lecture-section" id="section6">
+                <h2>6. Прикладные задачи</h2>
+                <div class="applications">
+                    <ul>
+                        <li><strong>Экзамены:</strong> у кого нельзя ставить экзамены в одно время?</li>
+                        <li><strong>Карты:</strong> раскраска смежных областей разными цветами</li>
+                        <li><strong>Радиоканалы:</strong> разным точкам — разные частоты</li>
+                        <li><strong>Задачи на конфликт:</strong> оптимальное расписание без "перекрытий"</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Краткое резюме -->
+            <div class="lecture-section" id="summary">
+                <h2>📝 Краткое резюме</h2>
+                <ul>
+                    <li><strong>Раскраска графа</strong> — присвоение цветов вершинам так, чтобы смежные вершины имели разные цвета</li>
+                    <li><strong>Хроматическое число</strong> — минимальное количество цветов для правильной раскраски</li>
+                    <li><strong>Теорема Брукса</strong> — χ(Γ) ≤ Δ(Γ) для большинства графов</li>
+                    <li><strong>Теорема о четырех красках</strong> — любая карта раскрашивается в 4 цвета</li>
+                    <li>Применяется в планировании, картографии, сетевых технологиях</li>
+                </ul>
+            </div>
+
+            <div class="test-section" id="test">
+                <button class="test-button" id="start-test">Пройти тест</button>
+                <div class="test-container hidden" id="test-container">
+                    <h2>Тест по лекции</h2>
+                    <div class="questions" id="questions-container"></div>
+                    <button class="submit-btn" id="submit-test">Проверить</button>
+                </div>
+                <div class="result-container hidden" id="result-container">
+                    <h2>Результаты теста</h2>
+                    <div class="stars-rating">
+                        <span class="star">★</span>
+                        <span class="star">★</span>
+                        <span class="star">★</span>
+                    </div>
+                    <p class="result-text"></p>
+                    <button class="close-btn" id="close-test">Закрыть</button>
+                    <button class="close-btn" id="go-to-main">На главную</button>
+                </div>
+            </div>
+
+            <!-- Карточки -->
+            <div class="cards-section" id="cards">
+                <h2>🃏 Пятисекундка</h2>
+                <div class="cards-container">
+                    <div class="card">
+                        <div class="card-front">Что такое раскраска графа?</div>
+                        <div class="card-back">Присваивание вершинам цветов так, чтобы смежные имели разные</div>
+                    </div>
+                    <div class="card">
+                        <div class="card-front">Что такое хроматическое число χ(Γ)?</div>
+                        <div class="card-back">Минимальное количество цветов для правильной раскраски</div>
+                    </div>
+                    <div class="card">
+                        <div class="card-front">Сколько цветов нужно для полного графа K₄?</div>
+                        <div class="card-back">4</div>
+                    </div>
+                    <div class="card">
+                        <div class="card-front">Что утверждает теорема о четырех красках?</div>
+                        <div class="card-back">Любую карту можно раскрасить в 4 цвета</div>
+                    </div>
+                    <div class="card">
+                        <div class="card-front">Какое максимальное χ у планарного графа?</div>
+                        <div class="card-back">Не более 4 (по теореме), ≤ 5 (по Хивуду)</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Таблица -->
+            <div class="table-section" id="table">
+                <h2>📊 Таблица-резюме</h2>
+                <div class="summary-table">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Понятие</th>
+                                <th>Определение</th>
+                                <th>Пример</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Раскраска графа</td>
+                                <td>Смежные вершины в разные цвета</td>
+                                <td>Расписание экзаменов</td>
+                            </tr>
+                            <tr>
+                                <td>Хроматическое число χ(Γ)</td>
+                                <td>Минимум цветов</td>
+                                <td>χ(K₅) = 5</td>
+                            </tr>
+                            <tr>
+                                <td>Теорема Хивуда</td>
+                                <td>Планарный граф — ≤ 5 цветов</td>
+                                <td>Любая карта на плоскости</td>
+                            </tr>
+                            <tr>
+                                <td>Теорема о четырех красках</td>
+                                <td>Планарный граф — ≤ 4 цветов</td>
+                                <td>Карта Европы</td>
+                            </tr>
+                            <tr>
+                                <td>Вершинная раскраска</td>
+                                <td>Самый распространенный тип</td>
+                                <td>Вершины — экзамены</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="lecture-nav">
+        <a href="glec8.html" class="lecture-nav-btn">
+            <img src="../Photos/left.png" alt="Предыдущая лекция">
+        </a>
+        <a href="glec10.html" class="lecture-nav-btn">
+            <img src="../Photos/right.png" alt="Следующая лекция">
+        </a>
+    </div>
+
+    <div class="up-button">
+        <img src="../Photos/up.png" alt="Вверх" class="up-icon">
+    </div>
+
+    <script src="glec9.js"></script>
+</body>
+</html>

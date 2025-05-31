@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Лекция 3. Способы задания графа</title>
+
+    <link rel="preload" href="../bool/lec.css" as="style">
+    <link rel="preload" href="../main.css" as="style">
+    <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/vis/4.21.0/vis.min.js" as="script">
+
+    <link href="../bool/lec.css" rel="stylesheet">
+    <link rel="stylesheet" href="../main.css">
+    <link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <!-- PWA метаданные -->
+    <link rel="manifest" href="/favicon/site.webmanifest">
+    <meta name="theme-color" content="#416190">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+    <!-- Иконки -->
+    <link rel="icon" href="/favicon/favicon.ico" type="image/x-icon">
+    <link rel="apple-touch-icon" href="/favicon/apple-touch-icon.png" sizes="180x180">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vis/4.21.0/vis.min.js" defer></script>
+</head>
+
+<body>
+    <div class="lecture-decoration">
+        <img src="../Photos/cloudmoon1.png" alt="Cloud" class="decoration-cloud cloud1">
+        <img src="../Photos/cloudmoon2.png" alt="Cloud" class="decoration-cloud cloud2">
+        <img src="../Photos/cloudmoon3.png" alt="Cloud" class="decoration-cloud cloud3">
+        <img src="../Photos/stars1.png" alt="Stars" class="decoration-stars stars1">
+        <img src="../Photos/stars2.png" alt="Stars" class="decoration-stars stars2">
+    </div>
+    <div class="lecture-container">
+        <div class="back-button" onclick="window.history.back()">
+            <img src="../Photos/home.png" alt="Назад" class="back-icon">
+        </div>
+
+        <h1 class="lecture-title">📚 Лекция 3. Способы задания графа</h1>
+
+        <div class="toc-container">
+            <h3>Содержание:</h3>
+            <ul class="toc-list">
+                <li><a href="#section1">1. Почему нужно задавать граф</a></li>
+                <li><a href="#section2">2. Матрица смежности</a></li>
+                <li><a href="#section3">3. Матрица инцидентности</a></li>
+                <li><a href="#section4">4. Списки смежности</a></li>
+                <li><a href="#section5">5. Сравнение способов</a></li>
+                <li><a href="#summary">Краткое резюме</a></li>
+                <li><a href="#cards">Пятисекундка</a></li>
+                <li><a href="#table">Таблица-резюме</a></li>
+            </ul>
+        </div>
+
+        <div class="lecture-content">
+            <!-- Секция 1 -->
+            <div class="lecture-section" id="section1">
+                <h2>1. Почему нужно задавать граф</h2>
+                <div class="definition">
+                    <p>Чтобы использовать граф в задачах, его нужно формально описать, чтобы:</p>
+                    <ul>
+                        <li>работать с ним алгоритмически (например, в коде)</li>
+                        <li>анализировать свойства</li>
+                        <li>хранить структуру в памяти компьютера</li>
+                    </ul>
+                    <p>Есть три основных способа описания графа:</p>
+                </div>
+            </div>
+
+            <!-- Секция 2 -->
+            <div class="lecture-section" id="section2">
+                <h2>2. Матрица смежности</h2>
+                <div class="definition">
+                    <p><strong>Определение:</strong></p>
+                    <p>Матрица смежности — это квадратная таблица, в которой:</p>
+                    <ul>
+                        <li>Строки и столбцы соответствуют вершинам</li>
+                        <li>В ячейке (i, j) стоит:
+                            <ul>
+                                <li>1, если вершины i и j соединены (в неориентированном графе)</li>
+                                <li>Кол-во ребер (в мультиграфах или псевдографах)</li>
+                                <li>0, если нет соединения</li>
+                            </ul>
+                        </li>
+                    </ul>
+                    <p><strong>В орграфах:</strong></p>
+                    <p>a<sub>ij</sub> = 1, если есть дуга из i в j.</p>
+
+                    <p><strong>Пример:</strong></p>
+                    <div class="matrix-example">
+                        <table>
+                            <tr>
+                                <th></th>
+                                <th>1</th>
+                                <th>2</th>
+                                <th>3</th>
+                                <th>4</th>
+                                <th>5</th>
+                            </tr>
+                            <tr>
+                                <th>1</th>
+                                <td>0</td>
+                                <td>1</td>
+                                <td>1</td>
+                                <td>0</td>
+                                <td>0</td>
+                            </tr>
+                            <tr>
+                                <th>2</th>
+                                <td>1</td>
+                                <td>0</td>
+                                <td>0</td>
+                                <td>1</td>
+                                <td>1</td>
+                            </tr>
+                            <tr>
+                                <th>3</th>
+                                <td>1</td>
+                                <td>0</td>
+                                <td>0</td>
+                                <td>1</td>
+                                <td>0</td>
+                            </tr>
+                            <tr>
+                                <th>4</th>
+                                <td>0</td>
+                                <td>1</td>
+                                <td>1</td>
+                                <td>0</td>
+                                <td>0</td>
+                            </tr>
+                            <tr>
+                                <th>5</th>
+                                <td>0</td>
+                                <td>1</td>
+                                <td>0</td>
+                                <td>0</td>
+                                <td>0</td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div class="pros-cons">
+                        <p><strong>✅ Плюсы:</strong></p>
+                        <ul>
+                            <li>Удобна для поиска смежности</li>
+                            <li>Простая реализация</li>
+                        </ul>
+                        <p><strong>❌ Минусы:</strong></p>
+                        <ul>
+                            <li>Требует много памяти: O(n²)</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Секция 3 -->
+            <div class="lecture-section" id="section3">
+                <h2>3. Матрица инцидентности</h2>
+                <div class="definition">
+                    <p><strong>Определение:</strong></p>
+                    <p>Матрица инцидентности — таблица, где:</p>
+                    <ul>
+                        <li>Строки — вершины</li>
+                        <li>Столбцы — ребра</li>
+                        <li>Ячейка (i, j) показывает, инцидентна ли вершина i ребру j</li>
+                    </ul>
+                    <p><strong>В неориентированном графе:</strong></p>
+                    <p>a<sub>ij</sub> = 1, если вершина участвует в ребре.</p>
+                    <p><strong>В ориентированном графе:</strong></p>
+                    <ul>
+                        <li>a<sub>ij</sub> = 1, если вершина i — начало дуги j</li>
+                        <li>a<sub>ij</sub> = -1, если вершина i — конец дуги j</li>
+                        <li>0 — если не инцидентна</li>
+                    </ul>
+                    <p><strong>Пример (неориентированный граф):</strong></p>
+                    <div class="matrix-example">
+                        <table>
+                            <tr>
+                                <th></th>
+                                <th>r1</th>
+                                <th>r2</th>
+                                <th>r3</th>
+                            </tr>
+                            <tr>
+                                <th>v1</th>
+                                <td>1</td>
+                                <td>1</td>
+                                <td>0</td>
+                            </tr>
+                            <tr>
+                                <th>v2</th>
+                                <td>1</td>
+                                <td>0</td>
+                                <td>1</td>
+                            </tr>
+                            <tr>
+                                <th>v3</th>
+                                <td>0</td>
+                                <td>1</td>
+                                <td>1</td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Секция 4 -->
+            <div class="lecture-section" id="section4">
+                <h2>4. Списки смежности</h2>
+                <div class="definition">
+                    <p><strong>Определение:</strong></p>
+                    <p>Список смежности — для каждой вершины записан список вершин, с которыми она соединена.</p>
+                    <p><strong>Пример:</strong></p>
+                    <div class="adjacency-list">
+                        <pre>
+1 — 2, 4  
+2 — 3, 5  
+3 — 4, 5  
+4 —  
+5 — 1, 3, 4
+                        </pre>
+                    </div>
+                    <div class="pros-cons">
+                        <p><strong>✅ Плюсы:</strong></p>
+                        <ul>
+                            <li>Очень экономичен по памяти: O(n + m)</li>
+                            <li>Удобен для обходов</li>
+                        </ul>
+                        <p><strong>❌ Минусы:</strong></p>
+                        <ul>
+                            <li>Менее удобен для поиска наличия ребра между произвольными вершинами (i, j)</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Секция 5 -->
+            <div class="lecture-section" id="section5">
+                <h2>5. Сравнение способов</h2>
+                <div class="comparison-table residual-table">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Способ</th>
+                                <th>Подходит для</th>
+                                <th>Память</th>
+                                <th>Быстрота поиска смежности</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Матрица смежности</td>
+                                <td>Плотные графы</td>
+                                <td>O(n²)</td>
+                                <td>Быстро</td>
+                            </tr>
+                            <tr>
+                                <td>Матрица инцидентности</td>
+                                <td>Анализ ребер</td>
+                                <td>O(n × m)</td>
+                                <td>Средне</td>
+                            </tr>
+                            <tr>
+                                <td>Списки смежности</td>
+                                <td>Разреженные графы</td>
+                                <td>O(n + m)</td>
+                                <td>Быстро при обходе</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Краткое резюме -->
+            <div class="lecture-section" id="summary">
+                <h2>📝 Краткое резюме</h2>
+                <ul>
+                    <li>Матрица смежности — квадратная таблица соединений вершин, удобна для поиска смежности</li>
+                    <li>Матрица инцидентности — показывает связь вершин и ребер, полезна для анализа ребер</li>
+                    <li>Списки смежности — компактное представление, оптимально для обходов графа</li>
+                    <li>Выбор способа зависит от задачи: плотность графа, тип операций, требования к памяти</li>
+                    <li>Для плотных графов — матрица смежности, для разреженных — списки смежности</li>
+                </ul>
+            </div>
+
+            <div class="test-section" id="test">
+                <button class="test-button" id="start-test">Пройти тест</button>
+                <div class="test-container hidden" id="test-container">
+                    <h2>Тест по лекции</h2>
+                    <div class="questions" id="questions-container"></div>
+                    <button class="submit-btn" id="submit-test">Проверить</button>
+                </div>
+                <div class="result-container hidden" id="result-container">
+                    <h2>Результаты теста</h2>
+                    <div class="stars-rating">
+                        <span class="star">★</span>
+                        <span class="star">★</span>
+                        <span class="star">★</span>
+                    </div>
+                    <p class="result-text"></p>
+                    <button class="close-btn" id="close-test">Закрыть</button>
+                    <button class="close-btn" id="go-to-main">На главную</button>
+                </div>
+            </div>
+
+            <!-- Карточки -->
+            <div class="cards-section" id="cards">
+                <h2>🃏 Пятисекундка</h2>
+                <div class="cards-container">
+                    <div class="card">
+                        <div class="card-front">Что такое матрица смежности?</div>
+                        <div class="card-back">Таблица, где строки и столбцы — вершины, ячейки — наличие ребер</div>
+                    </div>
+                    <div class="card">
+                        <div class="card-front">Что показывает матрица инцидентности?</div>
+                        <div class="card-back">Связь между вершинами и ребрами</div>
+                    </div>
+                    <div class="card">
+                        <div class="card-front">Когда использовать списки смежности?</div>
+                        <div class="card-back">При разреженных графах и при обходах</div>
+                    </div>
+                    <div class="card">
+                        <div class="card-front">Как в матрице инцидентности отображается направление дуг?</div>
+                        <div class="card-back">1 — начало, -1 — конец, 0 — не связано</div>
+                    </div>
+                    <div class="card">
+                        <div class="card-front">В каком способе O(n²) памяти?</div>
+                        <div class="card-back">В матрице смежности</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Таблица -->
+            <div class="table-section" id="table">
+                <h2>📊 Таблица-резюме</h2>
+                <div class="summary-table residual-table">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Способ задания</th>
+                                <th>Представление</th>
+                                <th>Преимущества</th>
+                                <th>Недостатки</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Матрица смежности</td>
+                                <td>n×n таблица</td>
+                                <td>Быстрый доступ</td>
+                                <td>Много памяти</td>
+                            </tr>
+                            <tr>
+                                <td>Матрица инцидентности</td>
+                                <td>n×m таблица</td>
+                                <td>Учет ребер</td>
+                                <td>Неэффективна при больших n</td>
+                            </tr>
+                            <tr>
+                                <td>Список смежности</td>
+                                <td>Перечень смежных вершин</td>
+                                <td>Компактность</td>
+                                <td>Менее удобен для поиска пары (i, j)</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="lecture-nav">
+        <a href="glec2.html" class="lecture-nav-btn">
+            <img src="../Photos/left.png" alt="Предыдущая лекция">
+        </a>
+        <a href="glec4.html" class="lecture-nav-btn">
+            <img src="../Photos/right.png" alt="Следующая лекция">
+        </a>
+    </div>
+
+    <div class="up-button">
+        <img src="../Photos/up.png" alt="Вверх" class="up-icon">
+    </div>
+
+    <script src="glec3.js"></script>
+</body>
+</html>

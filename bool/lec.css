@@ -751,3 +751,311 @@ body {
     height: 55%;
     filter: brightness(0) invert(1) drop-shadow(0 0 2px rgba(0, 0, 0, 0.3));
 }
+
+/* Стили для мотивационных задач */
+.motivation-tasks {
+    margin: 30px 0;
+}
+
+.motivation-task {
+    background: rgba(97, 60, 192, 0.15);
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 25px;
+    position: relative;
+    overflow: hidden;
+    border-left: 4px solid #7e57c2;
+}
+
+.motivation-task::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 4px;
+    height: 100%;
+    background: linear-gradient(to bottom, #7e57c2, #5c6bc0);
+}
+
+.motivation-task-title {
+    color: #ffcc80;
+    font-size: 1.3rem;
+    margin-top: 0;
+    margin-bottom: 15px;
+    display: flex;
+    align-items: center;
+}
+
+.motivation-task-title::before {
+    content: '✅';
+    margin-right: 10px;
+    font-size: 1.1em;
+}
+
+.motivation-task-content {
+    padding-left: 10px;
+}
+
+.motivation-task strong {
+    color: #b39ddb;
+}
+
+.operation {
+    background: rgba(97, 60, 192, 0.15);
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 25px;
+    border-left: 4px solid #7e57c2;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease;
+}
+
+.operation:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+}
+
+.operation h3 {
+    color: #b39ddb;
+    margin-top: 0;
+    font-size: 1.3rem;
+    border-bottom: 1px dashed rgba(255, 255, 255, 0.2);
+    padding-bottom: 10px;
+    display: flex;
+    align-items: center;
+}
+
+.operation h3::before {
+    content: '🔧';
+    margin-right: 10px;
+    font-size: 1.1em;
+}
+
+.operation p, .operation ul {
+    margin-bottom: 10px;
+    line-height: 1.6;
+}
+
+.operation strong {
+    color: #d1c4e9;
+    font-weight: 600;
+}
+
+.operation .warning {
+    color: #ff7043;
+    background: rgba(255, 112, 67, 0.1);
+    padding: 8px 12px;
+    border-radius: 6px;
+    display: inline-block;
+    margin-top: 10px;
+}
+
+.summary-table table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0;
+    background: rgba(97, 60, 192, 0.15);
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+.summary-table th {
+    background: rgba(70, 30, 169, 0.3);
+    color: #d1c4e9;
+    font-weight: 600;
+    padding: 15px;
+    text-align: left;
+}
+
+.summary-table td {
+    padding: 12px 15px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.summary-table tr:hover {
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.summary-table tr:nth-child(even) {
+    background: rgba(255, 255, 255, 0.03);
+}
+
+@media (max-width: 768px) {
+    .summary-table table {
+        display: block;
+        overflow-x: auto;
+    }
+    
+    .operation {
+        padding: 15px;
+    }
+}
+
+.historical-context {
+    background: rgba(70, 30, 169, 0.15);
+    border-radius: 12px;
+    padding: 20px;
+    margin: 20px 0;
+    border-left: 4px solid #7e57c2;
+    position: relative;
+    overflow: hidden;
+}
+
+.historical-context::before {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    font-size: 1.5rem;
+    opacity: 0.2;
+}
+
+.historical-context p {
+    margin: 10px 0;
+    line-height: 1.6;
+}
+
+.definitions-table table,
+.comparison-table table,
+.summary-table table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0;
+    background: rgba(97, 60, 192, 0.15);
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+.definitions-table th,
+.comparison-table th,
+.summary-table th {
+    background: rgba(70, 30, 169, 0.3);
+    color: #d1c4e9;
+    font-weight: 600;
+    padding: 15px;
+    text-align: left;
+}
+
+.definitions-table td,
+.comparison-table td,
+.summary-table td {
+    padding: 12px 15px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.definitions-table tr:hover,
+.comparison-table tr:hover,
+.summary-table tr:hover {
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.definitions-table tr:nth-child(even),
+.comparison-table tr:nth-child(even),
+.summary-table tr:nth-child(even) {
+    background: rgba(255, 255, 255, 0.03);
+}
+
+.note {
+    background: rgba(255, 213, 79, 0.15);
+    border-left: 4px solid #ffd54f;
+    padding: 15px;
+    border-radius: 0 8px 8px 0;
+    margin: 20px 0;
+}
+
+.note p {
+    margin: 8px 0;
+    color: #ffecb3;
+}
+
+.note strong {
+    color: #ffd54f;
+}
+
+.theorem {
+    background: rgba(38, 166, 154, 0.15);
+    border-left: 4px solid #26a69a;
+    padding: 20px;
+    border-radius: 0 12px 12px 0;
+    margin: 25px 0;
+}
+
+.theorem strong {
+    color: #80cbc4;
+    font-size: 1.1rem;
+}
+
+.example {
+    background: rgba(121, 85, 72, 0.15);
+    border-left: 4px solid #8d6e63;
+    padding: 18px;
+    border-radius: 0 10px 10px 0;
+    margin: 20px 0;
+    font-family: monospace;
+    white-space: pre-wrap;
+}
+
+.example pre {
+    margin: 0;
+    font-family: inherit;
+    line-height: 1.5;
+}
+
+.complexity {
+    background: rgba(239, 83, 80, 0.15);
+    border-left: 4px solid #ef5350;
+    padding: 18px;
+    border-radius: 0 10px 10px 0;
+    margin: 20px 0;
+}
+
+.complexity p {
+    margin: 10px 0;
+    color: #ffcdd2;
+}
+
+.concept-box {
+    background: rgba(141, 110, 99, 0.15);
+    border-radius: 12px;
+    padding: 20px;
+    margin: 25px 0;
+    border-left: 4px solid #8d6e63;
+    position: relative;
+}
+
+.concept-box h3 {
+    color: #d7ccc8;
+    margin-top: 0;
+    font-size: 1.3rem;
+    display: flex;
+    align-items: center;
+}
+
+.concept-box h3::before {
+    content: '💡';
+    margin-right: 10px;
+    font-size: 1.2em;
+}
+
+.concept-box p {
+    margin: 10px 0;
+    line-height: 1.6;
+}
+
+@media (max-width: 768px) {
+    .definitions-table table,
+    .comparison-table table,
+    .summary-table table {
+        display: block;
+        overflow-x: auto;
+    }
+    
+    .historical-context,
+    .theorem,
+    .example,
+    .complexity,
+    .concept-box {
+        padding: 15px;
+    }
+}

@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Лекция 2. Основные определения в теории графов</title>
+
+    <link rel="preload" href="../bool/lec.css" as="style">
+    <link rel="preload" href="../main.css" as="style">
+    <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/vis/4.21.0/vis.min.js" as="script">
+
+    <link href="../bool/lec.css" rel="stylesheet">
+    <link rel="stylesheet" href="../main.css">
+    <link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <!-- PWA метаданные -->
+    <link rel="manifest" href="/favicon/site.webmanifest">
+    <meta name="theme-color" content="#416190">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+    <!-- Иконки -->
+    <link rel="icon" href="/favicon/favicon.ico" type="image/x-icon">
+    <link rel="apple-touch-icon" href="/favicon/apple-touch-icon.png" sizes="180x180">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vis/4.21.0/vis.min.js" defer></script>
+</head>
+<body>
+    <div class="lecture-decoration">
+        <img src="../Photos/cloudmoon1.png" alt="Cloud" class="decoration-cloud cloud1">
+        <img src="../Photos/cloudmoon2.png" alt="Cloud" class="decoration-cloud cloud2">
+        <img src="../Photos/cloudmoon3.png" alt="Cloud" class="decoration-cloud cloud3">
+        <img src="../Photos/stars1.png" alt="Stars" class="decoration-stars stars1">
+        <img src="../Photos/stars2.png" alt="Stars" class="decoration-stars stars2">
+    </div>
+    <div class="lecture-container">
+        <div class="back-button" onclick="window.history.back()">
+            <img src="../Photos/home.png" alt="Назад" class="back-icon">
+        </div>
+
+        <h1 class="lecture-title">📚 Лекция 2. Основные определения в теории графов</h1>
+
+        <div class="toc-container">
+            <h3>Содержание:</h3>
+            <ul class="toc-list">
+                <li><a href="#section1">1. Формальное определение графа</a></li>
+                <li><a href="#section2">2. Типы графов</a></li>
+                <li><a href="#section3">3. Вершины, ребра и инцидентность</a></li>
+                <li><a href="#section4">4. Степени вершины</a></li>
+                <li><a href="#section5">5. Специальные типы графов</a></li>
+                <li><a href="#summary">Краткое резюме</a></li>
+                <li><a href="#cards">Пятисекундка</a></li>
+                <li><a href="#table">Таблица-резюме</a></li>
+            </ul>
+        </div>
+
+        <div class="lecture-content">
+            <!-- Секция 1 -->
+            <div class="lecture-section" id="section1">
+                <h2>1. Формальное определение графа</h2>
+                <div class="definition">
+                    <p>Граф — это тройка множеств:</p>
+                    <div class="formula">
+                        $$\Gamma = \langle V, R, I \rangle$$
+                    </div>
+                    <p>где:</p>
+                    <ul>
+                        <li>V — конечное непустое множество вершин</li>
+                        <li>R — множество ребер (или дуг)</li>
+                        <li>I ⊆ R × V × V — отношение инцидентности, которое говорит, какие вершины соединяет каждое ребро</li>
+                    </ul>
+                    <p><strong>Ограничения на I:</strong></p>
+                    <ol>
+                        <li>У каждого ребра есть две вершины: ∀r ∈ R ∃ x, y ∈ V: (r, x, y) ∈ I</li>
+                        <li>Каждое ребро соединяет ровно одну пару вершин (без повторений)</li>
+                        <li>Нет петель, если (r, x, x) ∈ I запрещено</li>
+                        <li>Нет одинаковых ребер между одними и теми же вершинами (без кратных ребер)</li>
+                    </ol>
+                </div>
+            </div>
+
+            <!-- Секция 2 -->
+            <div class="lecture-section" id="section2">
+                <h2>2. Типы графов</h2>
+                <div class="types-table residual-table">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Тип графа</th>
+                                <th>Особенности</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Обычный граф</td>
+                                <td>Нет петель и кратных ребер</td>
+                            </tr>
+                            <tr>
+                                <td>Мультиграф</td>
+                                <td>Допускает кратные ребра</td>
+                            </tr>
+                            <tr>
+                                <td>Псевдограф</td>
+                                <td>Допускает и петли, и кратные ребра</td>
+                            </tr>
+                            <tr>
+                                <td>Ориентированный граф (орграф)</td>
+                                <td>Ребра направлены (дуги)</td>
+                            </tr>
+                            <tr>
+                                <td>Неориентированный граф</td>
+                                <td>Ребра без направления</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="examples">
+                    <p><strong>Примеры:</strong></p>
+                    <ul>
+                        <li>В орграфе (r, x, y) ∈ I, но (r, y, x) ∉ I</li>
+                        <li>В неориентированном графе, если (r, x, y) ∈ I, то и (r, y, x) ∈ I</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Секция 3 -->
+            <div class="lecture-section" id="section3">
+                <h2>3. Вершины, ребра и инцидентность</h2>
+                <div class="concept-box">
+                    <p><strong>Основные понятия:</strong></p>
+                    <ul>
+                        <li>🔹 <strong>Вершины</strong> — точки, которые соединяются</li>
+                        <li>🔹 <strong>Ребра (или дуги)</strong> — соединения между вершинами
+                            <ul>
+                                <li>В орграфе: дуга идет из x в y</li>
+                                <li>В неориентированном графе: ребро соединяет x и y без направления</li>
+                            </ul>
+                        </li>
+                        <li>🔹 <strong>Инцидентность:</strong>
+                            <ul>
+                                <li>Ребро r инцидентно вершинам x и y, если соединяет их</li>
+                                <li>Вершины x и y — смежные, если соединены ребром</li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Секция 4 -->
+            <div class="lecture-section" id="section4">
+                <h2>4. Степени вершины</h2>
+                <div class="degrees-table residual-table">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Название</th>
+                                <th>Обозначение</th>
+                                <th>Значение</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Степень</td>
+                                <td>ρ(x)</td>
+                                <td>Общее количество инцидентных ребер</td>
+                            </tr>
+                            <tr>
+                                <td>Полустепень исхода</td>
+                                <td>ρ⁺(x)</td>
+                                <td>Кол-во выходящих дуг (в орграфе)</td>
+                            </tr>
+                            <tr>
+                                <td>Полустепень захода</td>
+                                <td>ρ⁻(x)</td>
+                                <td>Кол-во входящих дуг (в орграфе)</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="note">
+                    <p><strong>В неориентированном графе:</strong></p>
+                    <p>ρ(x) = число всех соединений (ребер) этой вершины</p>
+                </div>
+            </div>
+
+            <!-- Секция 5 -->
+            <div class="lecture-section" id="section5">
+                <h2>5. Специальные типы графов</h2>
+                <div class="special-graphs-table residual-table">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Название</th>
+                                <th>Описание</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Полный граф K<sub>n</sub></td>
+                                <td>Каждая пара вершин соединена</td>
+                            </tr>
+                            <tr>
+                                <td>Пустой граф</td>
+                                <td>Нет ни одного ребра</td>
+                            </tr>
+                            <tr>
+                                <td>Полный двудольный граф K<sub>m,n</sub></td>
+                                <td>Вершины разбиты на две части; каждая из одной части соединена с каждой из другой</td>
+                            </tr>
+                            <tr>
+                                <td>Регулярный граф</td>
+                                <td>У всех вершин одна и та же степень</td>
+                            </tr>
+                            <tr>
+                                <td>Граф-звезда S<sub>k</sub></td>
+                                <td>Все ребра выходят из одной вершины</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="examples">
+                    <p><strong>Примеры:</strong></p>
+                    <ul>
+                        <li>K<sub>5</sub> — полный граф с 5 вершинами</li>
+                        <li>K<sub>3,3</sub> — двудольный граф: 3 вершины с одной стороны, 3 с другой</li>
+                        <li>S<sub>3</sub> — звезда с 3 ребрами, исходящими из одной вершины</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Краткое резюме -->
+            <div class="lecture-section" id="summary">
+                <h2>📝 Краткое резюме</h2>
+                <ul>
+                    <li>Граф — это тройка множеств ⟨V, R, I⟩: вершины, ребра, инцидентность</li>
+                    <li>Основные типы графов: обычный, мультиграф, псевдограф, ориентированный/неориентированный</li>
+                    <li>Степень вершины показывает количество инцидентных ей ребер</li>
+                    <li>В орграфах различают полустепени исхода и захода</li>
+                    <li>Специальные графы: полный, пустой, двудольный, регулярный, звезда</li>
+                </ul>
+            </div>
+
+            <div class="test-section" id="test">
+                <button class="test-button" id="start-test">Пройти тест</button>
+                <div class="test-container hidden" id="test-container">
+                    <h2>Тест по лекции</h2>
+                    <div class="questions" id="questions-container"></div>
+                    <button class="submit-btn" id="submit-test">Проверить</button>
+                </div>
+                <div class="result-container hidden" id="result-container">
+                    <h2>Результаты теста</h2>
+                    <div class="stars-rating">
+                        <span class="star">★</span>
+                        <span class="star">★</span>
+                        <span class="star">★</span>
+                    </div>
+                    <p class="result-text"></p>
+                    <button class="close-btn" id="close-test">Закрыть</button>
+                    <button class="close-btn" id="go-to-main">На главную</button>
+                </div>
+            </div>
+
+            <!-- Карточки -->
+            <div class="cards-section" id="cards">
+                <h2>🃏 Пятисекундка</h2>
+                <div class="cards-container">
+                    <div class="card">
+                        <div class="card-front">Что такое граф?</div>
+                        <div class="card-back">Тройка множеств ⟨V, R, I⟩: вершины, ребра, инцидентность</div>
+                    </div>
+                    <div class="card">
+                        <div class="card-front">Что такое степень вершины?</div>
+                        <div class="card-back">Количество инцидентных ей ребер</div>
+                    </div>
+                    <div class="card">
+                        <div class="card-front">Что такое полустепень исхода?</div>
+                        <div class="card-back">Кол-во выходящих дуг из вершины</div>
+                    </div>
+                    <div class="card">
+                        <div class="card-front">В чем разница между графом и мультиграфом?</div>
+                        <div class="card-back">В мультиграфе допускаются кратные ребра</div>
+                    </div>
+                    <div class="card">
+                        <div class="card-front">Что такое полный граф?</div>
+                        <div class="card-back">Граф, где каждая пара вершин соединена ребром</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Таблица -->
+            <div class="table-section" id="table">
+                <h2>📊 Таблица-резюме</h2>
+                <div class="summary-table residual-table">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Понятие</th>
+                                <th>Определение</th>
+                                <th>Пример</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Граф</td>
+                                <td>⟨V, R, I⟩ — вершины, ребра, инцидентность</td>
+                                <td>Любая сеть</td>
+                            </tr>
+                            <tr>
+                                <td>Ориентированный граф</td>
+                                <td>Ребра имеют направление</td>
+                                <td>Сеть дорог с односторонним движением</td>
+                            </tr>
+                            <tr>
+                                <td>Степень вершины</td>
+                                <td>Кол-во ребер у вершины</td>
+                                <td>ρ(x) = 3</td>
+                            </tr>
+                            <tr>
+                                <td>Полный граф</td>
+                                <td>Все вершины соединены</td>
+                                <td>K₄ — 4 вершины, 6 ребер</td>
+                            </tr>
+                            <tr>
+                                <td>Граф-звезда</td>
+                                <td>Все ребра выходят из одной вершины</td>
+                                <td>S₄ — центр и 4 луча</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="lecture-nav">
+        <a href="glec1.html" class="lecture-nav-btn">
+            <img src="../Photos/left.png" alt="Предыдущая лекция">
+        </a>
+        <a href="glec3.html" class="lecture-nav-btn">
+            <img src="../Photos/right.png" alt="Следующая лекция">
+        </a>
+    </div>
+
+    <div class="up-button">
+        <img src="../Photos/up.png" alt="Вверх" class="up-icon">
+    </div>
+
+    <script src="glec2.js"></script>
+</body>
+</html>
