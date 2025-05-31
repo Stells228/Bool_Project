@@ -754,3 +754,110 @@ input[type="number"] {
         margin-top: 0;
     }
 }
+
+
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: linear-gradient(to bottom, #613cc0, #416190);
+    border-radius: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(to bottom, #7e57c2, #5c6bc0);
+}
+
+.info-panel {
+    position: fixed;
+    top: clamp(50%, 50vh, 50%);
+    right: clamp(-185px, -25vw, -160px);
+    transform: translateY(-50%);
+    width: clamp(120px, 15vw, 160px);
+    background: rgba(97, 60, 192, 0.7);
+    border: 2px solid #ffffff;
+    border-radius: 10px;
+    padding: clamp(8px, 2vw, 12px);
+    box-shadow: 0 0 8px rgba(0, 0, 0, 0.3);
+    transition: right 0.5s ease;
+    z-index: 11;
+    box-sizing: border-box;
+}
+
+.info-panel:hover {
+    right: clamp(8px, 2vw, 12px);
+}
+
+.info-content {
+    font-size: clamp(0.7rem, 2.5vw, 0.9rem);
+    line-height: 1.4;
+    color: #ffffff;
+    text-align: center;
+    box-sizing: border-box;
+}
+
+.info-icon {
+    position: absolute;
+    left: clamp(-24px, -3vw, -20px);
+    top: 50%;
+    transform: translateY(-50%);
+    width: clamp(20px, 3vw, 24px);
+    height: clamp(20px, 3vw, 24px);
+    background: rgba(97, 60, 192, 0.9);
+    border: 2px solid #ffffff;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    cursor: pointer;
+    transition: transform 0.3s;
+    box-sizing: border-box;
+}
+
+.info-icon:hover {
+    transform: translateY(-50%) scale(1.1);
+}
+
+@media (min-width: 1920px) {
+    .info-panel {
+        width: clamp(180px, 15vw, 220px);
+    }
+
+    .info-panel:hover {
+        right: clamp(12px, 2vw, 18px);
+    }
+}
+
+@media (min-width: 1025px) and (max-width: 1919px) {
+    .info-panel {
+        width: clamp(160px, 15vw, 200px);
+    }
+
+    .info-panel:hover {
+        right: clamp(10px, 2vw, 15px);
+    }
+}
+
+@media (min-width: 769px) and (max-width: 1024px) {
+    .info-panel {
+        width: clamp(140px, 15vw, 180px);
+    }
+
+    .info-panel:hover {
+        right: clamp(8px, 2vw, 12px);
+    }
+}
+
+@media (max-width: 768px) {
+    .info-panel {
+        display: none;
+    }
+}
