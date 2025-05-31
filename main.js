@@ -1,5 +1,4 @@
 document.addEventListener('DOMContentLoaded', () => {
-    // --- Позиционирование кнопок (если нужно, можно убрать, т.к. toggle-btn нет) ---
     function positionToggleButtons() {
         const toggleButtons = document.querySelectorAll('.toggle-btn');
         const totalButtons = toggleButtons.length;
@@ -23,7 +22,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // --- Загрузка содержимого обучающего материала ---
     function loadLectureContent() {
         const lectureContent = document.getElementById('lecture-content');
         if (!lectureContent) return;
@@ -67,10 +65,8 @@ document.addEventListener('DOMContentLoaded', () => {
         updateLectureBlocks();
     }
 
-    // --- Позиционирование кнопок (если toggle-btn остались, можно оставить) ---
     positionToggleButtons();
 
-    // --- Определение окон и кнопок ---
     const windows = [
         { id: 'calc-window', btnId: 'calc-toggle' },
         { id: 'gear-window', btnId: 'gear-toggle' },
@@ -79,10 +75,6 @@ document.addEventListener('DOMContentLoaded', () => {
         { id: 'lecture-window', btnId: 'lecture-toggle' }
     ];
 
-    // --- Переопределяем окна для FAB ---
-    // Теперь кнопки toggle-btn убраны, управление через FAB, поэтому не используем toggleBtn из windows
-
-    // --- Переходный оверлей ---
     const transitionOverlay = document.createElement('div');
     transitionOverlay.className = 'transition-overlay';
     document.body.appendChild(transitionOverlay);
@@ -98,7 +90,6 @@ document.addEventListener('DOMContentLoaded', () => {
         return;
     }
 
-    // --- Проверка загрузки изображений ---
     const images = document.querySelectorAll('.image-container img');
     images.forEach(img => {
         img.addEventListener('error', () => {
@@ -109,7 +100,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // --- Функция определения закрытой позиции окна ---
     const getClosedPosition = () => {
         const width = window.innerWidth;
         if (width <= 507) return '-85vw';
@@ -118,10 +108,8 @@ document.addEventListener('DOMContentLoaded', () => {
         return '-600px';
     };
 
-    // --- FAB-меню логика ---
     const fabMenu = document.getElementById('fab-menu');
     const fabMain = document.getElementById('fab-main');
-    const fabActions = document.getElementById('fab-actions');
 
     fabMain.addEventListener('click', (e) => {
         e.stopPropagation();
@@ -135,7 +123,8 @@ document.addEventListener('DOMContentLoaded', () => {
         // Добавляем/удаляем класс для анимации
         if (fabMenu.classList.contains('open')) {
             fabMain.classList.add('active');
-        } else {
+        } 
+        else {
             fabMain.classList.remove('active');
         }
     });
@@ -147,7 +136,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // --- Функция открытия окон ---
     function openSlideWindow(id) {
         // Закрыть все окна
         ['calc-window', 'gear-window', 'cup-window', 'construction-window', 'lecture-window'].forEach(winId => {
@@ -169,7 +157,6 @@ document.addEventListener('DOMContentLoaded', () => {
         fabMain.querySelector('img').src = 'Photos/up.png';
     }
 
-    // --- Привязка кнопок FAB к окнам ---
     document.getElementById('fab-calc').onclick = () => openSlideWindow('calc-window');
     document.getElementById('fab-gear').onclick = () => openSlideWindow('gear-window');
     document.getElementById('fab-cup').onclick = () => openSlideWindow('cup-window');
@@ -179,7 +166,6 @@ document.addEventListener('DOMContentLoaded', () => {
         loadLectureContent();
     };
 
-    // --- Проверка перекрытия текста ---
     function checkTextOverlap() {
         const title = document.querySelector('.Title');
         const buttons = document.querySelectorAll('.fab-menu, .map-btn');
@@ -225,7 +211,6 @@ document.addEventListener('DOMContentLoaded', () => {
         document.body.style.opacity = '1';
     });
 
-    // --- Обработка кнопки карты ---
     function handleMapButtonClick() {
         const gameMode = mapBtn.dataset.mode;
         transitionOverlay.classList.add('active');
@@ -239,11 +224,12 @@ document.addEventListener('DOMContentLoaded', () => {
     if (mapBtn && mainScreen) {
         mapBtn.removeEventListener('click', handleMapButtonClick);
         mapBtn.addEventListener('click', handleMapButtonClick);
-    } else {
+    } 
+    else {
         console.warn('Map button or main screen not found');
     }
 
-    // --- Закрытие окон при клике вне их ---
+    // Закрытие окон при клике вне их
     document.addEventListener('click', (e) => {
         ['calc-window', 'gear-window', 'cup-window', 'construction-window', 'lecture-window'].forEach(id => {
             const slideWindow = document.getElementById(id);
@@ -258,11 +244,9 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // --- Плавное появление страницы ---
     document.body.style.opacity = '1';
     transitionOverlay.classList.remove('active');
 
-    // --- Кнопка перехода (right-arrow) ---
     const rightArrow = document.getElementById('right-arrow');
     const transitionScreen = document.getElementById('transition-screen');
 
@@ -274,11 +258,12 @@ document.addEventListener('DOMContentLoaded', () => {
         }, 500);
     });
 
-    // --- Обработка popstate для переходов ---
+    // Обработка popstate для переходов
     window.addEventListener('popstate', (event) => {
         if (event.state?.mode) {
             handlePageTransition(event.state.mode);
-        } else {
+        } 
+        else {
             location.reload();
         }
     });
@@ -290,7 +275,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }, 400);
     }
 
-    // --- Обновление звёзд в лекциях ---
     window.updateLectureBlocks = function() {
         const results = JSON.parse(localStorage.getItem('lectureTestResults') || '{}');
 
@@ -323,7 +307,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     };
 
-    // --- Инициализация обновления звёзд ---
     if (typeof updateLectureBlocks === 'function') {
         updateLectureBlocks();
     }
