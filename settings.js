@@ -1,12 +1,10 @@
 document.addEventListener('DOMContentLoaded', () => {
     const gearWindow = document.getElementById('gear-window');
-    const gearToggle = document.getElementById('gear-toggle');
     const mapBtn = document.getElementById('map-btn');
-    const levelIframe = document.getElementById('level-iframe');
     const newGameBtn = document.getElementById('new-game-btn');
 
-    if (!gearWindow || !gearToggle || !mapBtn || !newGameBtn) {
-        console.error('Required elements not found');
+    if (!gearWindow || !mapBtn || !newGameBtn) {
+        console.error('Required elements not found:', { gearWindow, mapBtn, newGameBtn });
         return;
     }
 

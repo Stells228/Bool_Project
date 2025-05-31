@@ -1,15 +1,15 @@
 document.addEventListener('DOMContentLoaded', () => {
+    // --- Позиционирование кнопок (если нужно, можно убрать, т.к. toggle-btn нет) ---
     function positionToggleButtons() {
         const toggleButtons = document.querySelectorAll('.toggle-btn');
         const totalButtons = toggleButtons.length;
         const viewportHeight = window.innerHeight;
-        const buttonHeight = toggleButtons[0]?.offsetHeight || 70; // Высота кнопки
-        const fixedSpacing = 20; // Фиксированное расстояние между кнопками в пикселях
-        const totalHeight = buttonHeight * totalButtons + fixedSpacing * (totalButtons - 1); // Общая высота всех кнопок и промежутков
-        const startTop = (viewportHeight - totalHeight) / 2; // Центр кнопки по вертикали
+        const buttonHeight = toggleButtons[0]?.offsetHeight || 70;
+        const fixedSpacing = 20;
+        const totalHeight = buttonHeight * totalButtons + fixedSpacing * (totalButtons - 1);
+        const startTop = (viewportHeight - totalHeight) / 2;
         const cloudElements = document.querySelectorAll('.cloudmoon, .cloudmoon2, .cloudmoon3, .cloudmoon4, .cloudmoon5');
 
-        // Очистка при уходе со страницы
         window.addEventListener('pagehide', () => {
             cloudElements.forEach(cloud => {
                 cloud.style.animation = 'none';
@@ -23,6 +23,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    // --- Загрузка содержимого обучающего материала ---
     function loadLectureContent() {
         const lectureContent = document.getElementById('lecture-content');
         if (!lectureContent) return;
@@ -44,33 +45,32 @@ document.addEventListener('DOMContentLoaded', () => {
             const block = document.createElement('div');
             block.className = 'lecture-block';
             block.dataset.lectureId = lecture.id;
-            
-            // Добавляем заголовок
+
             const title = document.createElement('h3');
             title.textContent = lecture.title;
             block.appendChild(title);
-            
-            // Добавляем контейнер для звёзд (изначально пустой)
+
             const starsContainer = document.createElement('div');
             starsContainer.className = 'lecture-stars';
             block.appendChild(starsContainer);
-            
-            // Обработчик клика
+
             block.addEventListener('click', () => {
                 transitionOverlay.classList.add('active');
-                setTimeout(() => { window.location.href = `bool/lec${lecture.id}.html`; }, 300);
+                setTimeout(() => {
+                    window.location.href = `bool/lec${lecture.id}.html`;
+                }, 300);
             });
-    
+
             lectureContent.appendChild(block);
         });
-        
-        // Обновляем звёзды после создания блоков
+
         updateLectureBlocks();
     }
 
-    // Вызываем функцию при загрузке
+    // --- Позиционирование кнопок (если toggle-btn остались, можно оставить) ---
     positionToggleButtons();
 
+    // --- Определение окон и кнопок ---
     const windows = [
         { id: 'calc-window', btnId: 'calc-toggle' },
         { id: 'gear-window', btnId: 'gear-toggle' },
@@ -79,11 +79,14 @@ document.addEventListener('DOMContentLoaded', () => {
         { id: 'lecture-window', btnId: 'lecture-toggle' }
     ];
 
+    // --- Переопределяем окна для FAB ---
+    // Теперь кнопки toggle-btn убраны, управление через FAB, поэтому не используем toggleBtn из windows
+
+    // --- Переходный оверлей ---
     const transitionOverlay = document.createElement('div');
     transitionOverlay.className = 'transition-overlay';
     document.body.appendChild(transitionOverlay);
 
-    // Сброс overlay при загрузке
     transitionOverlay.classList.remove('active');
     console.log('Transition overlay reset on main.html');
 
@@ -95,7 +98,7 @@ document.addEventListener('DOMContentLoaded', () => {
         return;
     }
 
-    // Проверка загрузки изображений
+    // --- Проверка загрузки изображений ---
     const images = document.querySelectorAll('.image-container img');
     images.forEach(img => {
         img.addEventListener('error', () => {
@@ -106,7 +109,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // Функция для определения закрытой позиции
+    // --- Функция определения закрытой позиции окна ---
     const getClosedPosition = () => {
         const width = window.innerWidth;
         if (width <= 507) return '-85vw';
@@ -115,83 +118,71 @@ document.addEventListener('DOMContentLoaded', () => {
         return '-600px';
     };
 
-    // Инициализация кнопок и окон
-    windows.forEach(window => {
-        const toggleBtn = document.getElementById(window.btnId);
-        const slideWindow = document.getElementById(window.id);
-        if (toggleBtn && slideWindow) {
-            toggleBtn.style.opacity = '1';
-            toggleBtn.classList.remove('hidden');
-            slideWindow.style.left = getClosedPosition();
-            slideWindow.classList.add('closed');
-            console.log(`Button ${window.btnId} initialized and visible`);
-        }
-        else {
-            console.warn(`Button ${window.btnId} or window ${window.id} not found`);
-        }
-    });
+    // --- FAB-меню логика ---
+    const fabMenu = document.getElementById('fab-menu');
+    const fabMain = document.getElementById('fab-main');
+    const fabActions = document.getElementById('fab-actions');
 
-    // Обработчики для окон
-    windows.forEach(window => {
-        const slideWindow = document.getElementById(window.id);
-        const toggleBtn = document.getElementById(window.btnId);
-        if (toggleBtn && slideWindow) {
-            toggleBtn.addEventListener('click', (e) => {
-                e.stopPropagation();
-                const closedPosition = getClosedPosition();
-                const isOpen = slideWindow.style.left === '0px' || slideWindow.classList.contains('open');
-
-                if (!isOpen && window.id === 'lecture-window') {
-                    loadLectureContent();
-                }
-                if (isOpen) {
-                    slideWindow.style.left = closedPosition;
-                    slideWindow.classList.remove('open');
-                    slideWindow.classList.add('closed');
-                    windows.forEach(otherWindow => {
-                        const btn = document.getElementById(otherWindow.btnId);
-                        if (btn) {
-                            btn.style.opacity = '1';
-                            btn.classList.remove('hidden');
-                            console.log(`Button ${otherWindow.btnId} shown`);
-                        }
-                    });
-                }
-                else {
-                    windows.forEach(otherWindow => {
-                        const otherSlide = document.getElementById(otherWindow.id);
-                        if (otherSlide && otherSlide !== slideWindow) {
-                            otherSlide.style.left = closedPosition;
-                            otherSlide.classList.remove('open');
-                            otherSlide.classList.add('closed');
-                        }
-                    });
-                    slideWindow.style.left = '0px';
-                    slideWindow.classList.remove('closed');
-                    slideWindow.classList.add('open');
-                    windows.forEach(otherWindow => {
-                        if (otherWindow.btnId !== window.btnId) {
-                            const btn = document.getElementById(otherWindow.btnId);
-                            if (btn) {
-                                btn.style.opacity = '0';
-                                btn.classList.add('hidden');
-                                console.log(`Button ${otherWindow.btnId} hidden`);
-                            }
-                        }
-                    });
-                }
-            });
-            toggleBtn.addEventListener('touchstart', (e) => {
-                e.preventDefault();
-                toggleBtn.click();
-            });
+    fabMain.addEventListener('click', (e) => {
+        e.stopPropagation();
+        fabMenu.classList.toggle('open');
+        
+        // Анимация "покачивания" при открытии/закрытии
+        fabMain.style.transform = fabMenu.classList.contains('open') 
+            ? 'scale(1.1) rotate(90deg)' 
+            : 'scale(1) rotate(0)';
+        
+        // Добавляем/удаляем класс для анимации
+        if (fabMenu.classList.contains('open')) {
+            fabMain.classList.add('active');
+        } else {
+            fabMain.classList.remove('active');
         }
     });
 
-    // Проверка перекрытия текста
+    document.addEventListener('click', (e) => {
+        if (!fabMenu.contains(e.target)) {
+            fabMenu.classList.remove('open');
+            fabMain.querySelector('img').src = 'Photos/up.png';
+        }
+    });
+
+    // --- Функция открытия окон ---
+    function openSlideWindow(id) {
+        // Закрыть все окна
+        ['calc-window', 'gear-window', 'cup-window', 'construction-window', 'lecture-window'].forEach(winId => {
+            const win = document.getElementById(winId);
+            if (win) {
+                win.style.left = getClosedPosition();
+                win.classList.remove('open');
+                win.classList.add('closed');
+            }
+        });
+        // Открыть нужное окно
+        const win = document.getElementById(id);
+        if (win) {
+            win.style.left = '0px';
+            win.classList.add('open');
+            win.classList.remove('closed');
+        }
+        fabMenu.classList.remove('open');
+        fabMain.querySelector('img').src = 'Photos/up.png';
+    }
+
+    // --- Привязка кнопок FAB к окнам ---
+    document.getElementById('fab-calc').onclick = () => openSlideWindow('calc-window');
+    document.getElementById('fab-gear').onclick = () => openSlideWindow('gear-window');
+    document.getElementById('fab-cup').onclick = () => openSlideWindow('cup-window');
+    document.getElementById('fab-constructor').onclick = () => openSlideWindow('construction-window');
+    document.getElementById('fab-lecture').onclick = () => {
+        openSlideWindow('lecture-window');
+        loadLectureContent();
+    };
+
+    // --- Проверка перекрытия текста ---
     function checkTextOverlap() {
         const title = document.querySelector('.Title');
-        const buttons = document.querySelectorAll('.toggle-btn, .map-btn');
+        const buttons = document.querySelectorAll('.fab-menu, .map-btn');
         if (!title) {
             console.warn('Title element not found');
             return;
@@ -206,7 +197,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 titleRect.top > btnRect.bottom
             );
             if (isOverlapping && !button.classList.contains('hidden')) {
-                console.warn(`Text overlap detected with: ${button.id}`);
+                console.warn(`Text overlap detected with: ${button.id || button.className}`);
                 button.style.opacity = '0.5';
             }
             else if (!button.classList.contains('hidden')) {
@@ -219,21 +210,22 @@ document.addEventListener('DOMContentLoaded', () => {
         checkTextOverlap();
         // Пересчитываем позиции кнопок при изменении размера окна
         positionToggleButtons();
-        windows.forEach(window => {
-            const slideWindow = document.getElementById(window.id);
-            const toggleBtn = document.getElementById(window.btnId);
+
+        // Закрываем окна при ресайзе, если они закрыты
+        ['calc-window', 'gear-window', 'cup-window', 'construction-window', 'lecture-window'].forEach(id => {
+            const slideWindow = document.getElementById(id);
             if (slideWindow && slideWindow.classList.contains('closed')) {
                 slideWindow.style.left = getClosedPosition();
             }
-            if (toggleBtn && !slideWindow.classList.contains('open')) {
-                toggleBtn.style.opacity = '1';
-                toggleBtn.classList.remove('hidden');
-            }
         });
     });
-    window.addEventListener('load', checkTextOverlap);
 
-    // Обработка кнопки карты
+    window.addEventListener('load', () => {
+        checkTextOverlap();
+        document.body.style.opacity = '1';
+    });
+
+    // --- Обработка кнопки карты ---
     function handleMapButtonClick() {
         const gameMode = mapBtn.dataset.mode;
         transitionOverlay.classList.add('active');
@@ -247,58 +239,46 @@ document.addEventListener('DOMContentLoaded', () => {
     if (mapBtn && mainScreen) {
         mapBtn.removeEventListener('click', handleMapButtonClick);
         mapBtn.addEventListener('click', handleMapButtonClick);
-    }
-    else {
+    } else {
         console.warn('Map button or main screen not found');
     }
 
-    // Закрытие окон при клике вне их
+    // --- Закрытие окон при клике вне их ---
     document.addEventListener('click', (e) => {
-        windows.forEach(window => {
-            const slideWindow = document.getElementById(window.id);
+        ['calc-window', 'gear-window', 'cup-window', 'construction-window', 'lecture-window'].forEach(id => {
+            const slideWindow = document.getElementById(id);
             if (slideWindow && slideWindow.classList.contains('open')) {
-                const isClickInside = slideWindow.contains(e.target) || document.getElementById(window.btnId).contains(e.target);
+                const isClickInside = slideWindow.contains(e.target) || fabMenu.contains(e.target);
                 if (!isClickInside) {
                     slideWindow.style.left = getClosedPosition();
                     slideWindow.classList.remove('open');
                     slideWindow.classList.add('closed');
-                    windows.forEach(otherWindow => {
-                        const btn = document.getElementById(otherWindow.btnId);
-                        if (btn) {
-                            btn.style.opacity = '1';
-                            btn.classList.remove('hidden');
-                            console.log(`Button ${otherWindow.btnId} shown on outside click`);
-                        }
-                    });
                 }
             }
         });
     });
 
-    // Плавное появление карты при загрузке
+    // --- Плавное появление страницы ---
     document.body.style.opacity = '1';
     transitionOverlay.classList.remove('active');
 
-    // Кнопка перехода
+    // --- Кнопка перехода (right-arrow) ---
     const rightArrow = document.getElementById('right-arrow');
     const transitionScreen = document.getElementById('transition-screen');
 
     rightArrow.addEventListener('click', () => {
-        // Активируем шторку
         transitionScreen.classList.add('active');
-
-        // Через 500ms (когда анимация завершится) переходим на новую страницу
         setTimeout(() => {
             history.pushState({}, '', 'gmain.html');
             window.dispatchEvent(new Event('popstate'));
         }, 500);
     });
 
+    // --- Обработка popstate для переходов ---
     window.addEventListener('popstate', (event) => {
         if (event.state?.mode) {
             handlePageTransition(event.state.mode);
-        }
-        else {
+        } else {
             location.reload();
         }
     });
@@ -310,50 +290,41 @@ document.addEventListener('DOMContentLoaded', () => {
         }, 400);
     }
 
-    // Функция обновления звёзд
-window.updateLectureBlocks = function() {
-    const results = JSON.parse(localStorage.getItem('lectureTestResults') || '{}');
-    
-    document.querySelectorAll('.lecture-block').forEach(block => {
-        const lectureId = block.dataset.lectureId;
-        const result = results[`lecture${lectureId}`];
-        const starsContainer = block.querySelector('.lecture-stars');
-        
-        if (!starsContainer) return;
-        
-        starsContainer.innerHTML = '';
-        
-        if (result) {
-            const percentage = (result.correct / result.total) * 100;
-            
-            for (let i = 0; i < 3; i++) {
-                const star = document.createElement('span');
-                star.className = 'lecture-star';
-                star.textContent = '★';
-                
-                if (percentage === 100 && i < 3 || 
-                    percentage >= 50 && i < 2 || 
-                    percentage >= 30 && i < 1) {
-                    star.classList.add('filled');
+    // --- Обновление звёзд в лекциях ---
+    window.updateLectureBlocks = function() {
+        const results = JSON.parse(localStorage.getItem('lectureTestResults') || '{}');
+
+        document.querySelectorAll('.lecture-block').forEach(block => {
+            const lectureId = block.dataset.lectureId;
+            const result = results[`lecture${lectureId}`];
+            const starsContainer = block.querySelector('.lecture-stars');
+
+            if (!starsContainer) return;
+
+            starsContainer.innerHTML = '';
+
+            if (result) {
+                const percentage = (result.correct / result.total) * 100;
+
+                for (let i = 0; i < 3; i++) {
+                    const star = document.createElement('span');
+                    star.className = 'lecture-star';
+                    star.textContent = '★';
+
+                    if (percentage === 100 && i < 3 ||
+                        percentage >= 50 && i < 2 ||
+                        percentage >= 30 && i < 1) {
+                        star.classList.add('filled');
+                    }
+
+                    starsContainer.appendChild(star);
                 }
-                
-                starsContainer.appendChild(star);
             }
-        }
-    });
-};
-    
-    document.addEventListener('DOMContentLoaded', () => {
-        if (typeof updateLectureBlocks === 'function') {
-            updateLectureBlocks();
-        }
-    });
+        });
+    };
 
-    document.addEventListener('DOMContentLoaded', () => {
-        updateLectureBlocks(); // Добавьте эту строку
-        document.body.style.opacity = '1';
-    });
-
-    // Плавное появление страницы
-    document.body.style.opacity = '1';
+    // --- Инициализация обновления звёзд ---
+    if (typeof updateLectureBlocks === 'function') {
+        updateLectureBlocks();
+    }
 });

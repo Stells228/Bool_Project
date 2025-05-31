@@ -32,9 +32,32 @@
 </head>
 
 <body>
+    <div class="fab-menu" id="fab-menu">
+        <button class="fab-main" id="fab-main">
+            <img src="Photos/up.png" alt="Меню">
+        </button>
+        <div class="fab-actions" id="fab-actions">
+            <button class="fab-action" id="fab-calc" title="Калькулятор">
+                <img src="Photos/calculator.png" alt="Калькулятор">
+            </button>
+            <button class="fab-action" id="fab-gear" title="Настройки">
+                <img src="Photos/gear.png" alt="Настройки">
+            </button>
+            <button class="fab-action" id="fab-cup" title="Рейтинг">
+                <img src="Photos/cup.png" alt="Рейтинг">
+            </button>
+            <button class="fab-action" id="fab-constructor" title="Конструктор">
+                <img src="Photos/table.png" alt="Конструктор">
+            </button>
+            <button class="fab-action" id="fab-lecture" title="Обучение">
+                <img src="Photos/buch.png" alt="Обучение">
+            </button>
+        </div>
+    </div>
+
     <!-- Выдвижное окно с калькулятором -->
     <!-- Задания: 1,2,3,8,9 -->
-    <div id="calc-window" class="slide-window">
+    <div id="calc-window" class="slide-window closed">
         <div class="calculator">
             <div class="Calc-name">Bool's Calculator</div>
             <div class="Calc-name2">Boolean Functions</div>
@@ -154,11 +177,8 @@
                 </div>
             </div>
         </div>
-        <button id="calc-toggle" class="toggle-btn">
-            <img src="Photos/calculator.png" alt="Calculator" class="icon">
-        </button>
     </div>
-    <div id="gear-window" class="slide-window">
+    <div id="gear-window" class="slide-window closed">
         <div class="settings-container">
             <h2 class="settings-title">Настройки</h2>
             <div class="mode-toggle">
@@ -172,11 +192,8 @@
             </button>
         </div>
         <!-- Настройки -->
-        <button id="gear-toggle" class="toggle-btn">
-            <img src="Photos/gear.png" alt="Gear" class="icon">
-        </button>
     </div>
-    <div id="cup-window" class="slide-window">
+    <div id="cup-window" class="slide-window closed">
         <div class="rating-container">
             <h2 class="rating-title">Рейтинг</h2>
             <div class="rating-summary">
@@ -186,13 +203,10 @@
                 <ul id="level-scores" class="level-scores"></ul>
             </div>
         </div>
-        <button id="cup-toggle" class="toggle-btn">
-            <img src="Photos/cup.png" alt="Cup" class="icon">
-        </button>
     </div>
 
     <!-- 12 задание -->
-    <div id="construction-window" class="slide-window">
+    <div id="construction-window" class="slide-window closed">
         <div class="construction-container">
             <h2 class="construction-title">Конструктор ДНФ</h2>
             <div class="construction-input-group">
@@ -221,10 +235,17 @@
                 <div class="feedback" id="construction-feedback"></div>
             </div>
         </div>
-        <button id="construction-toggle" class="toggle-btn">
-            <img src="Photos/table.png" alt="Table" class="icon">
-        </button>
     </div>
+
+    <!-- Окно с обучающим материалом -->
+    <div id="lecture-window" class="slide-window closed">
+        <div class="lecture-container">
+            <h2 class="lecture-title">Обучающий материал</h2>
+            <div class="lecture-grid" id="lecture-content">
+            </div>
+        </div>
+    </div>
+
     <div class="Title">Bool-helper</div>
     <div id="main-screen">
         <div class="image-container">
@@ -252,17 +273,7 @@
         <div id="transition-screen" class="transition-screen"></div>
     </div>
 
-    <!-- Окно с обучающим материалом -->
-    <div id="lecture-window" class="slide-window">
-        <div class="lecture-container">
-            <h2 class="lecture-title">Обучающий материал</h2>
-            <div class="lecture-grid" id="lecture-content">
-        </div>
-        </div>
-        <button id="lecture-toggle" class="toggle-btn">
-            <img src="Photos/buch.png" alt="Lectures" class="icon">
-        </button>
-    </div>
+
 
     <script src="main.js"></script>
     <script src="settings.js"></script>

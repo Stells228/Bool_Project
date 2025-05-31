@@ -51,37 +51,6 @@ body {
     left: 0;
 }
 
-.toggle-btn {
-    position: absolute;
-    background: linear-gradient(to bottom, rgba(97, 60, 192, 0.9), rgba(70, 30, 169, 0.9));
-    border: none;
-    border-radius: 0 5px 5px 0;
-    cursor: pointer;
-    z-index: 6;
-    transition: all 0.5s ease;
-    width: clamp(45px, 10vw, 70px);
-    height: clamp(45px, 10vw, 70px);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-.toggle-btn.hidden {
-    opacity: 0;
-    pointer-events: none;
-    transform: translateX(10px);
-}
-
-.toggle-btn:hover {
-    background: linear-gradient(to bottom, rgba(171, 144, 239, 0.9), rgba(150, 120, 200, 0.9));
-}
-
-.icon {
-    width: 70%;
-    height: 70%;
-    object-fit: contain;
-}
-
 .moonre, .cloudmoon, .cloudmoon2, .cloudmoon3, .cloudmoon4, .cloudmoon5,
 .stars1, .stars2, .comet1, .comet2, .comet3, .comet4 {
     position: absolute;
@@ -183,9 +152,6 @@ body {
 }
 
 @media (max-width: 507px) {
-    .toggle-btn {
-        height: 60px;
-    }
     .stars1, .stars2 {
         width: 70%;
         height: 80%;
@@ -238,10 +204,6 @@ body {
 }
 
 @media (min-width: 508px) and (max-width: 754px) {
-    .toggle-btn {
-        height: 60px;
-        width: 70px;
-    }
     .stars1, .stars2 {
         width: 70%;
         height: 80%;
@@ -294,10 +256,6 @@ body {
 }
 
 @media (min-width: 755px) and (max-width: 1024px) {
-    .toggle-btn {
-        height: 60px;
-        width: 70px;
-    }
     .stars1, .stars2 {
         width: 70%;
         height: 80%;
@@ -350,10 +308,6 @@ body {
 }
 
 @media (min-width: 1025px) and (max-width: 1360px) {
-    .toggle-btn {
-        height: 80px;
-        width: 70px;
-    }
     .stars1, .stars2 {
         width: 60%;
         height: 100%;
@@ -518,8 +472,8 @@ body {
     background: rgba(97, 60, 192, 0.7);
     border: 2px solid #ffffff;
     border-radius: 50%;
-    width: 50px;
-    height: 50px;
+    width: 56px;
+    height: 56px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -643,4 +597,101 @@ body {
 
 .lecture-star.filled {
     opacity: 1;
+}
+
+.fab-menu {
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    z-index: 10000;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.fab-main {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #5a2dbd, #8a4fff);
+    border: 2px solid #fff;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.3s ease;
+    box-shadow: 0 6px 15px rgba(138, 79, 255, 0.6);
+}
+
+.fab-main:hover {
+    background: linear-gradient(135deg, #7e51f0, #b19aff);
+    box-shadow: 0 8px 20px rgba(138, 79, 255, 0.9);
+    transform: scale(1.1);
+}
+
+.fab-main img {
+    width: 28px;
+    height: 28px;
+    transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    transform-origin: center;
+}
+
+.fab-menu.open .fab-main img {
+    transform: rotate(180deg);
+}
+
+.fab-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    margin-top: 18px;
+    opacity: 0;
+    pointer-events: none;
+    transform: translateY(-25px);
+    transition: opacity 0.35s ease, transform 0.35s ease;
+}
+
+.fab-menu.open .fab-actions {
+    opacity: 1;
+    pointer-events: all;
+    transform: translateY(0);
+}
+
+.fab-action {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #642eeb, #6c46e8);
+    border: 2px solid #fff;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.3s ease, box-shadow 0.3s ease;
+    box-shadow: 0 4px 12px rgba(138, 79, 255, 0.7);
+}
+
+.fab-action:hover {
+    background: linear-gradient(135deg, #a18cf3, #c8baff);
+}
+
+.fab-action img {
+    width: 32px;
+    height: 32px;
+}
+
+.fab-action:nth-child(1) {
+    transition-delay: 0.1s;
+}
+.fab-action:nth-child(2) {
+    transition-delay: 0.2s;
+}
+.fab-action:nth-child(3) {
+    transition-delay: 0.3s;
+}
+.fab-action:nth-child(4) {
+    transition-delay: 0.4s;
+}
+.fab-action:nth-child(5) {
+    transition-delay: 0.5s;
 }

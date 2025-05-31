@@ -1,6 +1,5 @@
 document.addEventListener('DOMContentLoaded', () => {
     const constructionWindow = document.getElementById('construction-window');
-    const constructionToggle = document.getElementById('construction-toggle');
     const dnfInput = document.getElementById('dnf-input');
     const simplifyBtn = document.getElementById('simplify-dnf');
     const clearBtn = document.getElementById('clear-dnf');
@@ -8,6 +7,12 @@ document.addEventListener('DOMContentLoaded', () => {
     const display = document.getElementById('construction-display');
     const feedback = document.getElementById('construction-feedback');
     const symbolButtons = document.querySelectorAll('.symbol-btn:not(#delete-btn)');
+    
+    if (!constructionWindow || !dnfInput || !simplifyBtn || !clearBtn || 
+        !deleteBtn || !display || !feedback) {
+        console.error('Constructor elements not found');
+        return;
+    }
 
     let isProcessing = false;
 
@@ -148,11 +153,6 @@ document.addEventListener('DOMContentLoaded', () => {
         deleteBtn.disabled = false;
     }
 
-    constructionToggle.addEventListener('click', (e) => {
-        e.stopPropagation(); // Предотвращаем всплытие
-        constructionWindow.classList.toggle('open');
-    });
-
     symbolButtons.forEach(button => {
         button.addEventListener('click', () => {
             const symbol = button.dataset.symbol;
@@ -211,17 +211,12 @@ document.addEventListener('DOMContentLoaded', () => {
     // Закрытие окна с защитой от немедленного закрытия
     let lastToggleClick = 0;
     document.addEventListener('click', (event) => {
-        const now = Date.now();
-        if (now - lastToggleClick < 100) return; // Игнорируем клики сразу после toggle
-        if (!constructionWindow.contains(event.target) && !constructionToggle.contains(event.target)) {
+        if (!constructionWindow.contains(event.target) && 
+            !document.getElementById('fab-constructor').contains(event.target)) {
             constructionWindow.classList.remove('open');
             clearErrorPopups();
             hideFeedback();
         }
-    });
-
-    constructionToggle.addEventListener('click', () => {
-        lastToggleClick = Date.now();
     });
 
     dnfInput.addEventListener('input', () => {

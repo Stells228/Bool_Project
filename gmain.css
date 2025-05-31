@@ -512,3 +512,93 @@ body {
 .left-transition-screen.active {
     left: 0;
 } 
+
+.lecture-container {
+    padding: 20px;
+    height: 100%;
+    overflow-y: auto;
+}
+
+.lecture-title {
+    color: #ffffff;
+    text-align: center;
+    margin-bottom: 20px;
+    font-family: 'Comfortaa', cursive;
+}
+
+.lecture-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 15px;
+    padding: 10px;
+}
+
+.lecture-block {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 10px;
+    padding: 15px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-align: center;
+    min-height: 80px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.lecture-block:hover {
+    background: rgba(97, 60, 192, 0.7);
+    transform: translateY(-3px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.lecture-block h3 {
+    margin: 0 0 10px 0;
+    color: #ffffff;
+    font-size: 1.1rem;
+    font-family: 'Comfortaa', cursive;
+}
+
+@media (max-width: 600px) {
+    .lecture-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: linear-gradient(to bottom, #613cc0, #416190);
+    border-radius: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(to bottom, #7e57c2, #5c6bc0);
+}
+
+.lecture-stars {
+    display: flex;
+    gap: 5px;
+    justify-content: center;
+}
+
+.lecture-star {
+    color: #ffcc00;
+    opacity: 0.3;
+    transition: opacity 0.3s ease;
+    font-size: 1.2rem;
+}
+
+.lecture-star.filled {
+    opacity: 1;
+}
