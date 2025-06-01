@@ -1,4 +1,35 @@
 document.addEventListener('DOMContentLoaded', () => {
+    const firebaseConfig = {
+        apiKey: "AIzaSyDlHLCPtlITZ4ezjYWbUYA3r70BgensOl8",
+        authDomain: "hehe-63f6d.firebaseapp.com",
+        projectId: "hehe-63f6d",
+        storageBucket: "hehe-63f6d.appspot.com",
+        messagingSenderId: "54586209991",
+        appId: "1:54586209991:web:ecaa663106b0160a1cb0e2"
+    };
+    if (!firebase.apps.length) {
+        firebase.initializeApp(firebaseConfig);
+    }
+    const auth = firebase.auth();
+
+    // Проверка состояния авторизации
+    auth.onAuthStateChanged((user) => {
+        const userInfo = document.getElementById('user-info');
+        if (user) {
+            userInfo.style.display = 'flex';
+            document.getElementById('user-email').textContent = user.email;
+        } else {
+            userInfo.style.display = 'none';
+            window.location.href = 'index.html';
+        }
+    });
+
+    // Обработчик кнопки выхода
+    document.querySelector('.sign-out-btn')?.addEventListener('click', () => {
+        auth.signOut().then(() => {
+            window.location.href = 'index.html';
+        }).catch(console.error);
+    });
     const cloudElements = document.querySelectorAll('.cloudmoon, .cloudmoon2, .cloudmoon3, .cloudmoon4, .cloudmoon5');
 
     const fabMenu = document.getElementById('fab-menu');
@@ -18,7 +49,7 @@ document.addEventListener('DOMContentLoaded', () => {
         ['gear-window', 'cup-window'].forEach(id => {
             const win = document.getElementById(id);
             if (win) {
-                win.style.right = getClosedPosition(); // Изменили left на right
+                win.style.right = getClosedPosition(); 
                 win.classList.remove('open');
                 win.classList.add('closed');
             }
@@ -34,7 +65,7 @@ document.addEventListener('DOMContentLoaded', () => {
         fabMain.style.display = 'flex';
         fabClose.style.display = 'none';
     });
-    
+
     document.getElementById('cup-close').addEventListener('click', () => {
         document.getElementById('cup-window').style.right = getClosedPosition();
         document.getElementById('cup-window').classList.remove('open');
@@ -43,32 +74,30 @@ document.addEventListener('DOMContentLoaded', () => {
         fabClose.style.display = 'none';
     });
 
-    // Обработчики для кнопок режимов
-document.getElementById('normal-mode').addEventListener('click', () => {
-    localStorage.setItem('gameMode', 'normal');
+    document.getElementById('normal-mode').addEventListener('click', () => {
+        localStorage.setItem('gameMode', 'normal');
+        updateModeButtons();
+    });
+
+    document.getElementById('passing-mode').addEventListener('click', () => {
+        localStorage.setItem('gameMode', 'passing');
+        updateModeButtons();
+    });
+
+    document.getElementById('competition-mode').addEventListener('click', () => {
+        localStorage.setItem('gameMode', 'competition');
+        updateModeButtons();
+    });
+
+    // Функция для обновления состояния кнопок режимов
+    function updateModeButtons() {
+        const mode = localStorage.getItem('gameMode') || 'normal';
+        document.getElementById('normal-mode').classList.toggle('active', mode === 'normal');
+        document.getElementById('passing-mode').classList.toggle('active', mode === 'passing');
+        document.getElementById('competition-mode').classList.toggle('active', mode === 'competition');
+    }
+
     updateModeButtons();
-});
-
-document.getElementById('passing-mode').addEventListener('click', () => {
-    localStorage.setItem('gameMode', 'passing');
-    updateModeButtons();
-});
-
-document.getElementById('competition-mode').addEventListener('click', () => {
-    localStorage.setItem('gameMode', 'competition');
-    updateModeButtons();
-});
-
-// Функция для обновления состояния кнопок режимов
-function updateModeButtons() {
-    const mode = localStorage.getItem('gameMode') || 'normal';
-    document.getElementById('normal-mode').classList.toggle('active', mode === 'normal');
-    document.getElementById('passing-mode').classList.toggle('active', mode === 'passing');
-    document.getElementById('competition-mode').classList.toggle('active', mode === 'competition');
-}
-
-// Инициализация кнопок при загрузке
-updateModeButtons();
 
 
     if (lectureClose) {
@@ -96,10 +125,10 @@ updateModeButtons();
             win.classList.remove('closed');
         }
         fabMenu.classList.remove('open');
-    
+
         if (id !== 'lecture-window') {
             document.getElementById('lecture-close').style.display = 'none';
-        } 
+        }
         else {
             document.getElementById('lecture-close').style.display = 'flex';
         }

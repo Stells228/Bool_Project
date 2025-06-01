@@ -1,4 +1,34 @@
 document.addEventListener('DOMContentLoaded', () => {
+    const firebaseConfig = {
+        apiKey: "AIzaSyDlHLCPtlITZ4ezjYWbUYA3r70BgensOl8",
+        authDomain: "hehe-63f6d.firebaseapp.com",
+        projectId: "hehe-63f6d",
+        storageBucket: "hehe-63f6d.appspot.com",
+        messagingSenderId: "54586209991",
+        appId: "1:54586209991:web:ecaa663106b0160a1cb0e2"
+    };
+    if (!firebase.apps.length) {
+        firebase.initializeApp(firebaseConfig);
+    }
+    const auth = firebase.auth();
+
+    auth.onAuthStateChanged((user) => {
+        const userInfo = document.getElementById('user-info');
+        if (user) {
+            userInfo.style.display = 'flex';
+            document.getElementById('user-email').textContent = user.email;
+        } else {
+            userInfo.style.display = 'none';
+            window.location.href = 'index.html';
+        }
+    });
+
+    // Обработчик кнопки выхода
+    document.querySelector('.sign-out-btn')?.addEventListener('click', () => {
+        auth.signOut().then(() => {
+            window.location.href = 'index.html';
+        }).catch(console.error);
+    });
     function positionToggleButtons() {
         const toggleButtons = document.querySelectorAll('.toggle-btn');
         const totalButtons = toggleButtons.length;
@@ -166,7 +196,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 win.classList.add('closed');
             }
         });
-        
+
         document.getElementById('fab-main').style.display = 'flex';
         document.getElementById('fab-close').style.display = 'none';
     });

@@ -5,6 +5,9 @@
     <title>Bool-helper</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+
     <link rel="preload" href="main.css" as="style">
     <link rel="stylesheet" href="main.css">
     <link rel="stylesheet" href="calculator.css">
@@ -273,6 +276,11 @@
             <img src="Photos/right.png" alt="Next" class="arrow-icon">
         </button>
         <div id="transition-screen" class="transition-screen"></div>
+    </div>
+
+    <div id="user-info" class="user-auth-btn" style="display: none;">
+        <span id="user-email"></span>
+        <button class="sign-out-btn">Выйти</button>
     </div>
 
     <script src="main.js"></script>

@@ -731,3 +731,39 @@ body {
     width: 28px;
     height: 28px;
 }
+
+.user-auth-btn {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 100;
+    background: rgba(79, 65, 144, 0.7);
+    padding: 10px 15px;
+    border-radius: 50px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: white;
+    font-family: 'Comfortaa', cursive;
+    backdrop-filter: blur(5px);
+}
+
+.user-auth-btn span {
+    font-size: 0.9rem;
+}
+
+.sign-out-btn {
+    background: #ff6b6b;
+    border: none;
+    color: white;
+    padding: 5px 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-family: 'Comfortaa', cursive;
+    font-size: 0.8rem;
+    transition: background 0.3s;
+}
+
+.sign-out-btn:hover {
+    background: #ff5252;
+}
