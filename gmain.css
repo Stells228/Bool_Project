@@ -697,8 +697,8 @@ body {
 }
 
 .fab-action {
-    width: 60px;
-    height: 60px;
+    width: 70px;
+    height: 70px;
     border-radius: 50%;
     background: linear-gradient(135deg, #642eeb, #6c46e8);
     border: 2px solid #fff;
@@ -715,8 +715,8 @@ body {
 }
 
 .fab-action img {
-    width: 32px;
-    height: 32px;
+    width: 52px;
+    height: 42px;
 }
 
 .fab-close {
