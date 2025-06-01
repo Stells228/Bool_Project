@@ -7,6 +7,7 @@
 
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+    <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
 
     <link rel="preload" href="main.css" as="style">
     <link rel="stylesheet" href="main.css">
@@ -56,6 +57,9 @@
             </button>
             <button class="fab-action fab-lecture" id="fab-lecture" title="Обучение">
                 <img src="Photos/buch.png" alt="Обучение">
+            </button>
+            <button class="fab-action fab-multiplayer" id="fab-multiplayer" title="Мультиплеер">
+                <img src="Photos/multiplayer.png" alt="Мультиплеер">
             </button>
         </div>
     </div>
@@ -247,6 +251,80 @@
         <div class="lecture-container">
             <h2 class="lecture-title">Обучающий материал</h2>
             <div class="lecture-grid" id="lecture-content">
+            </div>
+        </div>
+    </div>
+
+    <div id="multiplayer-window" class="slide-window closed">
+        <div class="multiplayer-container">
+            <h2>Мультиплеер</h2>
+            <div class="multiplayer-tabs">
+                <button class="tab-btn active" data-tab="join">Подключиться</button>
+                <button class="tab-btn" data-tab="create">Создать комнату</button>
+            </div>
+    
+            <!-- Вкладка "Подключиться" -->
+            <div class="tab-content" id="join-tab">
+                <input type="text" id="room-code" placeholder="Введите код комнаты (5 цифр)" maxlength="5">
+                <button class="submit-btn" id="join-room-btn">Подключиться</button>
+            </div>
+    
+            <!-- Вкладка "Создать" -->
+            <div class="tab-content" id="create-tab" style="display: none;">
+                <div class="settings-group">
+                    <label>Количество игроков:</label>
+                    <select id="max-players">
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                    </select>
+                </div>
+                
+                <div class="settings-group">
+                    <label>Тематика:</label>
+                    <select id="game-mode">
+                        <option value="bool">Булевы функции</option>
+                        <option value="graph">Графы</option>
+                        <option value="all">Всё вместе</option>
+                    </select>
+                </div>
+    
+                <div class="settings-group">
+                    <label>Количество уровней:</label>
+                    <input type="number" id="levels-count" min="1" max="10" value="3">
+                </div>
+    
+                <button class="submit-btn" id="create-room-btn">Создать комнату</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="lobby-window" class="modal-overlay" style="display: none;">
+        <div class="lobby-container">
+            <div class="lobby-header">
+                <h2>Ожидание игроков</h2>
+                <button class="close-lobby-btn">&times;</button>
+            </div>
+            
+            <div class="loading-animation">
+                <div class="spinner"></div>
+                <p>Создание комнаты...</p>
+            </div>
+            
+            <div class="room-info">
+                <p>Номер комнаты:</p>
+                <div class="room-code">XXXXX</div>
+                <p class="instruction">Дайте этот код другим игрокам для подключения</p>
+            </div>
+            
+            <div class="players-container">
+                <div class="player-slots">
+                </div>
+            </div>
+            
+            <div class="lobby-controls">
+                <button class="ready-btn" disabled>Ожидаем игроков...</button>
+                <button class="start-game-btn" disabled>Начать игру</button>
             </div>
         </div>
     </div>

@@ -17,7 +17,8 @@ document.addEventListener('DOMContentLoaded', () => {
         if (user) {
             userInfo.style.display = 'flex';
             document.getElementById('user-email').textContent = user.email;
-        } else {
+        }
+        else {
             userInfo.style.display = 'none';
             window.location.href = 'index.html';
         }
@@ -102,7 +103,8 @@ document.addEventListener('DOMContentLoaded', () => {
         { id: 'gear-window', btnId: 'gear-toggle' },
         { id: 'cup-window', btnId: 'cup-toggle' },
         { id: 'construction-window', btnId: 'construction-toggle' },
-        { id: 'lecture-window', btnId: 'lecture-toggle' }
+        { id: 'lecture-window', btnId: 'lecture-toggle' },
+        { id: 'multiplayer-window', btnId: 'multiplayer-toggle' }
     ];
 
     const transitionOverlay = document.createElement('div');
@@ -169,7 +171,7 @@ document.addEventListener('DOMContentLoaded', () => {
     function openSlideWindow(id) {
         document.getElementById('fab-close').style.display = 'flex';
         document.getElementById('fab-main').style.display = 'none';
-        ['calc-window', 'gear-window', 'cup-window', 'construction-window', 'lecture-window'].forEach(winId => {
+        ['calc-window', 'gear-window', 'cup-window', 'construction-window', 'lecture-window', 'multiplayer-window'].forEach(winId => {
             const win = document.getElementById(winId);
             if (win) {
                 win.style.left = getClosedPosition();
@@ -188,7 +190,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     document.getElementById('fab-close').addEventListener('click', () => {
         // Закрыть all окна
-        ['calc-window', 'gear-window', 'cup-window', 'construction-window', 'lecture-window'].forEach(winId => {
+        ['calc-window', 'gear-window', 'cup-window', 'construction-window', 'lecture-window', 'multiplayer-window'].forEach(winId => {
             const win = document.getElementById(winId);
             if (win) {
                 win.style.left = getClosedPosition();
@@ -199,16 +201,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
         document.getElementById('fab-main').style.display = 'flex';
         document.getElementById('fab-close').style.display = 'none';
+        setupMultiplayerTabs();
     });
 
     document.getElementById('fab-calc').onclick = () => openSlideWindow('calc-window');
     document.getElementById('fab-gear').onclick = () => openSlideWindow('gear-window');
     document.getElementById('fab-cup').onclick = () => openSlideWindow('cup-window');
     document.getElementById('fab-constructor').onclick = () => openSlideWindow('construction-window');
-    document.getElementById('fab-lecture').onclick = () => {
-        openSlideWindow('lecture-window');
-        loadLectureContent();
-    };
+    document.getElementById('fab-lecture').onclick = () => { openSlideWindow('lecture-window'); loadLectureContent(); };
+    document.getElementById('fab-multiplayer').onclick = () => { openSlideWindow('multiplayer-window'); setupMultiplayerTabs(); };
+
 
     function checkTextOverlap() {
         const title = document.querySelector('.Title');
@@ -242,7 +244,7 @@ document.addEventListener('DOMContentLoaded', () => {
         positionToggleButtons();
 
         // Закрываем окна при ресайзе, если они закрыты
-        ['calc-window', 'gear-window', 'cup-window', 'construction-window', 'lecture-window'].forEach(id => {
+        ['calc-window', 'gear-window', 'cup-window', 'construction-window', 'lecture-window', 'multiplayer-window'].forEach(id => {
             const slideWindow = document.getElementById(id);
             if (slideWindow && slideWindow.classList.contains('closed')) {
                 slideWindow.style.left = getClosedPosition();
@@ -273,23 +275,8 @@ document.addEventListener('DOMContentLoaded', () => {
         console.warn('Map button or main screen not found');
     }
 
-    // Закрытие окон при клике вне их
     document.addEventListener('click', (e) => {
-        ['calc-window', 'gear-window', 'cup-window', 'construction-window', 'lecture-window'].forEach(id => {
-            const slideWindow = document.getElementById(id);
-            if (slideWindow && slideWindow.classList.contains('open')) {
-                const isClickInside = slideWindow.contains(e.target) || fabMenu.contains(e.target);
-                if (!isClickInside) {
-                    slideWindow.style.left = getClosedPosition();
-                    slideWindow.classList.remove('open');
-                    slideWindow.classList.add('closed');
-                }
-            }
-        });
-    });
-
-    document.addEventListener('click', (e) => {
-        ['calc-window', 'gear-window', 'cup-window', 'construction-window', 'lecture-window'].forEach(id => {
+        ['calc-window', 'gear-window', 'cup-window', 'construction-window', 'lecture-window', 'multiplayer-window'].forEach(id => {
             const slideWindow = document.getElementById(id);
             if (slideWindow && slideWindow.classList.contains('open')) {
                 const isClickInside = slideWindow.contains(e.target) || fabMenu.contains(e.target);
@@ -370,4 +357,216 @@ document.addEventListener('DOMContentLoaded', () => {
     if (typeof updateLectureBlocks === 'function') {
         updateLectureBlocks();
     }
+
+    // Подключение к серверу Socket.IO
+    const socket = io('http://localhost:3000');
+
+    let currentRoom = null;
+    let isHost = false;
+    let playerReady = false;
+
+    function createRoom(settings) {
+        socket.emit('createRoom', settings, (response) => {
+            if (response.success) {
+                currentRoom = response.roomCode;
+                isHost = true;
+                showLobbyWindow(response.roomCode, settings.maxPlayers);
+            } else {
+                alert('Ошибка при создании комнаты: ' + response.message);
+            }
+        });
+    }
+
+    function joinRoom(roomCode) {
+        socket.emit('joinRoom', roomCode, localStorage.getItem('username') || 'Игрок', (response) => {
+            if (response.success) {
+                currentRoom = roomCode;
+                isHost = false;
+                showLobbyWindow(roomCode, response.maxPlayers, response.players);
+            } 
+            else {
+                alert('Ошибка подключения: ' + response.message);
+            }
+        });
+    }
+
+    function showLobbyWindow(roomCode, maxPlayers, players = []) {
+        const lobbyWindow = document.getElementById('lobby-window');
+        const loadingAnimation = document.querySelector('.loading-animation');
+        const roomInfo = document.querySelector('.room-info');
+        const playerSlots = document.querySelector('.player-slots');
+        const readyBtn = document.querySelector('.ready-btn');
+        const startBtn = document.querySelector('.start-game-btn');
+
+        // Заполняем информацию о комнате
+        document.querySelector('.room-code').textContent = roomCode;
+
+        loadingAnimation.style.display = 'none';
+        roomInfo.style.display = 'block';
+
+        // Создаем слоты для игроков
+        playerSlots.innerHTML = '';
+        for (let i = 0; i < maxPlayers; i++) {
+            const slot = document.createElement('div');
+            slot.className = 'player-slot';
+            slot.innerHTML = `
+                    <div class="player-avatar">${i + 1}</div>
+                    <div class="player-name">Свободно</div>
+                    <div class="player-status">Ожидание...</div>
+                `;
+            playerSlots.appendChild(slot);
+        }
+
+        // Заполняем слоты подключенными игроками
+        players.forEach((player, index) => {
+            updatePlayerSlot(index, player.username, player.ready);
+        });
+
+        // Настройка кнопок в зависимости от роли (хост/участник)
+        if (isHost) {
+            readyBtn.style.display = 'none';
+            startBtn.style.display = 'block';
+            startBtn.disabled = true;
+        } 
+        else {
+            readyBtn.style.display = 'block';
+            startBtn.style.display = 'none';
+            readyBtn.disabled = false;
+            readyBtn.textContent = 'Я готов!';
+        }
+
+        lobbyWindow.style.display = 'flex';
+    }
+
+    function updatePlayerSlot(index, username, isReady) {
+        const slots = document.querySelectorAll('.player-slot');
+        if (index >= slots.length) return;
+
+        const slot = slots[index];
+        slot.classList.add('filled');
+        slot.querySelector('.player-name').textContent = username;
+
+        if (isReady) {
+            slot.classList.add('ready');
+            slot.querySelector('.player-status').textContent = 'Готов';
+        } else {
+            slot.classList.remove('ready');
+            slot.querySelector('.player-status').textContent = 'Подключен';
+        }
+    }
+
+    document.getElementById('create-room-btn').addEventListener('click', () => {
+        const settings = {
+            maxPlayers: parseInt(document.getElementById('max-players').value),
+            mode: document.getElementById('game-mode').value,
+            levels: parseInt(document.getElementById('levels-count').value)
+        };
+
+        document.getElementById('lobby-window').style.display = 'flex';
+        document.querySelector('.loading-animation').style.display = 'flex';
+        document.querySelector('.room-info').style.display = 'none';
+
+        createRoom(settings);
+    });
+
+    document.getElementById('join-room-btn').addEventListener('click', () => {
+        const roomCode = document.getElementById('room-code').value;
+        if (!/^\d{5}$/.test(roomCode)) {
+            alert('Код комнаты должен состоять из 5 цифр!');
+            return;
+        }
+
+        document.getElementById('lobby-window').style.display = 'flex';
+        document.querySelector('.loading-animation').style.display = 'flex';
+        document.querySelector('.room-info').style.display = 'none';
+
+        joinRoom(roomCode);
+    });
+
+    // Обработчик кнопки готовности
+    document.querySelector('.ready-btn').addEventListener('click', function () {
+        playerReady = !playerReady;
+        socket.emit('setReady', playerReady);
+
+        if (playerReady) {
+            this.textContent = 'Отменить готовность';
+            this.classList.add('active');
+        } 
+        else {
+            this.textContent = 'Я готов!';
+            this.classList.remove('active');
+        }
+    });
+
+    // Обработчик кнопки начала игры
+    document.querySelector('.start-game-btn').addEventListener('click', function () {
+        socket.emit('startGame');
+    });
+
+    // Обработчик закрытия лобби
+    document.querySelector('.close-lobby-btn').addEventListener('click', function () {
+        socket.emit('leaveRoom');
+        document.getElementById('lobby-window').style.display = 'none';
+        currentRoom = null;
+        isHost = false;
+        playerReady = false;
+    });
+
+    // Socket.IO обработчики событий
+    socket.on('playerJoined', (playerData) => {
+        updatePlayerSlot(playerData.index, playerData.username, false);
+    });
+
+    socket.on('playerLeft', (index) => {
+        const slots = document.querySelectorAll('.player-slot');
+        if (index >= slots.length) return;
+
+        const slot = slots[index];
+        slot.classList.remove('filled', 'ready');
+        slot.querySelector('.player-name').textContent = 'Свободно';
+        slot.querySelector('.player-status').textContent = 'Ожидание...';
+    });
+
+    socket.on('playerReadyChanged', (index, isReady) => {
+        updatePlayerSlot(index, null, isReady);
+    });
+
+    socket.on('allPlayersReady', () => {
+        if (isHost) {
+            document.querySelector('.start-game-btn').disabled = false;
+        }
+    });
+
+    socket.on('gameStarting', (settings) => {
+        // Перенаправляем на первый уровень
+        const firstLevel = settings.mode === 'bool' ? 'level1.html' : 'glevel1.html';
+        window.location.href = `${firstLevel}?mode=multiplayer&room=${currentRoom}`;
+    });
+
+    socket.on('roomError', (message) => {
+        alert(message);
+        document.getElementById('lobby-window').style.display = 'none';
+    });
+
+    // Инициализация UI мультиплеера
+    function setupMultiplayerTabs() {
+        const tabs = document.querySelectorAll('.tab-btn');
+        tabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                tabs.forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
+
+                document.querySelectorAll('.tab-content').forEach(content => {
+                    content.style.display = 'none';
+                });
+                document.getElementById(`${tab.dataset.tab}-tab`).style.display = 'block';
+            });
+        });
+    }
+
+    // Открытие окна мультиплеера
+    document.getElementById('fab-multiplayer').onclick = () => {
+        openSlideWindow('multiplayer-window');
+        setupMultiplayerTabs();
+    };
 });
