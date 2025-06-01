@@ -1,4 +1,9 @@
 document.addEventListener('DOMContentLoaded', () => {
+    const urlParams = new URLSearchParams(window.location.search);
+    let gameMode = urlParams.get('mode') || localStorage.getItem('gameMode') || 'normal';
+    localStorage.setItem('gameMode', gameMode);
+    console.log('[GameLevel1] Initialized gameMode:', gameMode);
+    
     const matrixContainer = document.getElementById('matrixContainer');
     const checkBtn = document.getElementById('checkBtn');
     const tryAgainBtn = document.getElementById('tryAgainBtn');
@@ -12,10 +17,48 @@ document.addEventListener('DOMContentLoaded', () => {
     const graphContainer = document.getElementById('graph-visualization');
     graphContainer.style.height = '100%';
 
-    let currentNodes = 0;
+    let scoreDisplay = document.getElementById('score-display');
+    if (!scoreDisplay) {
+        scoreDisplay = document.createElement('div');
+        scoreDisplay.id = 'score-display';
+        scoreDisplay.className = 'score-display';
+        document.querySelector('.level-container').appendChild(scoreDisplay);
+        console.log('[GameLevel1] Created score-display element');
+    }
 
-    toMap?.addEventListener('click', () => window.location.href = '../gmap.html');
-    toLevel2?.addEventListener('click', () => window.location.href = 'glevel2.html');
+    const currentPlayer = localStorage.getItem('currentPlayer') || 'Anonymous';
+    let allPlayersData = JSON.parse(localStorage.getItem('allPlayersData')) || {};
+    if (!allPlayersData[currentPlayer]) {
+        allPlayersData[currentPlayer] = { scores: {}, gScores: {} };
+    }
+    if (!allPlayersData[currentPlayer].gScores[1]) {
+        allPlayersData[currentPlayer].gScores[1] = { points: 0 };
+    }
+    let score = parseInt(allPlayersData[currentPlayer].gScores[1].points) || 0;
+    scoreDisplay.textContent = `Счёт: ${score >= 0 ? score : '-' + Math.abs(score)}`;     
+    scoreDisplay.style.display = gameMode === 'competition' ? 'block' : 'none';
+
+    let gCompletedLevels = JSON.parse(localStorage.getItem('gCompletedLevels')) || [];
+    let hasWon = gCompletedLevels.includes(1);
+
+    toMap?.addEventListener('click', () => {
+        console.log('[GameLevel1] Navigating to gmap.html with mode:', gameMode);
+        window.location.href = `../gmap.html?mode=${gameMode}`;
+    });
+    toLevel2?.addEventListener('click', () => {
+        if (gameMode === 'passing' && !hasWon) {
+            showFeedback('Сначала завершите текущий уровень', 'error');
+            return;
+        }
+        console.log('[GameLevel1] Navigating to glevel2.html with mode:', gameMode);
+        window.location.href = `glevel2.html?mode=${gameMode}`;
+    });
+
+    if (gameMode === 'passing') {
+        toLevel2.disabled = !hasWon;
+        toLevel2.style.opacity = hasWon ? '1' : '0.5';
+        toLevel2.style.cursor = hasWon ? 'pointer' : 'not-allowed';
+    }
 
     generateBtn.addEventListener('click', generateMatrix);
     checkBtn.addEventListener('click', checkAnswer);
@@ -37,6 +80,10 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
+    let vertices = [];
+    let adjacencyMatrix = [];
+    let currentNodes = 0;
+
     function generateMatrix() {
         const n = parseInt(verticesInput.value);
         if (isNaN(n) || n < 1 || n > 20) {
@@ -51,7 +98,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (n > 4) {
             wrapper.style.overflowX = 'auto';
             wrapper.style.maxHeight = '300px';
-        }
+        } 
         else {
             wrapper.style.overflowX = 'visible';
             wrapper.style.maxHeight = 'none';
@@ -63,15 +110,12 @@ document.addEventListener('DOMContentLoaded', () => {
         checkBtn.style.display = 'inline-block';
         tryAgainBtn.style.display = 'none';
 
-        // Обновляем список начальных вершин
         updateStartVertexSelect(n);
 
-        // Создаем таблицу матрицы
         const table = document.createElement('table');
         const header = document.createElement('tr');
         header.appendChild(document.createElement('th'));
 
-        // Заголовки столбцов
         for (let j = 0; j < n; j++) {
             const th = document.createElement('th');
             th.textContent = String.fromCharCode(65 + j);
@@ -79,7 +123,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         table.appendChild(header);
 
-        // Строки матрицы
         for (let i = 0; i < n; i++) {
             const row = document.createElement('tr');
             const th = document.createElement('th');
@@ -121,7 +164,6 @@ document.addEventListener('DOMContentLoaded', () => {
             vertices.push(new Vertex(String.fromCharCode(65 + i)));
         }
 
-        // Заполняем матрицу смежности и строим связи
         for (let i = 0; i < currentNodes; i++) {
             adjacencyMatrix[i] = [];
             for (let j = 0; j < currentNodes; j++) {
@@ -133,16 +175,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             }
         }
-
-        const inputs = matrixContainer.querySelectorAll('input');
-        inputs.forEach(input => {
-            const from = parseInt(input.dataset.row);
-            const to = parseInt(input.dataset.col);
-            const value = parseInt(input.value);
-            if (value === 1 && from !== to) {
-                vertices[from].addEdge(vertices[to]);
-            }
-        });
 
         const nodes = new vis.DataSet(
             vertices.map((v, i) => ({ id: i, label: v.name }))
@@ -194,8 +226,6 @@ document.addEventListener('DOMContentLoaded', () => {
             startVertexSelect.appendChild(option);
         }
     }
-    let vertices = [];
-    let adjacencyMatrix = [];
 
     function calculateDFS(matrix, start) {
         const visited = Array(matrix.length).fill(false);
@@ -204,18 +234,13 @@ document.addEventListener('DOMContentLoaded', () => {
         function traverse(node) {
             visited[node] = true;
             result.push(node);
-
-            // Получаем соседей в порядке 0, 1, 2, ... (A, B, C, ...)
             const neighbors = [];
             for (let i = 0; i < matrix.length; i++) {
                 if (matrix[node][i] === 1 && !visited[i]) {
                     neighbors.push(i);
                 }
             }
-
-            // Сортируем соседей по возрастанию (A, B, C, ...)
             neighbors.sort((a, b) => a - b);
-
             for (const neighbor of neighbors) {
                 if (!visited[neighbor]) {
                     traverse(neighbor);
@@ -224,9 +249,22 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         traverse(start);
-
-        // Убрали добавление несвязных вершин
         return result;
+    }
+
+    function updateScore(points) {
+        if (gameMode !== 'competition') return;
+        allPlayersData[currentPlayer].gScores[1].points += points;
+        localStorage.setItem('allPlayersData', JSON.stringify(allPlayersData));
+        score = allPlayersData[currentPlayer].gScores[1].points;
+        scoreDisplay.textContent = `Счёт: ${score}`;
+        console.log('[GameLevel1] Updated score:', score, 'Added points:', points, 'for player:', currentPlayer);
+        window.parent.postMessage({ 
+            type: 'updateScore', 
+            level: 1, 
+            points: points, 
+            isGraphLevel: true 
+        }, '*');
     }
 
     function checkAnswer() {
@@ -255,8 +293,6 @@ document.addEventListener('DOMContentLoaded', () => {
         const userOrderLetters = userAnswer.split(/\s+/).filter(x => x);
         const startVertex = parseInt(startVertexSelect.value);
         const correctDFS = calculateDFS(adjacencyMatrix, startVertex);
-
-        // Проверяем только достижимые вершины
         const reachableCount = correctDFS.length;
 
         if (userOrderLetters.length !== reachableCount) {
@@ -286,10 +322,28 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (JSON.stringify(userOrder) === JSON.stringify(correctDFS)) {
             showFeedback("✅ Правильно! Порядок обхода вершин верный", "correct");
-        }
+            if (gameMode === 'competition') {
+                updateScore(10);
+            }
+            if (gameMode === 'passing' && !hasWon) {
+                hasWon = true;
+                if (!gCompletedLevels.includes(1)) {
+                    gCompletedLevels.push(1);
+                    localStorage.setItem('gCompletedLevels', JSON.stringify(gCompletedLevels));
+                    window.parent.postMessage({ type: 'levelCompleted', level: 1 }, '*');
+                    console.log('[GameLevel1] Level 1 completed, gCompletedLevels:', gCompletedLevels);
+                }
+                toLevel2.disabled = false;
+                toLevel2.style.opacity = '1';
+                toLevel2.style.cursor = 'pointer';
+            }
+        } 
         else {
             const correctOrderStr = correctDFS.map(i => String.fromCharCode(65 + i)).join(' → ');
             showFeedback(`❌ Неправильно. Правильный порядок: ${correctOrderStr}`, "incorrect");
+            if (gameMode === 'competition') {
+                updateScore(-10);
+            }
         }
 
         checkBtn.style.display = 'none';

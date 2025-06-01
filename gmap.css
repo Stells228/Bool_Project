@@ -319,3 +319,30 @@ body {
     }
 
 }
+
+.level-block-link.disabled .level-block {
+    opacity: 0.5;
+    cursor: not-allowed;
+    background: rgba(100, 100, 100, 0.6);
+    position: relative;
+}
+
+.level-block-link.disabled .level-block::after {
+    content: '🔒';
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    font-size: 30px;
+    color: #ffffff;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+.level-block-link.disabled:hover .level-block {
+    background: rgba(100, 100, 100, 0.6);
+}
+
+.level-block-link.disabled {
+    pointer-events: none;
+    opacity: 0.6;
+    cursor: not-allowed;
+}

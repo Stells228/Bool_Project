@@ -1,22 +1,68 @@
 document.addEventListener('DOMContentLoaded', () => {
+    const urlParams = new URLSearchParams(window.location.search);
+    let gameMode = urlParams.get('mode') || localStorage.getItem('gameMode') || 'normal';
+    localStorage.setItem('gameMode', gameMode);
+    console.log('[GameLevel5] Initialized gameMode:', gameMode);
+    
     const matrixContainer = document.getElementById('matrixContainer');
     const checkBtn = document.getElementById('checkBtn');
     const alreadyHamiltonianBtn = document.getElementById('alreadyHamiltonianBtn');
     const tryAgainBtn = document.getElementById('tryAgainBtn');
     const generateBtn = document.getElementById('generateBtn');
+    const toMap = document.getElementById('toMap');
+    const toLevel4 = document.getElementById('toLevel4');
+    const toLevel6 = document.getElementById('toLevel6');
     const verticesInput = document.getElementById('vertices');
     const feedback = document.getElementById('feedback');
     const graphContainer = document.getElementById('graph-visualization');
+    graphContainer.style.height = '100%';
 
-    let currentNodes = 0;
-    let vertices = [];
-    let lastGraphs = [];
-    const MAX_REPEAT = 3;
+    let scoreDisplay = document.getElementById('score-display');
+    if (!scoreDisplay) {
+        scoreDisplay = document.createElement('div');
+        scoreDisplay.id = 'score-display';
+        scoreDisplay.className = 'score-display';
+        document.querySelector('.level-container').appendChild(scoreDisplay);
+        console.log('[GameLevel5] Created score-display element');
+    }
 
-    // Навигация
-    document.getElementById('toMap')?.addEventListener('click', () => window.location.href = '../gmap.html');
-    document.getElementById('toLevel4')?.addEventListener('click', () => window.location.href = 'glevel4.html');
-    document.getElementById('toLevel6')?.addEventListener('click', () => window.location.href = 'glevel6.html');
+    const currentPlayer = localStorage.getItem('currentPlayer') || 'Anonymous';
+    let allPlayersData = JSON.parse(localStorage.getItem('allPlayersData')) || {};
+    if (!allPlayersData[currentPlayer]) {
+        allPlayersData[currentPlayer] = { scores: {}, gScores: {} };
+    }
+    if (!allPlayersData[currentPlayer].gScores[5]) {
+        allPlayersData[currentPlayer].gScores[5] = { points: 0 };
+    }
+    let score = parseInt(allPlayersData[currentPlayer].gScores[5].points) || 0;
+    scoreDisplay.textContent = `Счёт: ${score}`;
+    scoreDisplay.style.display = gameMode === 'competition' ? 'block' : 'none';
+
+    let gCompletedLevels = JSON.parse(localStorage.getItem('gCompletedLevels')) || [];
+    let hasWon = gCompletedLevels.includes(5);
+
+    toMap?.addEventListener('click', () => {
+        console.log('[GameLevel5] Navigating to gmap.html with mode:', gameMode);
+        window.location.href = `../gmap.html?mode=${gameMode}`;
+    });
+    toLevel4?.addEventListener('click', () => {
+        console.log('[GameLevel5] Navigating to glevel4.html with mode:', gameMode);
+        window.location.href = `glevel4.html?mode=${gameMode}`;
+    });
+    toLevel6?.addEventListener('click', () => {
+        if (gameMode === 'passing' && !hasWon) {
+            showFeedback('Сначала завершите текущий уровень', 'error');
+            return;
+        }
+        console.log('[GameLevel5] Navigating to glevel6.html with mode:', gameMode);
+        window.location.href = `glevel6.html?mode=${gameMode}`;
+    });
+
+    if (gameMode === 'passing') {
+        toLevel6.disabled = !hasWon;
+        toLevel6.style.opacity = hasWon ? '1' : '0.5';
+        toLevel6.style.cursor = hasWon ? 'pointer' : 'not-allowed';
+    }
 
     generateBtn.addEventListener('click', generateGraph);
     checkBtn.addEventListener('click', checkAnswer);
@@ -24,16 +70,16 @@ document.addEventListener('DOMContentLoaded', () => {
         if (isHamiltonianCyclePresent()) {
             showFeedback('✅ Граф уже содержит гамильтонов цикл!', 'correct');
             toggleButtonsAfterCheck();
+            handleCorrectAnswer();
         } 
         else {
             showFeedback('❌ В графе нет гамильтонова цикла.', 'incorrect');
+            if (gameMode === 'competition') {
+                updateScore(-5);
+            }
         }
     });
-    tryAgainBtn.addEventListener('click', () => {
-        generateGraph();
-        resetButtonsForNewGraph();
-        feedback.textContent = '';
-    });
+    tryAgainBtn.addEventListener('click', resetTask);
 
     class Vertex {
         constructor(name) {
@@ -47,17 +93,22 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
+    let vertices = [];
+    let currentNodes = 0;
+    let lastGraphs = [];
+    const MAX_REPEAT = 3;
+
     function generateGraph() {
         const n = parseInt(verticesInput.value);
         if (isNaN(n) || n < 3 || n > 20) {
-            showFeedback('Введите корректное количество вершин (3-20)', 'error');
+            showFeedback("Введите корректное количество вершин (3-20)", "error");
             return;
         }
 
         currentNodes = n;
-
         const matrix = Array.from({ length: n }, () => Array(n).fill(0));
-        // Заполняем случайно с вероятностью ребра 25%
+        
+        // Генерация случайного графа
         for (let i = 0; i < n; i++) {
             for (let j = 0; j < n; j++) {
                 if (i !== j && Math.random() < 0.25) {
@@ -66,18 +117,16 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
 
-        // Проверка на повтор графа
         const matrixString = matrixToString(matrix);
         if (countRepeats(matrixString) >= MAX_REPEAT) {
-            showFeedback('Слишком много повторов одного и того же графа. Генерируем новый...', 'error');
+            showFeedback("Слишком много повторов одного и того же графа. Генерируем новый...", "error");
             return generateGraph();
         }
         saveGraph(matrixString);
 
         renderMatrix(matrix);
         updateGraphVisualization(matrix);
-        feedback.textContent = '';
-        resetButtonsForNewGraph();
+        resetTask();
     }
 
     function matrixToString(matrix) {
@@ -194,37 +243,41 @@ document.addEventListener('DOMContentLoaded', () => {
         new vis.Network(graphContainer, data, options);
     }
 
-    // Проверка наличия гамильтонова цикла
     function checkAnswer() {
         const matrix = readMatrix();
 
         const matrixString = matrixToString(matrix);
         if (countRepeats(matrixString) >= MAX_REPEAT) {
-            showFeedback('Нельзя отправлять один и тот же граф более 3 раз подряд', 'error');
+            showFeedback("Нельзя отправлять один и тот же граф более 3 раз подряд", "error");
             return;
         }
         saveGraph(matrixString);
 
         if (!isStronglyConnected(matrix)) {
-            showFeedback('❌ Граф не является сильно связным, гамильтонова цикла нет.', 'incorrect');
+            showFeedback("❌ Граф не является сильно связным, гамильтонова цикла нет.", "incorrect");
+            if (gameMode === 'competition') {
+                updateScore(-5);
+            }
             return;
         }
 
         if (isHamiltonianCyclePresent(matrix)) {
-            showFeedback('✅ Поздравляем! Граф содержит гамильтонов цикл.', 'correct');
+            showFeedback("✅ Поздравляем! Граф содержит гамильтонов цикл.", "correct");
             toggleButtonsAfterCheck();
+            handleCorrectAnswer();
         } 
         else {
-            showFeedback('❌ Гамильтонова цикла в графе нет. Продолжайте редактировать.', 'incorrect');
+            showFeedback("❌ Гамильтонова цикла в графе нет. Продолжайте редактировать.", "incorrect");
+            if (gameMode === 'competition') {
+                updateScore(-5);
+            }
         }
     }
 
-    // Проверка сильной связности 
     function isStronglyConnected(matrix) {
         const n = matrix.length;
         if (n === 0) return false;
 
-        // DFS из вершины 0
         function dfs(v, visited, graph) {
             visited[v] = true;
             for (let u = 0; u < n; u++) {
@@ -234,10 +287,9 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
 
-        // Проверяем достижимость из 0
         let visited = Array(n).fill(false);
         dfs(0, visited, matrix);
-        if (visited.some(v => v === false)) return false;
+        if (visited.some(v => !v)) return false;
 
         const transposed = Array.from({ length: n }, () => Array(n).fill(0));
         for (let i = 0; i < n; i++) {
@@ -246,21 +298,18 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
 
-        // Проверяем достижимость из 0 в транспонированном графе
         visited = Array(n).fill(false);
         dfs(0, visited, transposed);
-        if (visited.some(v => v === false)) return false;
+        if (visited.some(v => !v)) return false;
 
         return true;
     }
 
-    // Поиск гамильтонова цикла
     function isHamiltonianCyclePresent(matrix = null) {
         if (!matrix) matrix = readMatrix();
         const n = currentNodes;
         if (n < 3) return false;
 
-        // Проверка необходимого условия: у каждой вершины есть хотя бы одно входящее и одно исходящее ребро
         for (let i = 0; i < n; i++) {
             let outDeg = 0, inDeg = 0;
             for (let j = 0; j < n; j++) {
@@ -289,6 +338,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     if (dfs(u, depth + 1)) return true;
                 }
             }
+
             path.pop();
             visited[v] = false;
             return false;
@@ -297,13 +347,49 @@ document.addEventListener('DOMContentLoaded', () => {
         return dfs(0, 1);
     }
 
+    function handleCorrectAnswer() {
+        if (gameMode === 'competition') {
+            updateScore(10);
+        }
+
+        if (gameMode === 'passing' && !hasWon) {
+            hasWon = true;
+            if (!gCompletedLevels.includes(5)) {
+                gCompletedLevels.push(5);
+                localStorage.setItem('gCompletedLevels', JSON.stringify(gCompletedLevels));
+                window.parent.postMessage({ type: 'levelCompleted', level: 5 }, '*');
+                console.log('[GameLevel5] Level 5 completed, gCompletedLevels:', gCompletedLevels);
+            }
+            toLevel6.disabled = false;
+            toLevel6.style.opacity = '1';
+            toLevel6.style.cursor = 'pointer';
+        }
+    }
+
+    function updateScore(points) {
+        if (gameMode !== 'competition') return;
+        allPlayersData[currentPlayer].gScores[5].points += points;
+        localStorage.setItem('allPlayersData', JSON.stringify(allPlayersData));
+        score = allPlayersData[currentPlayer].gScores[5].points;
+        scoreDisplay.textContent = `Счёт: ${score >= 0 ? score : '-' + Math.abs(score)}`; 
+        console.log('[GameLevel5] Updated score:', score, 'Added points:', points, 'for player:', currentPlayer);
+        window.parent.postMessage({ 
+            type: 'updateScore', 
+            level: 5, 
+            points: points, 
+            isGraphLevel: true 
+        }, '*');
+    }
+
     function toggleButtonsAfterCheck() {
         checkBtn.style.display = 'none';
         alreadyHamiltonianBtn.style.display = 'none';
         tryAgainBtn.style.display = 'inline-block';
     }
 
-    function resetButtonsForNewGraph() {
+    function resetTask() {
+        feedback.textContent = '';
+        feedback.className = 'feedback';
         checkBtn.style.display = 'inline-block';
         alreadyHamiltonianBtn.style.display = 'inline-block';
         tryAgainBtn.style.display = 'none';
@@ -316,5 +402,6 @@ document.addEventListener('DOMContentLoaded', () => {
             feedback.className = `feedback ${type}`;
         }, 2000);
     }
+
     generateGraph();
 });

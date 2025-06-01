@@ -1,7 +1,7 @@
 document.addEventListener('DOMContentLoaded', () => {
     const cloudElements = document.querySelectorAll('.cloudmoon, .cloudmoon2, .cloudmoon3, .cloudmoon4, .cloudmoon5');
 
-    // Очистка при уходе со страницы
+    // Очистка анимаций при уходе со страницы
     window.addEventListener('pagehide', () => {
         cloudElements.forEach(cloud => {
             cloud.style.animation = 'none';
@@ -11,23 +11,68 @@ document.addEventListener('DOMContentLoaded', () => {
     const transitionOverlay = document.createElement('div');
     transitionOverlay.className = 'transition-overlay';
     document.body.appendChild(transitionOverlay);
-
     transitionOverlay.classList.remove('active');
-    console.log('Transition overlay reset on gmain.html');
+    console.log('gmain.js: Transition overlay reset');
 
     const mainScreen = document.getElementById('main-screen');
     const gmapBtn = document.getElementById('gmap-btn');
     const tryBtn = document.getElementById('try-btn');
     const leftArrow = document.getElementById('left-arrow');
-
     const lectureBtn = document.getElementById('lecture-btn');
     const lectureWindow = document.getElementById('lecture-window');
+
+    // Инициализация gameMode
+    const urlParams = new URLSearchParams(window.location.search);
+    let gameMode = urlParams.get('mode') || localStorage.getItem('gameMode') || 'normal';
+    localStorage.setItem('gameMode', gameMode);
+    console.log('gmain.js: Инициализация gameMode:', gameMode, 'URL mode:', urlParams.get('mode'));
+
+    if (!mainScreen) {
+        console.error('gmain.js: Main screen element missing');
+        return;
+    }
+
+    if (gmapBtn) {
+        gmapBtn.addEventListener('click', () => {
+            const mode = localStorage.getItem('gameMode') || 'normal';
+            console.log('gmain.js: Play button clicked, redirecting to gmap.html with mode:', mode);
+            transitionOverlay.classList.add('active');
+            setTimeout(() => {
+                window.location.href = `gmap.html?mode=${mode}`;
+            }, 500);
+        });
+    }
+
+    if (tryBtn) {
+        tryBtn.addEventListener('click', () => {
+            console.log('gmain.js: Try button clicked, redirecting to try.html');
+            transitionOverlay.classList.add('active');
+            setTimeout(() => {
+                window.location.href = 'try.html';
+            }, 500);
+        });
+    }
+
+    if (leftArrow) {
+        leftArrow.addEventListener('click', () => {
+            const leftTransition = document.querySelector('.left-transition-screen');
+            const mode = localStorage.getItem('gameMode') || 'normal';
+            console.log('gmain.js: Back button clicked, redirecting to main.html with mode:', mode);
+            if (leftTransition) {
+                leftTransition.classList.add('active');
+            }
+            setTimeout(() => {
+                window.location.href = `main.html?mode=${mode}`;
+            }, 500);
+        });
+    }
 
     if (lectureBtn) {
         lectureBtn.addEventListener('click', () => {
             loadLectureContent();
             lectureWindow.classList.toggle('open');
             lectureWindow.classList.toggle('closed');
+            console.log('gmain.js: Lecture window toggled');
         });
     }
 
@@ -76,39 +121,39 @@ document.addEventListener('DOMContentLoaded', () => {
         });
 
         updateLectureBlocks();
+        console.log('gmain.js: Lecture content loaded');
     }
 
     function updateLectureBlocks() {
         const results = JSON.parse(localStorage.getItem('lectureTestResults') || '{}');
-    
         document.querySelectorAll('.lecture-block').forEach(block => {
             const lectureId = block.dataset.lectureId;
-            // Используем тот же ключ glec${lectureId}
             const result = results[`glec${lectureId}`];
             const starsContainer = block.querySelector('.lecture-stars');
-    
+
             if (!starsContainer) return;
-    
+
             starsContainer.innerHTML = '';
-    
+
             if (result) {
                 const percentage = (result.correct / result.total) * 100;
-    
+
                 for (let i = 0; i < 3; i++) {
                     const star = document.createElement('span');
                     star.className = 'lecture-star';
                     star.textContent = '★';
-    
+
                     if (percentage === 100 && i < 3 ||
                         percentage >= 50 && i < 2 ||
                         percentage >= 30 && i < 1) {
                         star.classList.add('filled');
                     }
-    
+
                     starsContainer.appendChild(star);
                 }
             }
         });
+        console.log('gmain.js: Lecture blocks updated');
     }
 
     document.addEventListener('click', (e) => {
@@ -117,63 +162,23 @@ document.addEventListener('DOMContentLoaded', () => {
             e.target !== lectureBtn) {
             lectureWindow.classList.remove('open');
             lectureWindow.classList.add('closed');
+            console.log('gmain.js: Lecture window closed');
         }
     });
-
-    if (!mainScreen) {
-        console.error('Main screen element missing');
-        return;
-    }
-
-    if (gmapBtn) {
-        gmapBtn.addEventListener('click', () => {
-            const gameMode = gmapBtn.dataset.mode;
-            console.log('Play button clicked, redirecting to gmap.html with mode:', gameMode);
-            transitionOverlay.classList.add('active');
-            setTimeout(() => {
-                window.location.href = `gmap.html?mode=${gameMode}`;
-            }, 500); 
-        });
-    }
-
-    if (tryBtn) {
-        tryBtn.addEventListener('click', () => {
-            console.log('Try button clicked, redirecting to try.html');
-            transitionOverlay.classList.add('active');
-            setTimeout(() => {
-                window.location.href = 'try.html';
-            }, 500);
-        });
-    }
-
-    if (leftArrow) {
-        leftArrow.addEventListener('click', () => {
-            const leftTransition = document.querySelector('.left-transition-screen');
-            console.log('Back button clicked, redirecting to main.html');
-            // шторка слева-направо
-            if (leftTransition) {
-                leftTransition.classList.add('active');
-            }
-            
-            setTimeout(() => {
-                window.location.href = 'main.html';
-            }, 500);
-        });
-    }
 
     window.addEventListener('popstate', (event) => {
         if (event.state?.mode) {
-        handlePageTransition(event.state.mode);
+            handlePageTransition(event.state.mode);
         } 
         else {
-        location.reload();
+            location.reload();
         }
     });
-    
+
     function handlePageTransition(mode) {
         transitionOverlay.classList.add('active');
         setTimeout(() => {
-        window.location.href = `map.html?mode=${mode}`;
+            window.location.href = `gmap.html?mode=${mode}`;
         }, 400);
     }
 

@@ -194,3 +194,23 @@
     overflow-y: auto;
     max-height: 100vh;
 }
+
+.categories-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    padding: 10px;
+}
+
+.category {
+    flex: 1 1 300px;
+    background: rgba(70, 50, 150, 0.3);
+    border-radius: 8px;
+    padding: 10px;
+}
+
+.category h4 {
+    margin: 0 0 10px 0;
+    color: #ffcc00;
+    font-size: 1.1rem;
+}

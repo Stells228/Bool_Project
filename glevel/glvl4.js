@@ -1,17 +1,72 @@
 document.addEventListener('DOMContentLoaded', () => {
+    const urlParams = new URLSearchParams(window.location.search);
+    let gameMode = urlParams.get('mode') || localStorage.getItem('gameMode') || 'normal';
+    localStorage.setItem('gameMode', gameMode);
+    console.log('[GameLevel4] Initialized gameMode:', gameMode);
+
     const matrixContainer = document.getElementById('matrixContainer');
     const checkBtn = document.getElementById('checkBtn');
     const tryAgainBtn = document.getElementById('tryAgainBtn');
     const generateBtn = document.getElementById('generateBtn');
+    const toMap = document.getElementById('toMap');
+    const toLevel3 = document.getElementById('toLevel3');
+    const toLevel5 = document.getElementById('toLevel5');
     const verticesInput = document.getElementById('vertices');
     const userAnswerInput = document.getElementById('userAnswer');
     const feedback = document.getElementById('feedback');
     const graphContainer = document.getElementById('graph-visualization');
     graphContainer.style.height = '100%';
 
-    let currentNodes = 0;
-    let capacityMatrix = [];
-    let vertices = [];
+    let scoreDisplay = document.getElementById('score-display');
+    if (!scoreDisplay) {
+        scoreDisplay = document.createElement('div');
+        scoreDisplay.id = 'score-display';
+        scoreDisplay.className = 'score-display';
+        document.querySelector('.level-container').appendChild(scoreDisplay);
+        console.log('[GameLevel4] Created score-display element');
+    }
+
+    const currentPlayer = localStorage.getItem('currentPlayer') || 'Anonymous';
+    let allPlayersData = JSON.parse(localStorage.getItem('allPlayersData')) || {};
+    if (!allPlayersData[currentPlayer]) {
+        allPlayersData[currentPlayer] = { scores: {}, gScores: {} };
+    }
+    if (!allPlayersData[currentPlayer].gScores[4]) {
+        allPlayersData[currentPlayer].gScores[4] = { points: 0 };
+    }
+    let score = parseInt(allPlayersData[currentPlayer].gScores[4].points) || 0;
+    scoreDisplay.textContent = `Счёт: ${score}`;
+    scoreDisplay.style.display = gameMode === 'competition' ? 'block' : 'none';
+
+    let gCompletedLevels = JSON.parse(localStorage.getItem('gCompletedLevels')) || [];
+    let hasWon = gCompletedLevels.includes(4);
+
+    toMap?.addEventListener('click', () => {
+        console.log('[GameLevel4] Navigating to gmap.html with mode:', gameMode);
+        window.location.href = `../gmap.html?mode=${gameMode}`;
+    });
+    toLevel3?.addEventListener('click', () => {
+        console.log('[GameLevel4] Navigating to glevel3.html with mode:', gameMode);
+        window.location.href = `glevel3.html?mode=${gameMode}`;
+    });
+    toLevel5?.addEventListener('click', () => {
+        if (gameMode === 'passing' && !hasWon) {
+            showFeedback('Сначала завершите текущий уровень', 'error');
+            return;
+        }
+        console.log('[GameLevel4] Navigating to glevel5.html with mode:', gameMode);
+        window.location.href = `glevel5.html?mode=${gameMode}`;
+    });
+
+    if (gameMode === 'passing') {
+        toLevel5.disabled = !hasWon;
+        toLevel5.style.opacity = hasWon ? '1' : '0.5';
+        toLevel5.style.cursor = hasWon ? 'pointer' : 'not-allowed';
+    }
+
+    generateBtn.addEventListener('click', generateMatrix);
+    checkBtn.addEventListener('click', checkAnswer);
+    tryAgainBtn.addEventListener('click', resetTask);
 
     class Vertex {
         constructor(name) {
@@ -25,34 +80,29 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    document.getElementById('toMap')?.addEventListener('click', () => window.location.href = '../gmap.html');
-    document.getElementById('toLevel3')?.addEventListener('click', () => window.location.href = 'glevel3.html');
-    document.getElementById('toLevel5')?.addEventListener('click', () => window.location.href = 'glevel5.html');
-
-    generateBtn.addEventListener('click', generateMatrix);
-    checkBtn.addEventListener('click', checkAnswer);
-    tryAgainBtn.addEventListener('click', () => {
-        generateMatrix();
-        feedback.textContent = '';
-        feedback.className = 'feedback';
-        userAnswerInput.value = '';
-        checkBtn.style.display = 'inline-block';
-        tryAgainBtn.style.display = 'none';
-    });
+    let vertices = [];
+    let capacityMatrix = [];
+    let currentNodes = 0;
 
     function generateMatrix() {
         const n = parseInt(verticesInput.value);
         if (isNaN(n) || n < 2 || n > 20) {
-            showFeedback('Введите корректное количество вершин (2-20)', 'error');
+            showFeedback("Введите корректное количество вершин (2-20)", "error");
             return;
         }
 
         currentNodes = n;
-        capacityMatrix = Array.from({ length: n }, () => Array(n).fill(0));
-        vertices = [];
-
         matrixContainer.innerHTML = '<div class="matrix-wrapper"></div>';
         const wrapper = matrixContainer.querySelector('.matrix-wrapper');
+
+        if (n > 4) {
+            wrapper.style.overflowX = 'auto';
+            wrapper.style.maxHeight = '300px';
+        } 
+        else {
+            wrapper.style.overflowX = 'visible';
+            wrapper.style.maxHeight = 'none';
+        }
 
         feedback.textContent = '';
         feedback.className = 'feedback';
@@ -63,6 +113,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const table = document.createElement('table');
         const header = document.createElement('tr');
         header.appendChild(document.createElement('th'));
+
         for (let j = 0; j < n; j++) {
             const th = document.createElement('th');
             th.textContent = String.fromCharCode(65 + j);
@@ -71,7 +122,6 @@ document.addEventListener('DOMContentLoaded', () => {
         table.appendChild(header);
 
         for (let i = 0; i < n; i++) {
-            vertices.push(new Vertex(String.fromCharCode(65 + i)));
             const row = document.createElement('tr');
             const th = document.createElement('th');
             th.textContent = String.fromCharCode(65 + i);
@@ -89,8 +139,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 input.addEventListener('change', updateGraph);
                 cell.appendChild(input);
                 row.appendChild(cell);
-
-                capacityMatrix[i][j] = parseInt(input.value);
             }
             table.appendChild(row);
         }
@@ -211,29 +259,76 @@ document.addEventListener('DOMContentLoaded', () => {
         return maxFlow;
     }
 
+    function updateScore(points) {
+        if (gameMode !== 'competition') return;
+        allPlayersData[currentPlayer].gScores[4].points += points;
+        localStorage.setItem('allPlayersData', JSON.stringify(allPlayersData));
+        score = allPlayersData[currentPlayer].gScores[4].points;
+        scoreDisplay.textContent = `Счёт: ${score >= 0 ? score : '-' + Math.abs(score)}`;
+        console.log('[GameLevel4] Updated score:', score, 'Added points:', points, 'for player:', currentPlayer);
+        window.parent.postMessage({
+            type: 'updateScore',
+            level: 4,
+            points: points,
+            isGraphLevel: true
+        }, '*');
+    }
+
     function checkAnswer() {
         if (!matrixContainer.querySelector('table')) {
-            showFeedback('Сначала создайте матрицу', 'error');
+            showFeedback("Сначала создайте матрицу", "error");
+            return;
+        }
+
+        const n = parseInt(verticesInput.value);
+        if (isNaN(n) || n < 2 || n > 20) {
+            showFeedback("Сначала создайте матрицу", "error");
             return;
         }
 
         const userAnswer = parseInt(userAnswerInput.value);
         if (isNaN(userAnswer) || userAnswer < 0) {
-            showFeedback('Введите корректное значение максимального потока', 'error');
+            showFeedback("Введите корректное значение максимального потока", "error");
             return;
         }
 
         const maxFlow = fordFulkerson(capacityMatrix, 0, currentNodes - 1);
 
         if (userAnswer === maxFlow) {
-            showFeedback(`✅ Правильно! Максимальный поток: ${maxFlow}`, 'correct');
+            showFeedback(`✅ Правильно! Максимальный поток: ${maxFlow}`, "correct");
+            if (gameMode === 'competition') {
+                updateScore(10);
+            }
+            if (gameMode === 'passing' && !hasWon) {
+                hasWon = true;
+                if (!gCompletedLevels.includes(4)) {
+                    gCompletedLevels.push(4);
+                    localStorage.setItem('gCompletedLevels', JSON.stringify(gCompletedLevels));
+                    window.parent.postMessage({ type: 'levelCompleted', level: 4 }, '*');
+                    console.log('[GameLevel4] Level 4 completed, gCompletedLevels:', gCompletedLevels);
+                }
+                toLevel5.disabled = false;
+                toLevel5.style.opacity = '1';
+                toLevel5.style.cursor = 'pointer';
+            }
         } 
         else {
-            showFeedback(`❌ Неправильно. Максимальный поток: ${maxFlow}`, 'incorrect');
+            showFeedback(`❌ Неправильно. Максимальный поток: ${maxFlow}`, "incorrect");
+            if (gameMode === 'competition') {
+                updateScore(-10);
+            }
         }
 
         checkBtn.style.display = 'none';
         tryAgainBtn.style.display = 'inline-block';
+    }
+
+    function resetTask() {
+        userAnswerInput.value = '';
+        feedback.textContent = '';
+        feedback.className = 'feedback';
+        checkBtn.style.display = 'inline-block';
+        tryAgainBtn.style.display = 'none';
     }
 
     function showFeedback(message, type) {

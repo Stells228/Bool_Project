@@ -1,4 +1,9 @@
 document.addEventListener('DOMContentLoaded', () => {
+    const urlParams = new URLSearchParams(window.location.search);
+    let gameMode = urlParams.get('mode') || localStorage.getItem('gameMode') || 'normal';
+    localStorage.setItem('gameMode', gameMode);
+    console.log('[GameLevel2] Initialized gameMode:', gameMode);
+    
     const matrixContainer = document.getElementById('matrixContainer');
     const checkBtn = document.getElementById('checkBtn');
     const tryAgainBtn = document.getElementById('tryAgainBtn');
@@ -13,9 +18,52 @@ document.addEventListener('DOMContentLoaded', () => {
     const graphContainer = document.getElementById('graph-visualization');
     graphContainer.style.height = '100%';
 
-    toMap?.addEventListener('click', () => window.location.href = '../gmap.html');
-    toLevel1?.addEventListener('click', () => window.location.href = 'glevel1.html');
-    toLevel3?.addEventListener('click', () => window.location.href = 'glevel3.html');
+    let scoreDisplay = document.getElementById('score-display');
+    if (!scoreDisplay) {
+        scoreDisplay = document.createElement('div');
+        scoreDisplay.id = 'score-display';
+        scoreDisplay.className = 'score-display';
+        document.querySelector('.level-container').appendChild(scoreDisplay);
+        console.log('[GameLevel2] Created score-display element');
+    }
+
+    const currentPlayer = localStorage.getItem('currentPlayer') || 'Anonymous';
+    let allPlayersData = JSON.parse(localStorage.getItem('allPlayersData')) || {};
+    if (!allPlayersData[currentPlayer]) {
+        allPlayersData[currentPlayer] = { scores: {}, gScores: {} };
+    }
+    if (!allPlayersData[currentPlayer].gScores[2]) {
+        allPlayersData[currentPlayer].gScores[2] = { points: 0 };
+    }
+    let score = parseInt(allPlayersData[currentPlayer].gScores[2].points) || 0;
+    scoreDisplay.textContent = `Счёт: ${score}`;
+    scoreDisplay.style.display = gameMode === 'competition' ? 'block' : 'none';
+
+    let gCompletedLevels = JSON.parse(localStorage.getItem('gCompletedLevels')) || [];
+    let hasWon = gCompletedLevels.includes(2);
+
+    toMap?.addEventListener('click', () => {
+        console.log('[GameLevel2] Navigating to gmap.html with mode:', gameMode);
+        window.location.href = `../gmap.html?mode=${gameMode}`;
+    });
+    toLevel1?.addEventListener('click', () => {
+        console.log('[GameLevel2] Navigating to glevel1.html with mode:', gameMode);
+        window.location.href = `glevel1.html?mode=${gameMode}`;
+    });
+    toLevel3?.addEventListener('click', () => {
+        if (gameMode === 'passing' && !hasWon) {
+            showFeedback('Сначала завершите текущий уровень', 'error');
+            return;
+        }
+        console.log('[GameLevel2] Navigating to glevel3.html with mode:', gameMode);
+        window.location.href = `glevel3.html?mode=${gameMode}`;
+    });
+
+    if (gameMode === 'passing') {
+        toLevel3.disabled = !hasWon;
+        toLevel3.style.opacity = hasWon ? '1' : '0.5';
+        toLevel3.style.cursor = hasWon ? 'pointer' : 'not-allowed';
+    }
 
     generateBtn.addEventListener('click', generateMatrix);
     checkBtn.addEventListener('click', checkAnswer);
@@ -55,7 +103,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (n > 4) {
             wrapper.style.overflowX = 'auto';
             wrapper.style.maxHeight = '300px';
-        }
+        } 
         else {
             wrapper.style.overflowX = 'visible';
             wrapper.style.maxHeight = 'none';
@@ -115,24 +163,24 @@ document.addEventListener('DOMContentLoaded', () => {
     function updateGraph() {
         graphContainer.innerHTML = '';
         vertices = [];
+        adjacencyMatrix = [];
 
-        // Создаем вершины
         for (let i = 0; i < currentNodes; i++) {
             vertices.push(new Vertex(String.fromCharCode(65 + i)));
         }
 
-        // Добавляем ребра на основе матрицы
-        const inputs = matrixContainer.querySelectorAll('input');
-        inputs.forEach(input => {
-            const from = parseInt(input.dataset.row);
-            const to = parseInt(input.dataset.col);
-            const value = parseInt(input.value);
-            if (value === 1 && from !== to) {
-                vertices[from].addEdge(vertices[to]);
+        for (let i = 0; i < currentNodes; i++) {
+            adjacencyMatrix[i] = [];
+            for (let j = 0; j < currentNodes; j++) {
+                const input = document.querySelector(`input[data-row='${i}'][data-col='${j}']`);
+                const value = parseInt(input.value);
+                adjacencyMatrix[i][j] = value;
+                if (value === 1 && i !== j) {
+                    vertices[i].addEdge(vertices[j]);
+                }
             }
-        });
+        }
 
-        // Визуализация графа
         const nodes = new vis.DataSet(
             vertices.map((v, i) => ({ id: i, label: v.name }))
         );
@@ -184,6 +232,48 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
+    function calculateBFS(matrix, start) {
+        const visited = Array(matrix.length).fill(false);
+        const result = [];
+        const queue = [];
+
+        queue.push(start);
+        visited[start] = true;
+
+        while (queue.length > 0) {
+            const node = queue.shift();
+            result.push(node);
+
+            const neighbors = [];
+            for (let i = 0; i < matrix.length; i++) {
+                if (matrix[node][i] === 1 && !visited[i]) {
+                    neighbors.push(i);
+                    visited[i] = true;
+                }
+            }
+
+            neighbors.sort((a, b) => a - b);
+            queue.push(...neighbors);
+        }
+
+        return result;
+    }
+
+    function updateScore(points) {
+        if (gameMode !== 'competition') return;
+        allPlayersData[currentPlayer].gScores[2].points += points;
+        localStorage.setItem('allPlayersData', JSON.stringify(allPlayersData));
+        score = allPlayersData[currentPlayer].gScores[2].points;
+        scoreDisplay.textContent = `Счёт: ${score >= 0 ? score : '-' + Math.abs(score)}`; 
+        console.log('[GameLevel2] Updated score:', score, 'Added points:', points, 'for player:', currentPlayer);
+        window.parent.postMessage({ 
+            type: 'updateScore', 
+            level: 2, 
+            points: points, 
+            isGraphLevel: true 
+        }, '*');
+    }
+
     function checkAnswer() {
         if (!matrixContainer.querySelector('table')) {
             showFeedback("Сначала создайте матрицу", "error");
@@ -210,8 +300,6 @@ document.addEventListener('DOMContentLoaded', () => {
         const userOrderLetters = userAnswer.split(/\s+/).filter(x => x);
         const startVertex = parseInt(startVertexSelect.value);
         const correctBFS = calculateBFS(adjacencyMatrix, startVertex);
-
-        // Проверяем только достижимые вершины
         const reachableCount = correctBFS.length;
 
         if (userOrderLetters.length !== reachableCount) {
@@ -241,45 +329,32 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (JSON.stringify(userOrder) === JSON.stringify(correctBFS)) {
             showFeedback("✅ Правильно! Порядок обхода вершин верный", "correct");
-        }
+            if (gameMode === 'competition') {
+                updateScore(10);
+            }
+            if (gameMode === 'passing' && !hasWon) {
+                hasWon = true;
+                if (!gCompletedLevels.includes(2)) {
+                    gCompletedLevels.push(2);
+                    localStorage.setItem('gCompletedLevels', JSON.stringify(gCompletedLevels));
+                    window.parent.postMessage({ type: 'levelCompleted', level: 2 }, '*');
+                    console.log('[GameLevel2] Level 2 completed, gCompletedLevels:', gCompletedLevels);
+                }
+                toLevel3.disabled = false;
+                toLevel3.style.opacity = '1';
+                toLevel3.style.cursor = 'pointer';
+            }
+        } 
         else {
             const correctOrderStr = correctBFS.map(i => String.fromCharCode(65 + i)).join(' ');
             showFeedback(`❌ Неправильно. Правильный порядок: ${correctOrderStr}`, "incorrect");
+            if (gameMode === 'competition') {
+                updateScore(-10);
+            }
         }
 
         checkBtn.style.display = 'none';
         tryAgainBtn.style.display = 'inline-block';
-    }
-
-    function calculateBFS(matrix, start) {
-        const visited = Array(matrix.length).fill(false);
-        const result = [];
-        const queue = [];
-
-        queue.push(start);
-        visited[start] = true;
-
-        while (queue.length > 0) {
-            const node = queue.shift();
-            result.push(node);
-
-            // Получаем соседей в порядке возрастания (A, B, C, ...)
-            const neighbors = [];
-            for (let i = 0; i < matrix.length; i++) {
-                if (matrix[node][i] === 1 && !visited[i]) {
-                    neighbors.push(i);
-                    visited[i] = true;
-                }
-            }
-
-            // Сортируем соседей по возрастанию (A, B, C, ...)
-            neighbors.sort((a, b) => a - b);
-
-            // Добавляем соседей в очередь
-            queue.push(...neighbors);
-        }
-
-        return result;
     }
 
     function resetTask() {
@@ -297,5 +372,6 @@ document.addEventListener('DOMContentLoaded', () => {
             feedback.className = `feedback ${type}`;
         }, 2000);
     }
+
     generateMatrix();
 });
