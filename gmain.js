@@ -1,6 +1,121 @@
 document.addEventListener('DOMContentLoaded', () => {
     const cloudElements = document.querySelectorAll('.cloudmoon, .cloudmoon2, .cloudmoon3, .cloudmoon4, .cloudmoon5');
 
+    const fabMenu = document.getElementById('fab-menu');
+    const fabMain = document.getElementById('fab-main');
+    const fabClose = document.getElementById('fab-close');
+    const lectureClose = document.getElementById('lecture-close');
+
+    fabMain.addEventListener('click', (e) => {
+        e.stopPropagation();
+        fabMenu.classList.toggle('open');
+        fabMain.style.transform = fabMenu.classList.contains('open')
+            ? 'scale(1.1) rotate(90deg)'
+            : 'scale(1) rotate(0)';
+    });
+
+    fabClose.addEventListener('click', () => {
+        ['gear-window', 'cup-window'].forEach(id => {
+            const win = document.getElementById(id);
+            if (win) {
+                win.style.right = getClosedPosition(); // Изменили left на right
+                win.classList.remove('open');
+                win.classList.add('closed');
+            }
+        });
+        fabMain.style.display = 'flex';
+        fabClose.style.display = 'none';
+    });
+
+    document.getElementById('gear-close').addEventListener('click', () => {
+        document.getElementById('gear-window').style.right = getClosedPosition();
+        document.getElementById('gear-window').classList.remove('open');
+        document.getElementById('gear-window').classList.add('closed');
+        fabMain.style.display = 'flex';
+        fabClose.style.display = 'none';
+    });
+    
+    document.getElementById('cup-close').addEventListener('click', () => {
+        document.getElementById('cup-window').style.right = getClosedPosition();
+        document.getElementById('cup-window').classList.remove('open');
+        document.getElementById('cup-window').classList.add('closed');
+        fabMain.style.display = 'flex';
+        fabClose.style.display = 'none';
+    });
+
+    // Обработчики для кнопок режимов
+document.getElementById('normal-mode').addEventListener('click', () => {
+    localStorage.setItem('gameMode', 'normal');
+    updateModeButtons();
+});
+
+document.getElementById('passing-mode').addEventListener('click', () => {
+    localStorage.setItem('gameMode', 'passing');
+    updateModeButtons();
+});
+
+document.getElementById('competition-mode').addEventListener('click', () => {
+    localStorage.setItem('gameMode', 'competition');
+    updateModeButtons();
+});
+
+// Функция для обновления состояния кнопок режимов
+function updateModeButtons() {
+    const mode = localStorage.getItem('gameMode') || 'normal';
+    document.getElementById('normal-mode').classList.toggle('active', mode === 'normal');
+    document.getElementById('passing-mode').classList.toggle('active', mode === 'passing');
+    document.getElementById('competition-mode').classList.toggle('active', mode === 'competition');
+}
+
+// Инициализация кнопок при загрузке
+updateModeButtons();
+
+
+    if (lectureClose) {
+        lectureClose.addEventListener('click', () => {
+            lectureWindow.classList.remove('open');
+            lectureWindow.classList.add('closed');
+        });
+    }
+
+    function openSlideWindow(id) {
+        fabClose.style.display = 'flex';
+        fabMain.style.display = 'none';
+        ['gear-window', 'cup-window', 'lecture-window'].forEach(winId => {
+            const win = document.getElementById(winId);
+            if (win) {
+                win.style.right = getClosedPosition();
+                win.classList.remove('open');
+                win.classList.add('closed');
+            }
+        });
+        const win = document.getElementById(id);
+        if (win) {
+            win.style.right = '0px';
+            win.classList.add('open');
+            win.classList.remove('closed');
+        }
+        fabMenu.classList.remove('open');
+    
+        if (id !== 'lecture-window') {
+            document.getElementById('lecture-close').style.display = 'none';
+        } 
+        else {
+            document.getElementById('lecture-close').style.display = 'flex';
+        }
+    }
+
+    document.getElementById('fab-gear').onclick = () => openSlideWindow('gear-window');
+    document.getElementById('fab-cup').onclick = () => openSlideWindow('cup-window');
+
+    function getClosedPosition() {
+        const width = window.innerWidth;
+        if (width <= 507) return '-85vw';
+        if (width <= 754) return '-80vw';
+        if (width >= 684 && width <= 800) return '-78vw';
+        return '-600px';
+    }
+
     // Очистка анимаций при уходе со страницы
     window.addEventListener('pagehide', () => {
         cloudElements.forEach(cloud => {
@@ -157,8 +272,8 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     document.addEventListener('click', (e) => {
-        if (lectureWindow && lectureWindow.classList.contains('open') && 
-            !lectureWindow.contains(e.target) && 
+        if (lectureWindow && lectureWindow.classList.contains('open') &&
+            !lectureWindow.contains(e.target) &&
             e.target !== lectureBtn) {
             lectureWindow.classList.remove('open');
             lectureWindow.classList.add('closed');
@@ -169,7 +284,7 @@ document.addEventListener('DOMContentLoaded', () => {
     window.addEventListener('popstate', (event) => {
         if (event.state?.mode) {
             handlePageTransition(event.state.mode);
-        } 
+        }
         else {
             location.reload();
         }

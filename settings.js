@@ -1,6 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => {
     const gearWindow = document.getElementById('gear-window');
-    const mapBtn = document.getElementById('map-btn');
+    const mapBtn = document.getElementById('gmap-btn') || document.getElementById('map-btn');    
     const newGameBtn = document.getElementById('new-game-btn');
 
     if (!gearWindow || !mapBtn || !newGameBtn) {

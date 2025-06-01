@@ -6,6 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <link rel="stylesheet" href="gmain.css">
+    <link rel="stylesheet" href="settings.css">
+    <link rel="stylesheet" href="rating.css">
     <link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@400&display=swap" rel="stylesheet">
 
     <!-- PWA метаданные -->
@@ -44,13 +46,67 @@
     </div>
 
     <div id="lecture-window" class="slide-window closed">
+        <button class="fab-close lecture-close" id="lecture-close" style="position: absolute; top: 20px; right: 20px;">
+            <img src="Photos/close.png" alt="Закрыть">
+        </button>
         <div class="lecture-container">
             <h2 class="lecture-title">Обучающий материал</h2>
-            <div class="lecture-grid" id="lecture-content">
+            <div class="lecture-grid" id="lecture-content"></div>
+        </div>
+    </div>
+
+    <div class="fab-menu" id="fab-menu" style="right: 20px; left: auto; top: 20px;">
+        <button class="fab-main" id="fab-main">
+            <img src="Photos/up.png" alt="Меню">
+        </button>
+        <button class="fab-close" id="fab-close" style="display: none;">
+            <img src="Photos/close.png" alt="Закрыть">
+        </button>
+        <div class="fab-actions" id="fab-actions">
+            <button class="fab-action" id="fab-gear" title="Настройки">
+                <img src="Photos/gear.png" alt="Настройки">
+            </button>
+            <button class="fab-action" id="fab-cup" title="Рейтинг">
+                <img src="Photos/cup.png" alt="Рейтинг">
+            </button>
+        </div>
+    </div>
+
+    <div id="gear-window" class="slide-window closed">
+        <button class="fab-close" id="gear-close" style="position: absolute; top: 20px; right: 20px;">
+            <img src="Photos/close.png" alt="Закрыть">
+        </button>
+        <div class="settings-container">
+            <h2 class="settings-title">Настройки</h2>
+            <div class="mode-toggle">
+                <button class="mode-btn" id="normal-mode">Свободный</button>
+                <button class="mode-btn" id="passing-mode">Прохождение</button>
+                <button class="mode-btn" id="competition-mode">Соревнование</button>
+            </div>
+            <button id="new-game-btn" class="new-game-btn">
+                <img src="Photos/restart.png" alt="New Game" class="reset-icon">
+                Новая игра
+            </button>
+        </div>
+    </div>
+    
+    <div id="cup-window" class="slide-window closed">
+        <button class="fab-close" id="cup-close" style="position: absolute; top: 20px; right: 20px;">
+            <img src="Photos/close.png" alt="Закрыть">
+        </button>
+        <div class="rating-container">
+            <h2 class="rating-title">Рейтинг</h2>
+            <div class="rating-summary">
+                <span id="total-score">Общий счёт: 0</span>
+            </div>
+            <div class="rating-details">
+                <ul id="level-scores" class="level-scores"></ul>
             </div>
         </div>
     </div>
 
     <script src="gmain.js"></script>
+    <script src="settings.js"></script>
+    <script src="rating.js"></script>
 </body>
 </html>
