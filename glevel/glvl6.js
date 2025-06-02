@@ -49,14 +49,7 @@ document.addEventListener('DOMContentLoaded', () => {
         console.log('[GameLevel6] Navigating to glevel5.html with mode:', gameMode);
         window.location.href = `glevel5.html?mode=${gameMode}`;
     });
-    toLevel7?.addEventListener('click', () => {
-        if (gameMode === 'passing' && !hasWon) {
-            showFeedback('Сначала завершите текущий уровень', 'error');
-            return;
-        }
-        console.log('[GameLevel6] Navigating to glevel7.html with mode:', gameMode);
-        window.location.href = `glevel7.html?mode=${gameMode}`;
-    });
+
 
     if (gameMode === 'passing' && toLevel7) {
         toLevel7.disabled = !hasWon;
