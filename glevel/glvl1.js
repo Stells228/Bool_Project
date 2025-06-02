@@ -3,7 +3,7 @@ document.addEventListener('DOMContentLoaded', () => {
     let gameMode = urlParams.get('mode') || localStorage.getItem('gameMode') || 'normal';
     localStorage.setItem('gameMode', gameMode);
     console.log('[GameLevel1] Initialized gameMode:', gameMode);
-    
+     
     const matrixContainer = document.getElementById('matrixContainer');
     const checkBtn = document.getElementById('checkBtn');
     const tryAgainBtn = document.getElementById('tryAgainBtn');

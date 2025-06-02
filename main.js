@@ -371,21 +371,31 @@ document.addEventListener('DOMContentLoaded', () => {
                 currentRoom = response.roomCode;
                 isHost = true;
                 showLobbyWindow(response.roomCode, settings.maxPlayers);
-            } else {
+            } 
+            else {
                 alert('Ошибка при создании комнаты: ' + response.message);
             }
         });
     }
 
     function joinRoom(roomCode) {
+        document.getElementById('lobby-window').style.display = 'flex';
+        document.querySelector('.loading-animation').style.display = 'flex';
+        document.querySelector('.room-info').style.display = 'none';
+    
         socket.emit('joinRoom', roomCode, localStorage.getItem('username') || 'Игрок', (response) => {
             if (response.success) {
                 currentRoom = roomCode;
                 isHost = false;
                 showLobbyWindow(roomCode, response.maxPlayers, response.players);
+                
+                // Обновляем UI лобби
+                document.querySelector('.loading-animation').style.display = 'none';
+                document.querySelector('.room-info').style.display = 'block';
             } 
             else {
                 alert('Ошибка подключения: ' + response.message);
+                document.getElementById('lobby-window').style.display = 'none';
             }
         });
     }
@@ -424,15 +434,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Настройка кнопок в зависимости от роли (хост/участник)
         if (isHost) {
-            readyBtn.style.display = 'none';
-            startBtn.style.display = 'block';
-            startBtn.disabled = true;
-        } 
-        else {
             readyBtn.style.display = 'block';
+            readyBtn.textContent = playerReady ? 'Отменить готовность' : 'Я готов!';
+            readyBtn.disabled = false; // Всегда активна для хоста
+            startBtn.style.display = 'block';
+            startBtn.disabled = !playerReady;
+        } else {
+            readyBtn.style.display = 'block';
+            readyBtn.textContent = playerReady ? 'Отменить готовность' : 'Я готов!';
+            readyBtn.disabled = false; // Активируем сразу для всех
             startBtn.style.display = 'none';
-            readyBtn.disabled = false;
-            readyBtn.textContent = 'Я готов!';
         }
 
         lobbyWindow.style.display = 'flex';
@@ -449,7 +460,8 @@ document.addEventListener('DOMContentLoaded', () => {
         if (isReady) {
             slot.classList.add('ready');
             slot.querySelector('.player-status').textContent = 'Готов';
-        } else {
+        } 
+        else {
             slot.classList.remove('ready');
             slot.querySelector('.player-status').textContent = 'Подключен';
         }
@@ -484,17 +496,17 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // Обработчик кнопки готовности
-    document.querySelector('.ready-btn').addEventListener('click', function () {
+    document.querySelector('.ready-btn').addEventListener('click', function() {
+        if (!currentRoom) return;
+        
         playerReady = !playerReady;
         socket.emit('setReady', playerReady);
-
-        if (playerReady) {
-            this.textContent = 'Отменить готовность';
-            this.classList.add('active');
-        } 
-        else {
-            this.textContent = 'Я готов!';
-            this.classList.remove('active');
+        
+        this.textContent = playerReady ? 'Отменить готовность' : 'Я готов!';
+        this.classList.toggle('active', playerReady);
+        
+        if (isHost) {
+            document.querySelector('.start-game-btn').disabled = !playerReady;
         }
     });
 
@@ -533,7 +545,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     socket.on('allPlayersReady', () => {
         if (isHost) {
-            document.querySelector('.start-game-btn').disabled = false;
+            document.querySelector('.start-game-btn').disabled = !allReady;
         }
     });
 
