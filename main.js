@@ -371,7 +371,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 currentRoom = response.roomCode;
                 isHost = true;
                 showLobbyWindow(response.roomCode, settings.maxPlayers);
-            } 
+            }
             else {
                 alert('Ошибка при создании комнаты: ' + response.message);
             }
@@ -382,17 +382,17 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('lobby-window').style.display = 'flex';
         document.querySelector('.loading-animation').style.display = 'flex';
         document.querySelector('.room-info').style.display = 'none';
-    
+
         socket.emit('joinRoom', roomCode, localStorage.getItem('username') || 'Игрок', (response) => {
             if (response.success) {
                 currentRoom = roomCode;
                 isHost = false;
                 showLobbyWindow(roomCode, response.maxPlayers, response.players);
-                
+
                 // Обновляем UI лобби
                 document.querySelector('.loading-animation').style.display = 'none';
                 document.querySelector('.room-info').style.display = 'block';
-            } 
+            }
             else {
                 alert('Ошибка подключения: ' + response.message);
                 document.getElementById('lobby-window').style.display = 'none';
@@ -436,10 +436,11 @@ document.addEventListener('DOMContentLoaded', () => {
         if (isHost) {
             readyBtn.style.display = 'block';
             readyBtn.textContent = playerReady ? 'Отменить готовность' : 'Я готов!';
-            readyBtn.disabled = false; // Всегда активна для хоста
+            readyBtn.disabled = false; // Всегда активна для хоста (ВОТ ВООБЩЕ НЕ УДАЛЯТЬ)
             startBtn.style.display = 'block';
             startBtn.disabled = !playerReady;
-        } else {
+        } 
+        else {
             readyBtn.style.display = 'block';
             readyBtn.textContent = playerReady ? 'Отменить готовность' : 'Я готов!';
             readyBtn.disabled = false; // Активируем сразу для всех
@@ -460,7 +461,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (isReady) {
             slot.classList.add('ready');
             slot.querySelector('.player-status').textContent = 'Готов';
-        } 
+        }
         else {
             slot.classList.remove('ready');
             slot.querySelector('.player-status').textContent = 'Подключен';
@@ -496,15 +497,15 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // Обработчик кнопки готовности
-    document.querySelector('.ready-btn').addEventListener('click', function() {
+    document.querySelector('.ready-btn').addEventListener('click', function () {
         if (!currentRoom) return;
-        
+
         playerReady = !playerReady;
         socket.emit('setReady', playerReady);
-        
+
         this.textContent = playerReady ? 'Отменить готовность' : 'Я готов!';
         this.classList.toggle('active', playerReady);
-        
+
         if (isHost) {
             document.querySelector('.start-game-btn').disabled = !playerReady;
         }
@@ -550,8 +551,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     socket.on('gameStarting', (settings) => {
-        // Перенаправляем на первый уровень
-        const firstLevel = settings.mode === 'bool' ? 'level1.html' : 'glevel1.html';
+        const firstLevel = settings.mode === 'bool' ? '../mlevel/mlevel1.html' : '../mlevel/mlevel7.html';
         window.location.href = `${firstLevel}?mode=multiplayer&room=${currentRoom}`;
     });
 
@@ -560,7 +560,7 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('lobby-window').style.display = 'none';
     });
 
-    // Инициализация UI мультиплеера
+    // Инициализация мультиплеера
     function setupMultiplayerTabs() {
         const tabs = document.querySelectorAll('.tab-btn');
         tabs.forEach(tab => {

@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Результаты</title>
+    <link rel="stylesheet" href="results.css">
+    <link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@400&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="results-container">
+        <h1>Результаты раунда</h1>
+        
+        <div class="player-result">
+            <div class="player-info">
+                <span class="player-name">Вы</span>
+                <span class="player-score" id="player-score">0 очков</span>
+            </div>
+            <div class="result-feedback" id="result-feedback"></div>
+        </div>
+        
+        <div class="other-players" id="other-players">
+            <!-- результаты других игроков -->
+        </div>
+        
+        <button class="next-btn" id="next-btn">Дальше</button>
+    </div>
+
+    <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+    <script src="results.js"></script>
+</body>
+</html>

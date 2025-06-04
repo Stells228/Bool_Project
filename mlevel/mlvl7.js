@@ -1,0 +1,274 @@
+document.addEventListener('DOMContentLoaded', () => {
+    const elements = {
+        matrixContainer: document.getElementById('matrixContainer'),
+        checkBtn: document.getElementById('checkBtn'),
+        generateBtn: document.getElementById('generateBtn'),
+        verticesInput: document.getElementById('vertices'),
+        userAnswerInput: document.getElementById('userAnswer'),
+        startVertexSelect: document.getElementById('startVertex'),
+        feedback: document.getElementById('feedback'),
+        graphContainer: document.getElementById('graph-visualization')
+    };
+
+    class Vertex {
+        constructor(name) {
+            this.name = name;
+            this.adjacent = [];
+        }
+        addEdge(vertex) {
+            if (!this.adjacent.includes(vertex)) {
+                this.adjacent.push(vertex);
+            }
+        }
+    }
+
+    let vertices = [];
+    let adjacencyMatrix = [];
+    let currentNodes = 0;
+
+    elements.generateBtn.addEventListener('click', generateMatrix);
+    elements.checkBtn.addEventListener('click', checkAnswer);
+
+    elements.userAnswerInput.addEventListener('input', function() {
+        this.value = this.value.toUpperCase().replace(/[^A-Z\s]/g, '');
+    });
+
+    function generateMatrix() {
+        const n = parseInt(elements.verticesInput.value);
+        if (isNaN(n) || n < 1 || n > 20) {
+            showFeedback("Введите корректное количество вершин (1-20)", "error");
+            return;
+        }
+
+        currentNodes = n;
+        elements.matrixContainer.innerHTML = '<div class="matrix-wrapper"></div>';
+        const wrapper = elements.matrixContainer.querySelector('.matrix-wrapper');
+
+        if (n > 4) {
+            wrapper.style.overflowX = 'auto';
+            wrapper.style.maxHeight = '300px';
+        } else {
+            wrapper.style.overflowX = 'visible';
+            wrapper.style.maxHeight = 'none';
+        }
+
+        elements.feedback.textContent = '';
+        elements.feedback.className = 'feedback';
+        elements.userAnswerInput.value = '';
+        elements.checkBtn.style.display = 'inline-block';
+
+        updateStartVertexSelect(n);
+
+        const table = document.createElement('table');
+        const header = document.createElement('tr');
+        header.appendChild(document.createElement('th'));
+
+        for (let j = 0; j < n; j++) {
+            const th = document.createElement('th');
+            th.textContent = String.fromCharCode(65 + j);
+            header.appendChild(th);
+        }
+        table.appendChild(header);
+
+        for (let i = 0; i < n; i++) {
+            const row = document.createElement('tr');
+            const th = document.createElement('th');
+            th.textContent = String.fromCharCode(65 + i);
+            row.appendChild(th);
+
+            for (let j = 0; j < n; j++) {
+                const cell = document.createElement('td');
+                const input = document.createElement('input');
+                input.type = 'number';
+                input.min = '0';
+                input.max = '1';
+                input.value = i === j ? '0' : Math.random() > 0.7 ? '1' : '0';
+                input.dataset.row = i;
+                input.dataset.col = j;
+                input.addEventListener('change', updateGraph);
+                cell.appendChild(input);
+                row.appendChild(cell);
+            }
+            table.appendChild(row);
+        }
+
+        wrapper.appendChild(table);
+
+        const inputs = elements.matrixContainer.querySelectorAll('input');
+        inputs.forEach(input => {
+            input.readOnly = true;
+        });
+
+        updateGraph();
+    }
+
+    function updateGraph() {
+        elements.graphContainer.innerHTML = '';
+        vertices = [];
+        adjacencyMatrix = [];
+
+        for (let i = 0; i < currentNodes; i++) {
+            vertices.push(new Vertex(String.fromCharCode(65 + i)));
+        }
+
+        for (let i = 0; i < currentNodes; i++) {
+            adjacencyMatrix[i] = [];
+            for (let j = 0; j < currentNodes; j++) {
+                const input = document.querySelector(`input[data-row='${i}'][data-col='${j}']`);
+                const value = parseInt(input.value);
+                adjacencyMatrix[i][j] = value;
+                if (value === 1 && i !== j) {
+                    vertices[i].addEdge(vertices[j]);
+                }
+            }
+        }
+
+        const nodes = new vis.DataSet(
+            vertices.map((v, i) => ({ id: i, label: v.name }))
+        );
+
+        const edges = new vis.DataSet([]);
+        vertices.forEach((vertex, i) => {
+            vertex.adjacent.forEach(adjVertex => {
+                const j = vertices.indexOf(adjVertex);
+                edges.add({ from: i, to: j, arrows: 'to', width: 2 });
+            });
+        });
+
+        const data = { nodes, edges };
+        const options = {
+            physics: { enabled: false },
+            interaction: { dragNodes: false, dragView: false, zoomView: false, selectable: false },
+            nodes: { font: { size: 16 } },
+            edges: {
+                smooth: false,
+                arrows: { to: { enabled: true, scaleFactor: 0.5 } }
+            },
+            layout: { improvedLayout: true, randomSeed: 1 },
+            configure: { enabled: false }
+        };
+
+        const network = new vis.Network(elements.graphContainer, data, options);
+
+        network.once('stabilizationIterationsDone', () => {
+            network.fit({ animation: { duration: 0 }, scale: 1.0 });
+            setTimeout(() => {
+                const canvas = elements.graphContainer.querySelector('canvas');
+                if (canvas && canvas.width > elements.graphContainer.clientWidth) {
+                    network.moveTo({
+                        scale: elements.graphContainer.clientWidth / canvas.width * 0.9,
+                        animation: { duration: 0 }
+                    });
+                }
+            }, 50);
+        });
+    }
+
+    function updateStartVertexSelect(n) {
+        elements.startVertexSelect.innerHTML = '';
+        for (let i = 0; i < n; i++) {
+            const option = document.createElement('option');
+            option.value = i;
+            option.textContent = String.fromCharCode(65 + i);
+            elements.startVertexSelect.appendChild(option);
+        }
+    }
+
+    function calculateDFS(matrix, start) {
+        const visited = Array(matrix.length).fill(false);
+        const result = [];
+
+        function traverse(node) {
+            visited[node] = true;
+            result.push(node);
+            const neighbors = [];
+            for (let i = 0; i < matrix.length; i++) {
+                if (matrix[node][i] === 1 && !visited[i]) {
+                    neighbors.push(i);
+                }
+            }
+            neighbors.sort((a, b) => a - b);
+            for (const neighbor of neighbors) {
+                if (!visited[neighbor]) {
+                    traverse(neighbor);
+                }
+            }
+        }
+
+        traverse(start);
+        return result;
+    }
+
+    function checkAnswer() {
+        if (!elements.matrixContainer.querySelector('table')) {
+            showFeedback("Сначала создайте матрицу", "error");
+            return;
+        }
+
+        const n = parseInt(elements.verticesInput.value);
+        if (isNaN(n) || n < 1 || n > 20) {
+            showFeedback("Сначала создайте матрицу", "error");
+            return;
+        }
+
+        const userAnswer = elements.userAnswerInput.value.trim();
+        if (!userAnswer) {
+            showFeedback("Введите порядок обхода", "error");
+            return;
+        }
+
+        if (!/^[A-Z\s]+$/.test(userAnswer)) {
+            showFeedback("Вводите только заглавные английские буквы (A-Z), разделённые пробелами", "error");
+            return;
+        }
+
+        const userOrderLetters = userAnswer.split(/\s+/).filter(x => x);
+        const startVertex = parseInt(elements.startVertexSelect.value);
+        const correctDFS = calculateDFS(adjacencyMatrix, startVertex);
+        const reachableCount = correctDFS.length;
+
+        if (userOrderLetters.length !== reachableCount) {
+            showFeedback(`Введите обход для ${reachableCount} достижимых вершин`, "error");
+            return;
+        }
+
+        const validLetters = new Set();
+        for (let i = 0; i < reachableCount; i++) {
+            validLetters.add(String.fromCharCode(65 + correctDFS[i]));
+        }
+
+        const usedLetters = new Set();
+        for (const letter of userOrderLetters) {
+            if (!validLetters.has(letter)) {
+                showFeedback(`Вершина "${letter}" недостижима из начальной`, "error");
+                return;
+            }
+            if (usedLetters.has(letter)) {
+                showFeedback(`Вершина "${letter}" повторяется`, "error");
+                return;
+            }
+            usedLetters.add(letter);
+        }
+
+        const userOrder = userOrderLetters.map(l => l.charCodeAt(0) - 65);
+
+        if (JSON.stringify(userOrder) === JSON.stringify(correctDFS)) {
+            showFeedback("✅ Правильно! Порядок обхода вершин верный", "correct");
+        } else {
+            const correctOrderStr = correctDFS.map(i => String.fromCharCode(65 + i)).join(' → ');
+            showFeedback(`❌ Неправильно. Правильный порядок: ${correctOrderStr}`, "incorrect");
+        }
+
+        elements.checkBtn.style.display = 'none';
+    }
+
+    function showFeedback(message, type) {
+        elements.feedback.textContent = message;
+        elements.feedback.className = `feedback ${type} show`;
+        setTimeout(() => {
+            elements.feedback.className = `feedback ${type}`;
+        }, 2000);
+    }
+
+    generateMatrix();
+});
