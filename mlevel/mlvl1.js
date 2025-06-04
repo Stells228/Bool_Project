@@ -20,28 +20,67 @@ document.addEventListener('DOMContentLoaded', () => {
 
     let currentFunctionVector = '';
     let correctFunction = '';
+    let socket = null;
+    let isMultiplayer = false;
+    let roomCode = '';
+    let hasAnswered = false;
+
+    // Проверка режима игры
+    const params = new URLSearchParams(window.location.search);
+    isMultiplayer = params.get('mode') === 'multiplayer';
+    roomCode = params.get('room');
+
+    if (isMultiplayer) {
+        socket = io('http://localhost:3000');
+        const task = JSON.parse(localStorage.getItem('currentTask'));
+        if (task) {
+            currentFunctionVector = task.vector;
+            correctFunction = task.correctAnswer;
+            updateUI();
+        }
+        document.getElementById('submit-btn').textContent = 'Готов';
+    }
+
+    // В мультиплеерном режиме
+    if (isMultiplayer) {
+        socket.on('showResults', (results) => {
+            // Перенаправляем на страницу результатов
+            window.location.href = `../results.html?room=${roomCode}`;
+        });
+
+        // Таймер для отображения оставшегося времени
+        socket.on('timeUpdate', (timeLeft) => {
+            if (timeLeft <= 10) {
+                showFeedback(`Осталось ${timeLeft} секунд!`, 'error');
+            }
+        });
+
+        socket.on('nextLevel', ({ level, task }) => {
+            localStorage.setItem('currentTask', JSON.stringify(task));
+            window.location.href = `mlevel${level}.html?room=${roomCode}&mode=multiplayer`;
+        });
+        
+        socket.on('gameFinished', (results) => {
+            window.location.href = `../results.html?room=${roomCode}&final=true`;
+        });
+    }
 
     function setupCustomSelect() {
         const selectHeader = document.querySelector('.custom-select .select-header');
         const selectOptions = document.querySelector('.custom-select .select-options');
         const selectInput = document.querySelector('#function-select');
-    
-        if (!selectHeader || !selectOptions || !selectInput) {
-            console.error('Не найдены элементы селекта!');
-            return;
-        }
-    
+
         selectHeader.addEventListener('click', (e) => {
             e.stopPropagation();
             selectOptions.classList.toggle('active');
         });
-    
+
         document.addEventListener('click', (e) => {
-            if (!selectOptions.contains(e.target) && e.target !== selectHeader) {
+            if (!selectOptions.contains(e.target)) {
                 selectOptions.classList.remove('active');
             }
         });
-    
+
         selectOptions.querySelectorAll('.option').forEach(option => {
             option.addEventListener('click', (e) => {
                 e.stopPropagation();
@@ -53,7 +92,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Обновление UI
     function updateUI() {
         if (!currentFunctionVector) {
             console.error('Нет данных для отображения');
@@ -76,12 +114,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
         table.appendChild(headerRow);
 
-        const inputs = [
-            [0, 0],
-            [0, 1],
-            [1, 0],
-            [1, 1]
-        ];
+        const inputs = [[0, 0], [0, 1], [1, 0], [1, 1]];
         inputs.forEach(([x, y], index) => {
             const row = document.createElement('tr');
             [x, y, currentFunctionVector[index]].forEach(value => {
@@ -92,7 +125,6 @@ document.addEventListener('DOMContentLoaded', () => {
             table.appendChild(row);
         });
 
-        // Вставка таблицы в контейнер
         const container = document.getElementById('truth-table-container');
         container.innerHTML = '';
         container.appendChild(table);
@@ -104,23 +136,46 @@ document.addEventListener('DOMContentLoaded', () => {
         feedback.className = `feedback ${type}`;
         feedback.style.display = 'block';
     }
+
     setupCustomSelect();
 
-    // Выбор случайной функции
-    const values = Object.values(boolF);
-    currentFunctionVector = values[Math.floor(Math.random() * values.length)];
-    correctFunction = Object.keys(boolF).find(key => boolF[key] === currentFunctionVector);
+    if (!isMultiplayer) {
+        const values = Object.values(boolF);
+        currentFunctionVector = values[Math.floor(Math.random() * values.length)];
+        correctFunction = Object.keys(boolF).find(key => boolF[key] === currentFunctionVector);
+        updateUI();
+    }
 
-    updateUI();
-
-    // Обработка кнопки "Проверить"
+    // Обработка кнопки "Готов"
     document.getElementById('submit-btn').addEventListener('click', () => {
+        if (hasAnswered) return;
+
         const selectedFunction = document.getElementById('function-select').value;
+
         if (!selectedFunction) {
             showFeedback('Пожалуйста, выберите функцию!', 'error');
             return;
         }
-        const isCorrect = boolF[selectedFunction] === currentFunctionVector;
-        showFeedback(isCorrect ? 'Правильно!' : 'Неправильно!', isCorrect ? 'correct' : 'incorrect');
+
+        if (isMultiplayer) {
+            hasAnswered = true;
+            document.getElementById('submit-btn').disabled = true;
+
+            socket.emit('playerAnswer', {
+                room: roomCode,
+                answer: selectedFunction,
+                timestamp: Date.now(),
+                correctAnswer: correctFunction
+            });
+
+            showFeedback('Ответ отправлен! Ожидаем других игроков...', 'info');
+        } 
+        else {
+            const isCorrect = boolF[selectedFunction] === currentFunctionVector;
+            showFeedback(
+                isCorrect ? 'Правильно!' : 'Неправильно!',
+                isCorrect ? 'correct' : 'incorrect'
+            );
+        }
     });
 });

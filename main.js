@@ -366,12 +366,29 @@ document.addEventListener('DOMContentLoaded', () => {
     let playerReady = false;
 
     function createRoom(settings) {
+        // Проверяем, что выбрана тематика "Булевы функции"
+        if (settings.mode !== 'bool') {
+            alert('Для мультиплеера доступна только тематика "Булевы функции"');
+            return;
+        }
+
+        // Проверяем корректность количества игроков и уровней
+        if (settings.maxPlayers < 2 || settings.maxPlayers > 4) {
+            alert('Количество игроков должно быть от 2 до 4');
+            return;
+        }
+
+        if (settings.levels < 1 || settings.levels > 10) {
+            alert('Количество уровней должно быть от 1 до 10');
+            return;
+        }
+
         socket.emit('createRoom', settings, (response) => {
             if (response.success) {
                 currentRoom = response.roomCode;
                 isHost = true;
                 showLobbyWindow(response.roomCode, settings.maxPlayers);
-            }
+            } 
             else {
                 alert('Ошибка при создании комнаты: ' + response.message);
             }
@@ -439,13 +456,23 @@ document.addEventListener('DOMContentLoaded', () => {
             readyBtn.disabled = false; // Всегда активна для хоста (ВОТ ВООБЩЕ НЕ УДАЛЯТЬ)
             startBtn.style.display = 'block';
             startBtn.disabled = !playerReady;
-        } 
+        }
         else {
             readyBtn.style.display = 'block';
             readyBtn.textContent = playerReady ? 'Отменить готовность' : 'Я готов!';
             readyBtn.disabled = false; // Активируем сразу для всех
             startBtn.style.display = 'none';
         }
+
+        startBtn.addEventListener('click', function () {
+            socket.emit('startGame', roomCode, (response) => {
+                if (response.success) {
+                    console.log('Игра начата');
+                } else {
+                    alert('Ошибка: ' + response.message);
+                }
+            });
+        })
 
         lobbyWindow.style.display = 'flex';
     }
@@ -511,11 +538,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // Обработчик кнопки начала игры
-    document.querySelector('.start-game-btn').addEventListener('click', function () {
-        socket.emit('startGame');
-    });
-
     // Обработчик закрытия лобби
     document.querySelector('.close-lobby-btn').addEventListener('click', function () {
         socket.emit('leaveRoom');
@@ -550,9 +572,9 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    socket.on('gameStarting', (settings) => {
-        const firstLevel = settings.mode === 'bool' ? '../mlevel/mlevel1.html' : '../mlevel/mlevel7.html';
-        window.location.href = `${firstLevel}?mode=multiplayer&room=${currentRoom}`;
+    socket.on('gameStarting', (data) => {
+        localStorage.setItem('currentTask', JSON.stringify(data.task));
+        window.location.href = `mlevel/mlevel${data.level}.html?room=${currentRoom}&mode=multiplayer`;
     });
 
     socket.on('roomError', (message) => {
@@ -560,7 +582,6 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('lobby-window').style.display = 'none';
     });
 
-    // Инициализация мультиплеера
     function setupMultiplayerTabs() {
         const tabs = document.querySelectorAll('.tab-btn');
         tabs.forEach(tab => {
@@ -576,7 +597,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Открытие окна мультиплеера
     document.getElementById('fab-multiplayer').onclick = () => {
         openSlideWindow('multiplayer-window');
         setupMultiplayerTabs();

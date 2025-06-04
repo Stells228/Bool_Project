@@ -7,97 +7,98 @@ const app = express();
 const server = http.createServer(app);
 const io = socketIo(server, {
   cors: {
-    origin: "*", // Для разработки разрешаем все домены
+    origin: "*",
     methods: ["GET", "POST"]
   }
 });
 
-// Хранилище данных о комнатах
 const rooms = new Map();
+const playerAnswers = new Map();
+const playerScores = new Map();
 
-// Статическая папка для клиентских файлов
 app.use(express.static(path.join(__dirname, 'public')));
 
-// Обработка подключения нового клиента
 io.on('connection', (socket) => {
   console.log(`Новое подключение: ${socket.id}`);
 
-  // Обработчик создания комнаты
   socket.on('createRoom', (settings, callback) => {
     try {
-      // Генерируем уникальный 5-значный код комнаты
+      if (settings.mode !== 'bool') {
+        return callback({ success: false, message: 'Доступна только тематика "Булевы функции"' });
+      }
+
       const roomCode = generateRoomCode();
-      
-      // Создаём новую комнату
+
       const newRoom = {
         code: roomCode,
         host: socket.id,
         maxPlayers: settings.maxPlayers,
         mode: settings.mode,
         levels: settings.levels,
+        currentLevel: 1,
         players: [{
           id: socket.id,
-          username: 'Host', // Временное значение
-          ready: false
+          username: socket.username || 'Player1',
+          ready: false,
+          readyForNext: false
         }],
-        allReady: false
+        gameStarting: false,
+        gameFinished: false
       };
-      
+
       rooms.set(roomCode, newRoom);
-      
-      // Присоединяем сокет к комнате
+      playerScores.set(roomCode, new Map());
+      playerScores.get(roomCode).set(socket.id, 0);
+
       socket.join(roomCode);
-      
-      // Сохраняем информацию о комнате в сокете
       socket.roomCode = roomCode;
       socket.isHost = true;
-      
-      // Отправляем успешный ответ клиенту
+
       callback({
         success: true,
         roomCode: roomCode,
         maxPlayers: settings.maxPlayers
       });
-      
-      console.log(`Создана комната: ${roomCode}`);
-    } catch (error) {
+
+      console.log(`Создана комната: ${roomCode} (Уровней: ${settings.levels})`);
+    } 
+    catch (error) {
       console.error('Ошибка создания комнаты:', error);
       callback({ success: false, message: 'Ошибка создания комнаты' });
     }
   });
 
-  // Обработчик подключения к комнате
   socket.on('joinRoom', (roomCode, username, callback) => {
     try {
-      // Проверяем существование комнаты
       if (!rooms.has(roomCode)) {
         return callback({ success: false, message: 'Комната не найдена' });
       }
-      
+
       const room = rooms.get(roomCode);
-      
-      // Проверяем количество игроков
+
       if (room.players.length >= room.maxPlayers) {
         return callback({ success: false, message: 'Комната заполнена' });
       }
-      
-      // Добавляем игрока в комнату
+
       const player = {
         id: socket.id,
-        username: username || `Player ${room.players.length + 1}`,
-        ready: false
+        username: username || `Player${room.players.length + 1}`,
+        ready: false,
+        readyForNext: false
       };
-      
+
       room.players.push(player);
-      
-      // Присоединяем сокет к комнате
       socket.join(roomCode);
-      
-      // Сохраняем информацию о комнате в сокете
       socket.roomCode = roomCode;
       socket.isHost = false;
-      
-      // Отправляем успешный ответ клиенту
+      socket.username = username;
+
+      // Инициализация счета для игрока
+      if (!playerScores.has(roomCode)) {
+        playerScores.set(roomCode, new Map());
+      }
+      playerScores.get(roomCode).set(socket.id, 0);
+
       callback({
         success: true,
         maxPlayers: room.maxPlayers,
@@ -106,13 +107,12 @@ io.on('connection', (socket) => {
           ready: p.ready
         }))
       });
-      
-      // Оповещаем других игроков о новом участнике
+
       socket.to(roomCode).emit('playerJoined', {
         index: room.players.length - 1,
         username: player.username
       });
-      
+
       console.log(`Игрок ${player.username} присоединился к комнате ${roomCode}`);
     } catch (error) {
       console.error('Ошибка подключения к комнате:', error);
@@ -120,126 +120,368 @@ io.on('connection', (socket) => {
     }
   });
 
-  // Обработчик изменения статуса готовности
+  socket.on('startGame', (roomCode, callback) => {
+    if (!rooms.has(roomCode)) return callback && callback({ success: false, message: 'Комната не найдена' });
+    const room = rooms.get(roomCode);
+    if (socket.id !== room.host) return callback && callback({ success: false, message: 'Только хост может начать игру' });
+
+    const allReady = room.players.every(p => p.ready);
+    if (allReady) {
+      room.gameStaring = true;
+      const level = getRandomLevel();
+      const task = generateTask(level);
+      room.currentTask = task;
+      io.to(roomCode).emit('gameStarting', { level, task });
+      callback && callback({ success: true });
+      console.log(`Игра начата в комнате ${roomCode}`);
+    }
+    else {
+      callback && callback({ success: false, message: 'Не все игроки готовы' });
+    }
+  });
+
+
+  socket.on('gameStarting', (data) => {
+    localStorage.setItem('currentTask', JSON.stringify(data.task));
+    window.location.href = `mlevel${data.level}.html?room=${roomCode}&mode=multiplayer`;
+  });
+
+  function generateTask(level) {
+    if (level === 1) {
+      const functions = {
+        "Нулевая функция": "0000",
+        "Конъюнкция": "0001",
+        "Запрет по x": "0100",
+        "функция по x": "0011",
+        "Запрет по y": "0010",
+        "функция по y": "0101",
+        "Сложение": "0110",
+        "Дизъюнкция": "0111",
+        "Стрелка Пирса": "1000",
+        "Эквивалентность": "1001",
+        "Отрицание y": "1010",
+        "Обратная импликация": "1011",
+        "Отрицание x": "1100",
+        "Импликация": "1101",
+        "Штрих Шеффера": "1110",
+        "Единичная функция": "1111"
+      };
+      const keys = Object.keys(functions);
+      const randomKey = keys[Math.floor(Math.random() * keys.length)];
+
+      return {
+        vector: functions[randomKey],
+        correctAnswer: randomKey
+      };
+    } 
+    else {
+      const n = 2 + Math.floor(Math.random() * 2);
+      const vector = Array.from({ length: 2 ** n }, () =>
+        Math.floor(Math.random() * 2)).join('');
+
+      const result = findDummyAndEssentialVariables(vector, n);
+      return {
+        vector: vector,
+        correctAnswer: {
+          dummy: result.dummy,
+          essential: result.essential
+        },
+        variablesCount: n
+      };
+    }
+  }
+
+  // Функция для определения фиктивных и существенных переменных
+  function findDummyAndEssentialVariables(vector, n) {
+    let dummyVars = '';
+    let essentialVars = '';
+    for (let j = 1; j <= n; j++) {
+      let partLength = vector.length / (2 ** j);
+      let zeroPart = '';
+      let onePart = '';
+      for (let i = 0; i < 2 ** j; i++) {
+        let start = i * partLength;
+        let end = start + partLength;
+        if (i % 2 === 0) zeroPart += vector.slice(start, end);
+        else onePart += vector.slice(start, end);
+      }
+      if (zeroPart === onePart) dummyVars += j;
+      else essentialVars += j;
+    }
+    return { dummy: dummyVars, essential: essentialVars };
+  }
+
   socket.on('setReady', (isReady) => {
     const roomCode = socket.roomCode;
     if (!roomCode || !rooms.has(roomCode)) return;
-    
+
     const room = rooms.get(roomCode);
-    const playerIndex = room.players.findIndex(p => p.id === socket.id);
-    
-    if (playerIndex !== -1) {
-      room.players[playerIndex].ready = isReady;
-      
-      // Оповещаем всех игроков об изменении статуса
-      io.to(roomCode).emit('playerReadyChanged', playerIndex, isReady);
-      
-      // Проверяем, все ли готовы
-      checkAllReady(room);
+    const player = room.players.find(p => p.id === socket.id);
+
+    if (player) {
+      player.ready = isReady;
+      io.to(roomCode).emit('updatePlayers', room.players);
+      checkAllPlayersReady(roomCode);
     }
   });
 
-  // Обработчик начала игры
-  socket.on('startGame', () => {
+  function checkAllPlayersReady(roomCode) {
+    const room = rooms.get(roomCode);
+    if (!room) return;
+
+    const allReady = room.players.every(p => p.ready);
+    if (allReady && room.gameStarting) {
+      io.to(roomCode).emit('allPlayersReady');
+    }
+  }
+
+  // Обработка ответа игрока
+  socket.on('playerAnswer', ({ room, answer, timestamp, correctAnswer }) => {
+    if (!rooms.has(room)) return;
+
+    const roomData = rooms.get(room);
+    if (!playerAnswers.has(room)) {
+      playerAnswers.set(room, new Map());
+    }
+
+    // Проверяем правильность ответа
+    const isCorrect = checkAnswer(answer, correctAnswer);
+
+    // Сохраняем ответ игрока
+    playerAnswers.get(room).set(socket.id, {
+      username: socket.username,
+      answer: answer,
+      timestamp: timestamp,
+      isCorrect: isCorrect
+    });
+
+    checkAllPlayersAnswered(room);
+  });
+
+  function checkAllPlayersAnswered(roomCode) {
+    const room = rooms.get(roomCode);
+    if (!room) return;
+
+    const answers = playerAnswers.get(roomCode);
+    if (!answers) return;
+
+    // Проверяем, что все игроки ответили
+    const allAnswered = room.players.every(player => answers.has(player.id));
+    if (!allAnswered) return;
+
+    // Сортируем ответы по времени (быстрее - выше)
+    const sortedAnswers = [...answers.entries()]
+      .map(([id, data]) => ({ id, ...data }))
+      .sort((a, b) => a.timestamp - b.timestamp);
+
+    const scores = playerScores.get(roomCode);
+    sortedAnswers.forEach((answer, index) => {
+      const currentScore = scores.get(answer.id) || 0;
+      let points = 0;
+
+      if (answer.isCorrect) {
+        switch (index) {
+          case 0: points = 100; break;
+          case 1: points = 70; break;
+          case 2: points = 50; break;
+          default: points = 10; break;
+        }
+      } 
+      else {
+        points = -50;
+      }
+
+      scores.set(answer.id, currentScore + points);
+    });
+
+    // Формируем результаты
+    const results = room.players.map(player => {
+      const answerData = answers.get(player.id);
+      return {
+        id: player.id,
+        username: player.username,
+        isCorrect: answerData ? answerData.isCorrect : false,
+        score: scores.get(player.id) || 0,
+        gameFinished: room.gameFinished
+      };
+    });
+
+    // Отправляем результаты всем игрокам
+    io.to(roomCode).emit('showResults', results);
+
+    const timerDuration = room.gameFinished ? 10000 : 5000;
+    setTimeout(() => {
+      proceedToNextLevel(roomCode);
+    }, timerDuration);
+  }
+
+  function proceedToNextLevel(roomCode) {
+    const room = rooms.get(roomCode);
+    if (!room) return;
+
+    room.currentLevel++;
+
+    if (room.currentLevel > room.levels) {
+      // Игра завершена
+      room.gameFinished = true;
+      const finalResults = getPlayerResults(roomCode);
+
+      // Добавляем флаг завершения для каждого игрока
+      finalResults.forEach(player => {
+        player.gameFinished = true;
+      });
+
+      io.to(roomCode).emit('gameFinished', finalResults);
+
+      // Очищаем комнату через 10 секунд
+      setTimeout(() => {
+        rooms.delete(roomCode);
+        playerAnswers.delete(roomCode);
+        playerScores.delete(roomCode);
+      }, 10000);
+    } 
+    else {
+      // Генерируем новое задание
+      const nextLevel = getRandomLevel();
+      const task = generateTask(nextLevel);
+      room.currentTask = task;
+
+      // Сбрасываем флаги готовности
+      room.players.forEach(p => {
+        p.ready = false;
+        p.readyForNext = false;
+      });
+
+      // Очищаем ответы текущего раунда
+      playerAnswers.delete(roomCode);
+
+      // Отправляем игрокам на следующий уровень
+      io.to(roomCode).emit('nextLevel', {
+        level: nextLevel,
+        task: task
+      });
+    }
+  }
+
+  // Проверка ответа
+  function checkAnswer(playerAnswer, correctAnswer) {
+    if (typeof playerAnswer === 'string') {
+      return playerAnswer === correctAnswer;
+    } else {
+      return playerAnswer.dummy === correctAnswer.dummy &&
+        playerAnswer.essential === correctAnswer.essential;
+    }
+  }
+
+  // Получение результатов игроков
+  function getPlayerResults(roomCode) {
+    const room = rooms.get(roomCode);
+    const answers = playerAnswers.get(roomCode);
+    const scores = playerScores.get(roomCode);
+
+    return room.players.map(player => {
+      const answerData = answers ? answers.get(player.id) : null;
+      return {
+        id: player.id,
+        username: player.username,
+        isCorrect: answerData ? answerData.isCorrect : false,
+        score: scores.get(player.id) || 0
+      };
+    });
+  }
+
+  socket.on('playerReadyForNext', () => {
     const roomCode = socket.roomCode;
     if (!roomCode || !rooms.has(roomCode)) return;
-    
+
     const room = rooms.get(roomCode);
-    
-    // Проверяем, что отправитель - хост
-    if (socket.id !== room.host) return;
-    
-    // Проверяем, что все готовы
-    if (room.allReady) {
-      // Оповещаем всех игроков о начале игры
-      io.to(roomCode).emit('gameStarting', {
-        mode: room.mode,
-        levels: room.levels
-      });
-      
-      console.log(`Игра начинается в комнате ${roomCode}`);
+    const player = room.players.find(p => p.id === socket.id);
+
+    if (player) {
+      player.readyForNext = true;
+      io.to(roomCode).emit('updatePlayers', room.players);
+
+      // Проверяем, все ли готовы к следующему уровню
+      const allReady = room.players.every(p => p.readyForNext);
+      if (allReady && !room.gameFinished) {
+        proceedToNextLevel(roomCode);
+      }
     }
   });
 
-  // Обработчик отключения игрока
+  // Отключение игрока
   socket.on('disconnect', () => {
     const roomCode = socket.roomCode;
     if (!roomCode || !rooms.has(roomCode)) return;
-    
+
     const room = rooms.get(roomCode);
     const playerIndex = room.players.findIndex(p => p.id === socket.id);
-    
+
     if (playerIndex !== -1) {
-      // Удаляем игрока из комнаты
       const [player] = room.players.splice(playerIndex, 1);
-      
-      // Если это был хост, назначаем нового
+
+      // Если хост отключился, назначаем нового хоста
       if (socket.id === room.host && room.players.length > 0) {
         room.host = room.players[0].id;
         io.to(room.players[0].id).emit('youAreNowHost');
       }
-      
-      // Оповещаем остальных игроков
+
+      // Уведомляем других игроков
       socket.to(roomCode).emit('playerLeft', playerIndex);
-      
-      // Если комната пуста, удаляем её
+
       if (room.players.length === 0) {
         rooms.delete(roomCode);
+        playerAnswers.delete(roomCode);
+        playerScores.delete(roomCode);
         console.log(`Комната ${roomCode} удалена (нет игроков)`);
       }
-      
+
       console.log(`Игрок ${player.username} покинул комнату ${roomCode}`);
     }
   });
 
-  // Обработчик выхода из комнаты
   socket.on('leaveRoom', () => {
     const roomCode = socket.roomCode;
     if (!roomCode || !rooms.has(roomCode)) return;
-    
+
     const room = rooms.get(roomCode);
     const playerIndex = room.players.findIndex(p => p.id === socket.id);
-    
+
     if (playerIndex !== -1) {
-      // Удаляем игрока из комнаты
       const [player] = room.players.splice(playerIndex, 1);
-      
-      // Покидаем комнату
+
       socket.leave(roomCode);
       delete socket.roomCode;
-      
-      // Если это был хост, назначаем нового
+
+      // Если хост вышел, назначаем нового хоста
       if (socket.id === room.host && room.players.length > 0) {
         room.host = room.players[0].id;
         io.to(room.players[0].id).emit('youAreNowHost');
       }
-      
-      // Оповещаем остальных игроков
+
+      // Уведомляем других игроков
       socket.to(roomCode).emit('playerLeft', playerIndex);
-      
-      // Если комната пуста, удаляем её
+
+      // Если в комнате не осталось игроков, удаляем ее
       if (room.players.length === 0) {
         rooms.delete(roomCode);
+        playerAnswers.delete(roomCode);
+        playerScores.delete(roomCode);
         console.log(`Комната ${roomCode} удалена (нет игроков)`);
       }
-      
+
       console.log(`Игрок ${player.username} вышел из комнаты ${roomCode}`);
     }
   });
 });
 
-// Функция проверки готовности всех игроков
-function checkAllReady(room) {
-  const allReady = room.players.length > 0 && 
-                  room.players.every(player => player.ready);
-  
-  if (allReady !== room.allReady) {
-    room.allReady = allReady;
-    io.to(room.code).emit('allPlayersReady', allReady);
-  }
+// Случайный выбор уровня
+function getRandomLevel() {
+  const levels = [1, 2];
+  return levels[Math.floor(Math.random() * levels.length)];
 }
 
-// Генерация 5-значного кода комнаты
+// Генерация кода комнаты
 function generateRoomCode() {
   let code;
   do {

@@ -1,11 +1,45 @@
 document.addEventListener('DOMContentLoaded', () => {
-    // Количество переменных (n = 2 или 3)
     let n = 2;
     let currentFunctionVector = '';
     let correctDummyVars = '';
     let correctEssentialVars = '';
+    let socket = null;
+    let isMultiplayer = false;
+    let roomCode = '';
+    let hasAnswered = false;
 
-    // Обновляет UI: вектор функции и таблицу истинности
+    const params = new URLSearchParams(window.location.search);
+    isMultiplayer = params.get('mode') === 'multiplayer';
+    roomCode = params.get('room');
+
+    if (isMultiplayer) {
+        socket = io('http://localhost:3000');
+        const task = JSON.parse(localStorage.getItem('currentTask'));
+        if (task) {
+            currentFunctionVector = task.vector;
+            correctDummyVars = task.correctAnswer.dummy;
+            correctEssentialVars = task.correctAnswer.essential;
+            n = task.variablesCount || 2;
+            updateUI();
+        }
+        document.getElementById('submit-btn').textContent = 'Готов';
+    }
+
+    // В мультиплеерном режиме
+    if (isMultiplayer) {
+        socket.on('showResults', (results) => {
+            // Перенаправляем на страницу результатов
+            window.location.href = `../results.html?room=${roomCode}`;
+        });
+
+        // Таймер для отображения оставшегося времени
+        socket.on('timeUpdate', (timeLeft) => {
+            if (timeLeft <= 10) {
+                showFeedback(`Осталось ${timeLeft} секунд!`, 'error');
+            }
+        });
+    }
+
     function updateUI() {
         if (!currentFunctionVector || !n) {
             console.error('Недостаточно данных для отображения');
@@ -45,13 +79,100 @@ document.addEventListener('DOMContentLoaded', () => {
             table.appendChild(row);
         }
 
-        // Вставка таблицы в контейнер
         const container = document.getElementById('truth-table-container');
         container.innerHTML = '';
         container.appendChild(table);
     }
 
-    // Находит фиктивные и существенные переменные
+    function validateVariableInput(input, n, type) {
+        if (!input) return { valid: true, indices: [] };
+        if (!/^\d+$/.test(input)) return { valid: false, message: `Пожалуйста, введите только цифры для ${type} переменных` };
+        const indices = input.split('').map(Number);
+        for (let idx of indices) {
+            if (idx < 1 || idx > n) return { valid: false, message: `Индексы для ${type} переменных должны быть в диапазоне от 1 до ${n}.` };
+        }
+        const uniqueIndices = new Set(indices);
+        if (uniqueIndices.size !== indices.length) return { valid: false, message: `Дублирующиеся индексы не допускаются для ${type} переменных.` };
+        return { valid: true, indices };
+    }
+
+    function showFeedback(message, type) {
+        const feedback = document.getElementById('feedback');
+        feedback.textContent = message;
+        feedback.className = `feedback ${type}`;
+        feedback.style.display = 'block';
+    }
+
+    if (!isMultiplayer) {
+        n = 2 + Math.floor(Math.random() * 2);
+        currentFunctionVector = Array.from({ length: 2 ** n }, () =>
+            Math.floor(Math.random() * 2)).join('');
+
+        const result = findDummyAndEssentialVariables(currentFunctionVector, n);
+        correctDummyVars = result.dummy;
+        correctEssentialVars = result.essential;
+
+        updateUI();
+    }
+
+    // Обработка кнопки "Готов"
+    document.getElementById('submit-btn').addEventListener('click', () => {
+        if (hasAnswered) return;
+
+        const dummyInput = document.getElementById('dummy-input').value.trim();
+        const essentialInput = document.getElementById('essential-input').value.trim();
+
+        if (!dummyInput && !essentialInput) {
+            showFeedback('Пожалуйста, введите переменные!', 'error');
+            return;
+        }
+
+        const dummyValidation = validateVariableInput(dummyInput, n, 'фиктивных');
+        if (!dummyValidation.valid) {
+            showFeedback(dummyValidation.message, 'error');
+            return;
+        }
+
+        const essentialValidation = validateVariableInput(essentialInput, n, 'существенных');
+        if (!essentialValidation.valid) {
+            showFeedback(essentialValidation.message, 'error');
+            return;
+        }
+
+        const dummyIndices = dummyValidation.indices;
+        const essentialIndices = essentialValidation.indices;
+
+        if (isMultiplayer) {
+            hasAnswered = true;
+            document.getElementById('submit-btn').disabled = true;
+
+            socket.emit('playerAnswer', {
+                room: roomCode,
+                answer: {
+                    dummy: dummyIndices.sort().join(''),
+                    essential: essentialIndices.sort().join('')
+                },
+                timestamp: Date.now(),
+                correctAnswer: {
+                    dummy: correctDummyVars,
+                    essential: correctEssentialVars
+                }
+            });
+
+            showFeedback('Ответ отправлен! Ожидаем других игроков...', 'info');
+        } 
+        else {
+            const userDummy = dummyIndices.sort().join('');
+            const userEssential = essentialIndices.sort().join('');
+            const isCorrect = userDummy === correctDummyVars && userEssential === correctEssentialVars;
+
+            showFeedback(
+                isCorrect ? 'Правильно!' : 'Неправильно!',
+                isCorrect ? 'correct' : 'incorrect'
+            );
+        }
+    });
+
     function findDummyAndEssentialVariables(vector, n) {
         let dummyVars = '';
         let essentialVars = '';
@@ -70,108 +191,4 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         return { dummy: dummyVars, essential: essentialVars };
     }
-
-    // Валидация ввода переменных
-    function validateVariableInput(input, n, type) {
-        if (!input) return { valid: true, indices: [] };
-        if (!/^\d+$/.test(input)) return { valid: false, message: `Пожалуйста, введите только цифры для ${type} переменных` };
-        const indices = input.split('').map(Number);
-        for (let idx of indices) {
-            if (idx < 1 || idx > n) return { valid: false, message: `Индексы для ${type} переменных должны быть в диапазоне от 1 до ${n}.` };
-        }
-        const uniqueIndices = new Set(indices);
-        if (uniqueIndices.size !== indices.length) return { valid: false, message: `Дублирующиеся индексы не допускаются для ${type} переменных.` };
-        return { valid: true, indices };
-    }
-
-    // Проверка на пересечение переменных
-    function checkOverlap(dummyIndices, essentialIndices) {
-        const dummySet = new Set(dummyIndices);
-        for (let idx of essentialIndices) {
-            if (dummySet.has(idx)) return { valid: false, message: 'Переменная не может быть одновременно фиктивной и существенной.' };
-        }
-        return { valid: true };
-    }
-
-    // Проверка полноты классификации
-    function checkCompleteness(dummyIndices, essentialIndices, n) {
-        const allIndices = new Set([...dummyIndices, ...essentialIndices]);
-        for (let i = 1; i <= n; i++) {
-            if (!allIndices.has(i)) return { valid: false, message: `Переменная x${i} не является ни фиктивной, ни существенной. Все переменные должны быть классифицированы.` };
-        }
-        return { valid: true };
-    }
-
-    function showFeedback(message, type) {
-        const feedback = document.getElementById('feedback');
-        feedback.textContent = message;
-        feedback.className = `feedback ${type}`;
-        feedback.style.display = 'block';
-    }
-
-    // Случайное количество переменных: 2 или 3
-    n = 2 + Math.floor(Math.random() * 2); // Только 2 или 3
-
-    // Случайный вектор функции
-    currentFunctionVector = Array.from({ length: 2 ** n }, () =>
-        Math.floor(Math.random() * 2)
-    ).join('');
-
-    // Находим правильные ответы
-    const result = findDummyAndEssentialVariables(currentFunctionVector, n);
-    correctDummyVars = result.dummy;
-    correctEssentialVars = result.essential;
-
-    updateUI();
-
-    // Обработка кнопки "Проверить"
-    document.getElementById('submit-btn').addEventListener('click', () => {
-        const dummyInput = document.getElementById('dummy-input').value.trim();
-        const essentialInput = document.getElementById('essential-input').value.trim();
-
-        if (!dummyInput && !essentialInput) {
-            showFeedback('Пожалуйста, введите переменные!', 'error');
-            return;
-        }
-
-        // Валидация ввода
-        const dummyValidation = validateVariableInput(dummyInput, n, 'фиктивных');
-        if (!dummyValidation.valid) {
-            showFeedback(dummyValidation.message, 'error');
-            return;
-        }
-
-        const essentialValidation = validateVariableInput(essentialInput, n, 'существенных');
-        if (!essentialValidation.valid) {
-            showFeedback(essentialValidation.message, 'error');
-            return;
-        }
-
-        const dummyIndices = dummyValidation.indices;
-        const essentialIndices = essentialValidation.indices;
-
-        // Проверка на пересечение
-        const overlapCheck = checkOverlap(dummyIndices, essentialIndices);
-        if (!overlapCheck.valid) {
-            showFeedback(overlapCheck.message, 'error');
-            return;
-        }
-
-        // Проверка полноты
-        const completenessCheck = checkCompleteness(dummyIndices, essentialIndices, n);
-        if (!completenessCheck.valid) {
-            showFeedback(completenessCheck.message, 'error');
-            return;
-        }
-
-        // Сравнение с правильным ответом
-        const userDummy = dummyIndices.sort().join('');
-        const userEssential = essentialIndices.sort().join('');
-        const isCorrect = userDummy === correctDummyVars && userEssential === correctEssentialVars;
-
-        showFeedback(
-            isCorrect ? 'Правильно!' : 'Неправильно!',
-            isCorrect ? 'correct' : 'incorrect'
-        );
-    });
 });

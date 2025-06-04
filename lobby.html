@@ -2,19 +2,27 @@
 <html>
 <head>
     <title>Лобби</title>
-    <link rel="stylesheet" href="main.css">
+    <link rel="stylesheet" href="lobby.css">
 </head>
 <body>
     <div class="lobby-container">
         <h1>Комната: <span id="room-code-display"></span></h1>
-        <div class="players-list" id="players-list">
+        
+        <div class="players-container">
+            <h2>Игроки:</h2>
+            <div id="players-list" class="players-list">
+                <!-- Список игроков будет здесь -->
+            </div>
         </div>
 
         <div class="lobby-controls">
-            <button id="home-btn">Домой</button>
-            <button id="start-btn" disabled>Начать</button>
+            <button id="ready-btn" class="ready-btn">Я готов</button>
+            <button id="start-btn" class="start-btn" disabled>Начать игру</button>
+            <button id="home-btn" class="home-btn">Выход</button>
         </div>
     </div>
+
+    <script src="/socket.io/socket.io.js"></script>
     <script src="lobby.js"></script>
 </body>
 </html>

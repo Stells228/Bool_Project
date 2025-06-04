@@ -1218,3 +1218,103 @@ body {
         padding: 15px;
     }
 }
+
+.create-room-form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    padding: 15px;
+}
+
+.create-room-form h3 {
+    color: white;
+    font-family: 'Comfortaa', cursive;
+    text-align: center;
+    margin: 0 0 15px 0;
+    font-size: 1.4rem;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-family: 'Comfortaa', cursive;
+    font-size: 0.95rem;
+    color: rgba(255, 255, 255, 0.9);
+}
+
+.form-group select,
+.form-group input[type="number"] {
+    width: 100%;
+    padding: 12px 15px;
+    border-radius: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+    font-family: 'Comfortaa', cursive;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(5px);
+}
+
+.form-group select option {
+    background: #5a2dbd;
+    color: white;
+}
+
+.form-group select:focus,
+.form-group input[type="number"]:focus {
+    outline: none;
+    border-color: #8a4fff;
+    box-shadow: 0 0 0 2px rgba(138, 79, 255, 0.3);
+    background: rgba(255, 255, 255, 0.15);
+}
+
+#create-room-btn {
+    background: linear-gradient(to right, #8a4fff, #6a35ee);
+    color: white;
+    border: none;
+    padding: 14px 20px;
+    border-radius: 8px;
+    font-family: 'Comfortaa', cursive;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-top: 10px;
+    box-shadow: 0 4px 15px rgba(138, 79, 255, 0.4);
+}
+
+#create-room-btn:hover {
+    background: linear-gradient(to right, #9d5fff, #7b45ff);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(138, 79, 255, 0.6);
+}
+
+#create-room-btn:active {
+    transform: translateY(0);
+}
+
+@media (max-width: 600px) {
+    .create-room-form {
+        padding: 10px 0;
+    }
+    
+    .form-group label {
+        font-size: 0.9rem;
+    }
+    
+    .form-group select,
+    .form-group input[type="number"] {
+        padding: 10px 12px;
+        font-size: 0.95rem;
+    }
+    
+    #create-room-btn {
+        padding: 12px 15px;
+        font-size: 0.95rem;
+    }
+}
