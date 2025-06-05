@@ -361,7 +361,11 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // Подключение к серверу Socket.IO
-    const socket = io('https://lichinkis.ru/');
+    const socket = io('https://lichinkis.ru', {
+  path: "/socket.io",
+  transports: ['websocket'],
+  secure: true
+});
 
     let currentRoom = null;
     let isHost = false;

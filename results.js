@@ -1,5 +1,9 @@
 document.addEventListener('DOMContentLoaded', () => {
-    const socket = io('https://lichinkis.ru/');
+    const socket = io('https://lichinkis.ru', {
+  path: "/socket.io",
+  transports: ['websocket'],
+  secure: true
+});
     const params = new URLSearchParams(window.location.search);
     const roomCode = params.get('room');
     const nextBtn = document.getElementById('next-btn');

@@ -4,8 +4,14 @@ const https = require('https');
 const path = require('path');
 
 const app = express();
-const server = https.createServer(app);
-const io = socketIo(server);
+const fs = require('fs');
+const options = {
+  key: fs.readFileSync('/etc/letsencrypt/live/lichinkis.ru/privkey.pem'),
+  cert: fs.readFileSync('/etc/letsencrypt/live/lichinkis.ru/fullchain.pem')
+};
+
+// При создании сервера
+const server = https.createServer(options, app);
 
 const LEVEL_BLOCKS = {
   bool: [1, 2, 3, 4, 5, 6],
@@ -18,6 +24,16 @@ const playerAnswers = new Map();
 const playerScores = new Map();
 
 app.use(express.static(path.join(__dirname, 'public')));
+
+
+// server.js (после создания сервера)
+const io = socketIo(server, {
+  cors: {
+    origin: "https://lichinkis.ru",
+    methods: ["GET", "POST"]
+  },
+  transports: ['websocket']
+});
 
 io.on('connection', (socket) => {
   console.log(`Новое подключение: ${socket.id}`);
@@ -941,7 +957,7 @@ function generateRoomCode() {
 }
 
 // Запуск сервера
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 443;
 server.listen(PORT, () => {
   console.log(`Сервер запущен на порту ${PORT}`);
 });
