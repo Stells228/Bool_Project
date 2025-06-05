@@ -201,27 +201,6 @@ h2 {
     filter: drop-shadow(0 0 5px rgba(255, 255, 255, 0.3));
 }
 
-.cloud1 {
-    top: 15%;
-    left: 5%;
-    width: 180px;
-    animation: float 18s infinite alternate ease-in-out;
-}
-
-.cloud2 {
-    top: 65%;
-    left: 75%;
-    width: 220px;
-    animation: float 20s 3s infinite alternate-reverse ease-in-out;
-}
-
-.cloud3 {
-    top: 30%;
-    left: 80%;
-    width: 150px;
-    animation: float 15s 5s infinite alternate ease-in-out;
-}
-
 @keyframes float {
     0% {
         transform: translate(0, 0) rotate(0deg);
@@ -270,3 +249,54 @@ body {
     -ms-user-select: none; /* IE/Edge */
     user-select: none; /* Standard */
 }
+
+  
+  .moonre {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 200px;
+    z-index: -1;
+    opacity: 0.8;
+  }
+  
+  .stars1, .stars2 {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: -3;
+    opacity: 0.4;
+  }
+  
+  /* Анимация облаков (из lec.css) */
+  .cloudmoon, .cloudmoon2, .cloudmoon3, 
+  .cloudmoon4, .cloudmoon5 {
+    position: absolute;
+    z-index: -1;
+    opacity: 0.6;
+    filter: drop-shadow(0 0 5px rgba(255, 255, 255, 0.3));
+  }
+  
+  .cloudmoon { 
+    top: 15%; left: 5%; width: 180px;
+    animation: float 18s 5s infinite alternate ease-in-out;
+  }
+  .cloudmoon2 { 
+    top: 65%; left: 75%; width: 220px;
+    animation: float 15s 5s infinite alternate ease-in-out;
+  }
+  .cloudmoon3 { 
+    top: 30%; left: 80%; width: 150px;
+    animation: float 35s 5s infinite alternate ease-in-out;
+  }
+  .cloudmoon4 { 
+    top: 10%; right: 5%; width: 190px;
+    animation: float 15s 5s infinite alternate ease-in-out;
+  }
+  .cloudmoon5 { 
+    bottom: 20%; left: 20%; width: 170px;
+    animation: float 25s 5s infinite alternate ease-in-out;
+  }
+  
