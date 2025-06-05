@@ -2,10 +2,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const elements = {
         matrixContainer: document.getElementById('matrixContainer'),
         checkBtn: document.getElementById('checkBtn'),
-        generateBtn: document.getElementById('generateBtn'),
-        verticesInput: document.getElementById('vertices'),
         userAnswerInput: document.getElementById('userAnswer'),
-        startVertexSelect: document.getElementById('startVertex'),
         feedback: document.getElementById('feedback'),
         graphContainer: document.getElementById('graph-visualization')
     };
@@ -25,8 +22,8 @@ document.addEventListener('DOMContentLoaded', () => {
     let vertices = [];
     let adjacencyMatrix = [];
     let currentNodes = 0;
+    let startVertex;
 
-    elements.generateBtn.addEventListener('click', generateMatrix);
     elements.checkBtn.addEventListener('click', checkAnswer);
 
     elements.userAnswerInput.addEventListener('input', function() {
@@ -34,30 +31,15 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     function generateMatrix() {
-        const n = parseInt(elements.verticesInput.value);
-        if (isNaN(n) || n < 1 || n > 20) {
-            showFeedback("Введите корректное количество вершин (1-20)", "error");
-            return;
-        }
-
+        const n = Math.floor(Math.random() * 4) + 1;
         currentNodes = n;
         elements.matrixContainer.innerHTML = '<div class="matrix-wrapper"></div>';
         const wrapper = elements.matrixContainer.querySelector('.matrix-wrapper');
-
-        if (n > 4) {
-            wrapper.style.overflowX = 'auto';
-            wrapper.style.maxHeight = '300px';
-        } else {
-            wrapper.style.overflowX = 'visible';
-            wrapper.style.maxHeight = 'none';
-        }
 
         elements.feedback.textContent = '';
         elements.feedback.className = 'feedback';
         elements.userAnswerInput.value = '';
         elements.checkBtn.style.display = 'inline-block';
-
-        updateStartVertexSelect(n);
 
         const table = document.createElement('table');
         const header = document.createElement('tr');
@@ -98,7 +80,7 @@ document.addEventListener('DOMContentLoaded', () => {
         inputs.forEach(input => {
             input.readOnly = true;
         });
-
+        startVertex = Math.floor(Math.random() * n);
         updateGraph();
     }
 
@@ -124,7 +106,12 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         const nodes = new vis.DataSet(
-            vertices.map((v, i) => ({ id: i, label: v.name }))
+            vertices.map((v, i) => ({
+                id: i,
+                label: v.name,
+                color: i === startVertex ? { background: '#ff6666', border: '#cc0000' } : undefined,
+                font: { color: i === startVertex ? '#ffffff' : undefined }
+            }))
         );
 
         const edges = new vis.DataSet([]);
@@ -164,16 +151,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    function updateStartVertexSelect(n) {
-        elements.startVertexSelect.innerHTML = '';
-        for (let i = 0; i < n; i++) {
-            const option = document.createElement('option');
-            option.value = i;
-            option.textContent = String.fromCharCode(65 + i);
-            elements.startVertexSelect.appendChild(option);
-        }
-    }
-
     function calculateDFS(matrix, start) {
         const visited = Array(matrix.length).fill(false);
         const result = [];
@@ -205,11 +182,7 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
-        const n = parseInt(elements.verticesInput.value);
-        if (isNaN(n) || n < 1 || n > 20) {
-            showFeedback("Сначала создайте матрицу", "error");
-            return;
-        }
+        const n = currentNodes;
 
         const userAnswer = elements.userAnswerInput.value.trim();
         if (!userAnswer) {
@@ -223,7 +196,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         const userOrderLetters = userAnswer.split(/\s+/).filter(x => x);
-        const startVertex = parseInt(elements.startVertexSelect.value);
         const correctDFS = calculateDFS(adjacencyMatrix, startVertex);
         const reachableCount = correctDFS.length;
 

@@ -1,87 +1,45 @@
 document.addEventListener('DOMContentLoaded', () => {
     const matrixContainer = document.getElementById('matrixContainer');
     const checkBtn = document.getElementById('checkBtn');
-    const alreadyHamiltonianBtn = document.getElementById('alreadyHamiltonianBtn');
-    const tryAgainBtn = document.getElementById('tryAgainBtn');
-    const generateBtn = document.getElementById('generateBtn');
-    const verticesInput = document.getElementById('vertices');
+    const userAnswerInput = document.getElementById('userAnswer');
     const feedback = document.getElementById('feedback');
     const graphContainer = document.getElementById('graph-visualization');
     graphContainer.style.height = '100%';
 
-    class Vertex {
-        constructor(name) {
-            this.name = name;
-            this.adjacent = [];
-        }
-        addEdge(vertex) {
-            if (!this.adjacent.includes(vertex)) {
-                this.adjacent.push(vertex);
-            }
-        }
-    }
-
-    let vertices = [];
     let currentNodes = 0;
-    let lastGraphs = [];
-    const MAX_REPEAT = 3;
+    let adjacencyMatrix = [];
+    let currentColoring = [];
 
-    generateBtn.addEventListener('click', generateGraph);
-    checkBtn.addEventListener('click', checkAnswer);
-    alreadyHamiltonianBtn.addEventListener('click', () => {
-        if (isHamiltonianCyclePresent()) {
-            showFeedback('✅ Граф уже содержит гамильтонов цикл!', 'correct');
-            toggleButtonsAfterCheck();
-        } 
-        else {
-            showFeedback('❌ В графе нет гамильтонова цикла.', 'incorrect');
-        }
-    });
-    tryAgainBtn.addEventListener('click', resetTask);
+    const colorPalette = [
+        '#e6194b', '#3cb44b', '#ffe119', '#4363d8', '#f58231',
+        '#911eb4', '#46f0f0', '#f032e6', '#bcf60c', '#fabebe',
+        '#008080', '#e6beff', '#9a6324', '#fffac8', '#800000',
+        '#aaffc3', '#808000', '#ffd8b1', '#000075', '#808080'
+    ];
+
+    // Случайное количество вершин от 3 до 4 (максимум 4)
+    currentNodes = Math.floor(Math.random() * 2) + 3;
 
     function generateGraph() {
-        const n = parseInt(verticesInput.value);
-        if (isNaN(n) || n < 3 || n > 20) {
-            showFeedback("Введите корректное количество вершин (3-20)", "error");
-            return;
-        }
+        adjacencyMatrix = generateRandomUndirectedGraph(currentNodes, 0.3);
+        currentColoring = [];
 
-        currentNodes = n;
-        const matrix = Array.from({ length: n }, () => Array(n).fill(0));
-        
-        for (let i = 0; i < n; i++) {
-            for (let j = 0; j < n; j++) {
-                if (i !== j && Math.random() < 0.25) {
-                    matrix[i][j] = 1;
-                }
-            }
-        }
-
-        const matrixString = matrixToString(matrix);
-        if (countRepeats(matrixString) >= MAX_REPEAT) {
-            showFeedback("Слишком много повторов одного и того же графа. Генерируем новый...", "error");
-            return generateGraph();
-        }
-        saveGraph(matrixString);
-
-        renderMatrix(matrix);
-        updateGraphVisualization(matrix);
+        renderMatrix(adjacencyMatrix);
+        updateGraphVisualization(adjacencyMatrix, currentColoring);
         resetTask();
     }
 
-    function matrixToString(matrix) {
-        return matrix.map(row => row.join('')).join('|');
-    }
-
-    function countRepeats(matrixString) {
-        return lastGraphs.filter(g => g === matrixString).length;
-    }
-
-    function saveGraph(matrixString) {
-        lastGraphs.push(matrixString);
-        if (lastGraphs.length > MAX_REPEAT) {
-            lastGraphs.shift();
+    function generateRandomUndirectedGraph(n, edgeProb) {
+        const matrix = Array.from({ length: n }, () => Array(n).fill(0));
+        for (let i = 0; i < n; i++) {
+            for (let j = i + 1; j < n; j++) {
+                if (Math.random() < edgeProb) {
+                    matrix[i][j] = 1;
+                    matrix[j][i] = 1;
+                }
+            }
         }
+        return matrix;
     }
 
     function renderMatrix(matrix) {
@@ -113,69 +71,42 @@ document.addEventListener('DOMContentLoaded', () => {
                 input.value = matrix[i][j];
                 input.dataset.row = i;
                 input.dataset.col = j;
-                input.addEventListener('change', onMatrixChange);
+                input.readOnly = true;
                 cell.appendChild(input);
                 row.appendChild(cell);
             }
             table.appendChild(row);
         }
-
         wrapper.appendChild(table);
     }
 
-    function onMatrixChange() {
-        const matrix = readMatrix();
-        updateGraphVisualization(matrix);
-    }
-
-    function readMatrix() {
-        const inputs = matrixContainer.querySelectorAll('input');
-        const matrix = Array.from({ length: currentNodes }, () => Array(currentNodes).fill(0));
-        inputs.forEach(input => {
-            const r = parseInt(input.dataset.row);
-            const c = parseInt(input.dataset.col);
-            const val = parseInt(input.value);
-            matrix[r][c] = val === 1 ? 1 : 0;
-        });
-        return matrix;
-    }
-
-    function updateGraphVisualization(matrix) {
+    function updateGraphVisualization(matrix, coloring) {
         graphContainer.innerHTML = '';
-        vertices = [];
-        for (let i = 0; i < currentNodes; i++) {
-            vertices.push(new Vertex(String.fromCharCode(65 + i)));
-        }
-
-        for (let i = 0; i < currentNodes; i++) {
-            for (let j = 0; j < currentNodes; j++) {
-                if (matrix[i][j] === 1) {
-                    vertices[i].addEdge(vertices[j]);
-                }
-            }
-        }
-
         const nodes = new vis.DataSet(
-            vertices.map((v, i) => ({ id: i, label: v.name }))
+            Array.from({ length: currentNodes }, (_, i) => ({
+                id: i,
+                label: String.fromCharCode(65 + i),
+                color: coloring && coloring[i] !== undefined ?
+                    colorPalette[coloring[i] % colorPalette.length] : '#97c2fc'
+            }))
         );
 
         const edges = new vis.DataSet([]);
-        vertices.forEach((vertex, i) => {
-            vertex.adjacent.forEach(adjVertex => {
-                const j = vertices.indexOf(adjVertex);
-                edges.add({ from: i, to: j, arrows: 'to', width: 2 });
-            });
-        });
+        for (let i = 0; i < currentNodes; i++) {
+            for (let j = i + 1; j < currentNodes; j++) {
+                if (matrix[i][j] === 1) {
+                    edges.add({ from: i, to: j, width: 2 });
+                    edges.add({ from: j, to: i, width: 2 });
+                }
+            }
+        }
 
         const data = { nodes, edges };
         const options = {
             physics: { enabled: false },
             interaction: { dragNodes: false, dragView: false, zoomView: false, selectable: false },
             nodes: { font: { size: 16 } },
-            edges: {
-                smooth: false,
-                arrows: { to: { enabled: true, scaleFactor: 0.5 } }
-            },
+            edges: { smooth: false },
             layout: { improvedLayout: true, randomSeed: 1 },
             configure: { enabled: false }
         };
@@ -183,115 +114,57 @@ document.addEventListener('DOMContentLoaded', () => {
         new vis.Network(graphContainer, data, options);
     }
 
-    function checkAnswer() {
-        const matrix = readMatrix();
-
-        const matrixString = matrixToString(matrix);
-        if (countRepeats(matrixString) >= MAX_REPEAT) {
-            showFeedback("Нельзя отправлять один и тот же граф более 3 раз подряд", "error");
-            return;
-        }
-        saveGraph(matrixString);
-
-        if (!isStronglyConnected(matrix)) {
-            showFeedback("❌ Граф не является сильно связным, гамильтонова цикла нет.", "incorrect");
-            return;
-        }
-
-        if (isHamiltonianCyclePresent(matrix)) {
-            showFeedback("✅ Поздравляем! Граф содержит гамильтонов цикл.", "correct");
-            toggleButtonsAfterCheck();
-        } 
-        else {
-            showFeedback("❌ Гамильтонова цикла в графе нет. Продолжайте редактировать.", "incorrect");
-        }
-    }
-
-    function isStronglyConnected(matrix) {
+    function greedyColoring(matrix) {
         const n = matrix.length;
-        if (n === 0) return false;
+        const result = Array(n).fill(-1);
+        result[0] = 0;
 
-        function dfs(v, visited, graph) {
-            visited[v] = true;
-            for (let u = 0; u < n; u++) {
-                if (graph[v][u] === 1 && !visited[u]) {
-                    dfs(u, visited, graph);
-                }
-            }
-        }
+        const available = Array(n).fill(true);
 
-        let visited = Array(n).fill(false);
-        dfs(0, visited, matrix);
-        if (visited.some(v => !v)) return false;
-
-        const transposed = Array.from({ length: n }, () => Array(n).fill(0));
-        for (let i = 0; i < n; i++) {
-            for (let j = 0; j < n; j++) {
-                transposed[j][i] = matrix[i][j];
-            }
-        }
-
-        visited = Array(n).fill(false);
-        dfs(0, visited, transposed);
-        if (visited.some(v => !v)) return false;
-
-        return true;
-    }
-
-    function isHamiltonianCyclePresent(matrix = null) {
-        if (!matrix) matrix = readMatrix();
-        const n = currentNodes;
-        if (n < 3) return false;
-
-        for (let i = 0; i < n; i++) {
-            let outDeg = 0, inDeg = 0;
-            for (let j = 0; j < n; j++) {
-                if (matrix[i][j] === 1) outDeg++;
-                if (matrix[j][i] === 1) inDeg++;
-            }
-            if (outDeg < 1 || inDeg < 1) return false;
-        }
-
-        const visited = Array(n).fill(false);
-        const path = [];
-
-        function dfs(v, depth) {
-            path.push(v);
-            visited[v] = true;
-
-            if (depth === n) {
-                if (matrix[v][path[0]] === 1) return true;
-                path.pop();
-                visited[v] = false;
-                return false;
-            }
-
-            for (let u = 0; u < n; u++) {
-                if (matrix[v][u] === 1 && !visited[u]) {
-                    if (dfs(u, depth + 1)) return true;
+        for (let u = 1; u < n; u++) {
+            for (let i = 0; i < n; i++) {
+                if (matrix[u][i] === 1 && result[i] !== -1) {
+                    available[result[i]] = false;
                 }
             }
 
-            path.pop();
-            visited[v] = false;
-            return false;
-        }
+            let cr;
+            for (cr = 0; cr < n; cr++) {
+                if (available[cr]) break;
+            }
 
-        return dfs(0, 1);
+            result[u] = cr;
+            available.fill(true);
+        }
+        return result;
     }
 
-    function toggleButtonsAfterCheck() {
-        checkBtn.style.display = 'none';
-        alreadyHamiltonianBtn.style.display = 'none';
-        tryAgainBtn.style.display = 'inline-block';
+    function checkAnswer() {
+        const userAnswer = parseInt(userAnswerInput.value);
+        if (isNaN(userAnswer)) {
+            showFeedback("Введите число цветов", "error");
+            return;
+        }
+
+        const coloring = greedyColoring(adjacencyMatrix);
+        currentColoring = coloring;
+        const usedColors = new Set(coloring);
+        const chromaticNumber = usedColors.size;
+
+        updateGraphVisualization(adjacencyMatrix, coloring);
+
+        if (userAnswer === chromaticNumber) {
+            showFeedback(`✅ Правильно! Хроматическое число: ${chromaticNumber}`, "correct");
+        } else {
+            showFeedback(`❌ Неправильно. Хроматическое число: ${chromaticNumber}`, "incorrect");
+        }
     }
 
     function resetTask() {
+        userAnswerInput.value = '';
         feedback.textContent = '';
         feedback.className = 'feedback';
         checkBtn.style.display = 'inline-block';
-        alreadyHamiltonianBtn.style.display = 'inline-block';
-        tryAgainBtn.style.display = 'none';
     }
 
     function showFeedback(message, type) {
@@ -301,6 +174,8 @@ document.addEventListener('DOMContentLoaded', () => {
             feedback.className = `feedback ${type}`;
         }, 2000);
     }
+
+    checkBtn.addEventListener('click', checkAnswer);
 
     generateGraph();
 });

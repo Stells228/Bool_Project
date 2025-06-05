@@ -221,8 +221,10 @@ input[type="number"] {
 
 #userAnswer {
     width: 100%;
+    max-width: 365px;
     padding: 10px;
     margin: 10px 0;
+    margin-bottom: 50%;
     border: 1px solid #8a2be2;
     border-radius: 5px;
     font-family: 'Comfortaa', cursive;
@@ -516,10 +518,11 @@ input[type="number"] {
 
 .check-button-container {
     display: flex;
-    justify-content: center;
+    justify-content: flex-end; /* Выравнивание по правому краю */
     width: 100%;
-    margin-top: 20px;
-    margin-bottom: 20px;
+    margin-top: -20px;
+    margin-bottom: -20px;
+    right: 150px;
 }
 
 /*АДАПТИВКУ НЕ ТРОГАТЬ - РУКИ ОТОРВУ*/
@@ -620,9 +623,6 @@ input[type="number"] {
         top: 20px;
     }
 
-    #checkBtn.submit-btn {
-        left: 50%;
-    }
 
     .feedback {
         position: fixed;
@@ -670,10 +670,6 @@ input[type="number"] {
 
     .right-panel {
         max-height: 300px;
-    }
-
-    #checkBtn.submit-btn {
-        left: 50%;
     }
 
     .feedback {
@@ -815,4 +811,56 @@ input[type="number"] {
     font-size: 1.2em;
     font-family: 'Comfortaa', cursive;
     text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+/* Стили для контейнера статусов игроков */
+.players-status-container {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background: rgba(0, 0, 0, 0.7);
+    padding: 15px;
+    border-radius: 10px;
+    color: white;
+    max-width: 200px;
+}
+
+.players-status-container h3 {
+    margin-top: 0;
+    margin-bottom: 10px;
+    font-size: 16px;
+}
+
+.player-status {
+    margin-bottom: 5px;
+    padding: 5px;
+    border-radius: 5px;
+}
+
+.player-status.ready {
+    background-color: rgba(76, 175, 80, 0.3);
+    color: #4CAF50;
+}
+
+/* Стили для кнопки "Готов" */
+.submit-btn {
+    background-color: #416190;
+    color: white;
+    border: none;
+    padding: 12px 25px;
+    border-radius: 25px;
+    font-family: 'Comfortaa', sans-serif;
+    font-size: 16px;
+    cursor: pointer;
+    margin-top: 20px;
+    transition: background-color 0.3s;
+}
+
+.submit-btn:hover {
+    background-color: #5a7ca8;
+}
+
+.submit-btn:disabled {
+    background-color: #cccccc;
+    cursor: not-allowed;
 }

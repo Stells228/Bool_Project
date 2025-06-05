@@ -1,21 +1,10 @@
 document.addEventListener('DOMContentLoaded', () => {
     const matrixContainer = document.getElementById('matrixContainer');
     const checkBtn = document.getElementById('checkBtn');
-    const tryAgainBtn = document.getElementById('tryAgainBtn');
-    const generateBtn = document.getElementById('generateBtn');
-    const verticesInput = document.getElementById('vertices');
     const userAnswerInput = document.getElementById('userAnswer');
     const feedback = document.getElementById('feedback');
     const graphContainer = document.getElementById('graph-visualization');
     graphContainer.style.height = '100%';
-
-    let vertices = [];
-    let capacityMatrix = [];
-    let currentNodes = 0;
-
-    generateBtn.addEventListener('click', generateMatrix);
-    checkBtn.addEventListener('click', checkAnswer);
-    tryAgainBtn.addEventListener('click', resetTask);
 
     class Vertex {
         constructor(name) {
@@ -29,22 +18,23 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    function generateMatrix() {
-        const n = parseInt(verticesInput.value);
-        if (isNaN(n) || n < 2 || n > 20) {
-            showFeedback("Введите корректное количество вершин (2-20)", "error");
-            return;
-        }
+    let vertices = [];
+    let capacityMatrix = [];
+    let currentNodes = 0;
 
-        currentNodes = n;
+    // Случайное количество вершин от 2 до 4 (минимум 2, чтобы был исток и сток)
+    currentNodes = Math.floor(Math.random() * 3) + 2;
+
+    function generateMatrix() {
+        const n = currentNodes;
+
         matrixContainer.innerHTML = '<div class="matrix-wrapper"></div>';
         const wrapper = matrixContainer.querySelector('.matrix-wrapper');
 
         if (n > 4) {
             wrapper.style.overflowX = 'auto';
             wrapper.style.maxHeight = '300px';
-        } 
-        else {
+        } else {
             wrapper.style.overflowX = 'visible';
             wrapper.style.maxHeight = 'none';
         }
@@ -53,7 +43,6 @@ document.addEventListener('DOMContentLoaded', () => {
         feedback.className = 'feedback';
         userAnswerInput.value = '';
         checkBtn.style.display = 'inline-block';
-        tryAgainBtn.style.display = 'none';
 
         const table = document.createElement('table');
         const header = document.createElement('tr');
@@ -81,7 +70,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 input.value = i === j ? 0 : (Math.random() < 0.3 ? Math.floor(Math.random() * 10) + 1 : 0);
                 input.dataset.row = i;
                 input.dataset.col = j;
-                input.addEventListener('change', updateGraph);
+                input.readOnly = true; // запрет редактирования
                 cell.appendChild(input);
                 row.appendChild(cell);
             }
@@ -89,11 +78,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         wrapper.appendChild(table);
-
-        const inputs = matrixContainer.querySelectorAll('input');
-        inputs.forEach(input => {
-            input.readOnly = true;
-        });
 
         updateGraph();
     }
@@ -210,14 +194,8 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
-        const n = parseInt(verticesInput.value);
-        if (isNaN(n) || n < 2 || n > 20) {
-            showFeedback("Сначала создайте матрицу", "error");
-            return;
-        }
-
         const userAnswer = parseInt(userAnswerInput.value);
-        if (isNaN(userAnswer)) {
+        if (isNaN(userAnswer) || userAnswer < 0) {
             showFeedback("Введите корректное значение максимального потока", "error");
             return;
         }
@@ -226,21 +204,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (userAnswer === maxFlow) {
             showFeedback(`✅ Правильно! Максимальный поток: ${maxFlow}`, "correct");
-        } 
-        else {
+        } else {
             showFeedback(`❌ Неправильно. Максимальный поток: ${maxFlow}`, "incorrect");
         }
-
-        checkBtn.style.display = 'none';
-        tryAgainBtn.style.display = 'inline-block';
-    }
-
-    function resetTask() {
-        userAnswerInput.value = '';
-        feedback.textContent = '';
-        feedback.className = 'feedback';
-        checkBtn.style.display = 'inline-block';
-        tryAgainBtn.style.display = 'none';
     }
 
     function showFeedback(message, type) {
@@ -251,5 +217,8 @@ document.addEventListener('DOMContentLoaded', () => {
         }, 2000);
     }
 
+    checkBtn.addEventListener('click', checkAnswer);
+
+    // Генерируем матрицу при загрузке с рандомным количеством вершин
     generateMatrix();
 });

@@ -2,11 +2,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const elements = {
         matrixContainer: document.getElementById('matrixContainer'),
         checkBtn: document.getElementById('checkBtn'),
-        tryAgainBtn: document.getElementById('tryAgainBtn'),
-        generateBtn: document.getElementById('generateBtn'),
-        verticesInput: document.getElementById('vertices'),
         userAnswerInput: document.getElementById('userAnswer'),
-        startVertexSelect: document.getElementById('startVertex'),
         feedback: document.getElementById('feedback'),
         graphContainer: document.getElementById('graph-visualization')
     };
@@ -26,23 +22,21 @@ document.addEventListener('DOMContentLoaded', () => {
     let vertices = [];
     let adjacencyMatrix = [];
     let currentNodes = 0;
+    let startVertex = 0;
 
-    elements.generateBtn.addEventListener('click', generateMatrix);
     elements.checkBtn.addEventListener('click', checkAnswer);
-    elements.tryAgainBtn.addEventListener('click', resetTask);
 
     elements.userAnswerInput.addEventListener('input', function() {
         this.value = this.value.toUpperCase().replace(/[^A-Z\s]/g, '');
     });
 
     function generateMatrix() {
-        const n = parseInt(elements.verticesInput.value);
-        if (isNaN(n) || n < 1 || n > 20) {
-            showFeedback("Введите корректное количество вершин (1-20)", "error");
-            return;
-        }
-
+        // Случайное число вершин от 1 до 4
+        const n = Math.floor(Math.random() * 4) + 1;
         currentNodes = n;
+        // Случайная начальная вершина
+        startVertex = Math.floor(Math.random() * n);
+
         elements.matrixContainer.innerHTML = '<div class="matrix-wrapper"></div>';
         const wrapper = elements.matrixContainer.querySelector('.matrix-wrapper');
 
@@ -58,10 +52,8 @@ document.addEventListener('DOMContentLoaded', () => {
         elements.feedback.className = 'feedback';
         elements.userAnswerInput.value = '';
         elements.checkBtn.style.display = 'inline-block';
-        elements.tryAgainBtn.style.display = 'none';
 
-        updateStartVertexSelect(n);
-
+        // Создаем таблицу матрицы смежности
         const table = document.createElement('table');
         const header = document.createElement('tr');
         header.appendChild(document.createElement('th'));
@@ -88,7 +80,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 input.value = i === j ? '0' : Math.random() > 0.7 ? '1' : '0';
                 input.dataset.row = i;
                 input.dataset.col = j;
-                input.addEventListener('change', updateGraph);
+                input.readOnly = true;
                 cell.appendChild(input);
                 row.appendChild(cell);
             }
@@ -96,11 +88,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         wrapper.appendChild(table);
-
-        const inputs = elements.matrixContainer.querySelectorAll('input');
-        inputs.forEach(input => {
-            input.readOnly = true;
-        });
 
         updateGraph();
     }
@@ -126,8 +113,14 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
 
+        // Визуально выделяем начальную вершину цветом и пометкой
         const nodes = new vis.DataSet(
-            vertices.map((v, i) => ({ id: i, label: v.name }))
+            vertices.map((v, i) => ({
+                id: i,
+                label: i === startVertex ? v.name : v.name,
+                color: i === startVertex ? { background: '#ff6666', border: '#cc0000' } : undefined,
+                font: { color: i === startVertex ? '#ffffff' : undefined }
+            }))
         );
 
         const edges = new vis.DataSet([]);
@@ -167,16 +160,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    function updateStartVertexSelect(n) {
-        elements.startVertexSelect.innerHTML = '';
-        for (let i = 0; i < n; i++) {
-            const option = document.createElement('option');
-            option.value = i;
-            option.textContent = String.fromCharCode(65 + i);
-            elements.startVertexSelect.appendChild(option);
-        }
-    }
-
     function calculateBFS(matrix, start) {
         const visited = Array(matrix.length).fill(false);
         const result = [];
@@ -210,12 +193,6 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
-        const n = parseInt(elements.verticesInput.value);
-        if (isNaN(n) || n < 1 || n > 20) {
-            showFeedback("Сначала создайте матрицу", "error");
-            return;
-        }
-
         const userAnswer = elements.userAnswerInput.value.trim();
         if (!userAnswer) {
             showFeedback("Введите порядок обхода", "error");
@@ -228,7 +205,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         const userOrderLetters = userAnswer.split(/\s+/).filter(x => x);
-        const startVertex = parseInt(elements.startVertexSelect.value);
         const correctBFS = calculateBFS(adjacencyMatrix, startVertex);
         const reachableCount = correctBFS.length;
 
@@ -265,15 +241,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         elements.checkBtn.style.display = 'none';
-        elements.tryAgainBtn.style.display = 'inline-block';
-    }
-
-    function resetTask() {
-        elements.userAnswerInput.value = '';
-        elements.feedback.textContent = '';
-        elements.feedback.className = 'feedback';
-        elements.checkBtn.style.display = 'inline-block';
-        elements.tryAgainBtn.style.display = 'none';
     }
 
     function showFeedback(message, type) {
@@ -284,5 +251,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }, 2000);
     }
 
+    // Генерируем граф при загрузке страницы
     generateMatrix();
 });
