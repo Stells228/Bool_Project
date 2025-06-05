@@ -190,6 +190,15 @@ body, html {
     .welcome-text {
         font-size: clamp(3rem, 6vw, 6rem);
     }
+    .continue-btn {
+        top: 75%;
+        width: clamp(60px, 15vmin, 120px);
+    }
+
+    .continue-btn {
+        max-height: 20vh; 
+        object-fit: contain; 
+    }
 }
 
 #welcome-screen.loaded .continue-btn {
