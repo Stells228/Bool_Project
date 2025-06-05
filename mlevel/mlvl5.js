@@ -9,6 +9,11 @@ document.addEventListener('DOMContentLoaded', () => {
     let n = 2 + Math.floor(Math.random() * 3); // 2-4 переменные
     let vector = '';
     let correctClasses = {};
+    let isMultiplayer = false;
+    let socket = null;
+    let roomCode = '';
+    let hasAnswered = false;
+
 
     const classCheckboxes = {
         T0: document.createElement('input'),
@@ -130,6 +135,34 @@ document.addEventListener('DOMContentLoaded', () => {
         document.querySelector('.right-panel').insertBefore(container, elements.submitBtn.parentElement);
     }
 
+    const params = new URLSearchParams(window.location.search);
+isMultiplayer = params.get('mode') === 'multiplayer';
+roomCode = params.get('room');
+
+if (isMultiplayer) {
+    socket = io('http://localhost:3000');
+    const task = JSON.parse(localStorage.getItem('currentTask'));
+    if (task) {
+        vector = task.vector;
+        correctClasses = task.correctAnswer;
+        n = task.variablesCount;
+        elements.functionVector.textContent = `Вектор функции (${n} переменных): ${vector}`;
+        generateTruthTable(n, vector);
+    }
+
+    document.getElementById('submit-btn').textContent = 'Готов';
+
+    socket.on('showResults', (results) => {
+        window.location.href = `../results.html?room=${roomCode}`;
+    });
+
+    socket.on('timeUpdate', (timeLeft) => {
+        if (timeLeft <= 10) {
+            showFeedback(`Осталось ${timeLeft} секунд!`, 'error');
+        }
+    });
+}
+
     // Генерация таблицы истинности
     function generateTruthTable(n, vector) {
         const table = document.createElement('table');
@@ -171,11 +204,11 @@ document.addEventListener('DOMContentLoaded', () => {
     // Проверка выбора пользователя
     function validateSelection(checkboxes, correct) {
         let isCorrect = true;
-        
+
         for (const [key, input] of Object.entries(checkboxes)) {
             const userSelected = input.checked;
             const correctSelection = correct[key] === 1;
-            
+
             if (userSelected !== correctSelection) {
                 isCorrect = false;
                 break;
@@ -184,7 +217,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (isCorrect) {
             showFeedback('Правильно!', 'correct');
-        } 
+        }
         else {
             showFeedback('Неправильно!', 'incorrect');
         }
@@ -195,7 +228,7 @@ document.addEventListener('DOMContentLoaded', () => {
         elements.feedback.textContent = message;
         elements.feedback.className = `feedback ${type}`;
         elements.feedback.style.display = 'block';
-        
+
         if (type === 'correct') {
             elements.submitBtn.disabled = true;
             elements.submitBtn.style.opacity = '0.5';
@@ -206,6 +239,30 @@ document.addEventListener('DOMContentLoaded', () => {
     generateNewVector();
 
     elements.submitBtn.addEventListener('click', () => {
-        validateSelection(classCheckboxes, correctClasses);
+        if (hasAnswered) return;
+    
+        let userAnswer = {};
+        for (const [key, input] of Object.entries(classCheckboxes)) {
+            userAnswer[key] = input.checked ? 1 : 0;
+        }
+    
+        if (isMultiplayer) {
+            hasAnswered = true;
+            elements.submitBtn.disabled = true;
+            elements.submitBtn.style.opacity = '0.5';
+            elements.submitBtn.style.cursor = 'not-allowed';
+    
+            socket.emit('playerAnswer', {
+                room: roomCode,
+                answer: userAnswer,
+                timestamp: Date.now(),
+                correctAnswer: correctClasses
+            });
+    
+            showFeedback('Ответ отправлен! Ожидаем других игроков...', 'info');
+        } 
+        else {
+            validateSelection(classCheckboxes, correctClasses);
+        }
     });
 });

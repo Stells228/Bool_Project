@@ -61,7 +61,7 @@ io.on('connection', (socket) => {
       });
 
       console.log(`Создана комната: ${roomCode} (Уровней: ${settings.levels})`);
-    } 
+    }
     catch (error) {
       console.error('Ошибка создания комнаты:', error);
       callback({ success: false, message: 'Ошибка создания комнаты' });
@@ -173,8 +173,8 @@ io.on('connection', (socket) => {
         vector: functions[randomKey],
         correctAnswer: randomKey
       };
-    } 
-    else {
+    }
+    else if (level === 2) {
       const n = 2 + Math.floor(Math.random() * 2);
       const vector = Array.from({ length: 2 ** n }, () =>
         Math.floor(Math.random() * 2)).join('');
@@ -189,6 +189,180 @@ io.on('connection', (socket) => {
         variablesCount: n
       };
     }
+    else if (level === 3) {
+      const n = 2 + Math.floor(Math.random() * 2);
+      const vector = Array.from({ length: 2 ** n }, () =>
+        Math.floor(Math.random() * 2)).join('');
+
+      return {
+        vector: vector,
+        correctAnswer: getDNF(vector),
+        variablesCount: n
+      };
+    }
+    else if (level === 4) {
+      const n = 2 + Math.floor(Math.random() * 2);
+      const vector = Array.from({ length: 2 ** n }, () =>
+        Math.floor(Math.random() * 2)).join('');
+
+      return {
+        vector: vector,
+        correctAnswer: getCNF(vector),
+        variablesCount: n
+      };
+    }
+    else if (level === 5) {
+      const n = 2 + Math.floor(Math.random() * 2); // 2-3 переменные
+      const vector = Array.from({ length: 2 ** n }, () =>
+        Math.floor(Math.random() * 2)).join('');
+
+      // Вычисляем принадлежность к классам
+      const classes = {
+        T0: vector[0] === '0' ? 1 : 0,
+        T1: vector[vector.length - 1] === '1' ? 1 : 0,
+        S: checkS(vector),
+        M: checkM(vector),
+        L: checkL(vector)
+      };
+
+      return {
+        vector: vector,
+        correctAnswer: classes,
+        variablesCount: n
+      };
+    }
+    else if (level === 6) {
+      const count = 2 + Math.floor(Math.random() * 2);
+      const vectors = [];
+      const classes = [];
+
+      for (let i = 0; i < count; i++) {
+        const n = 2 + Math.floor(Math.random() * 2);
+        const vector = Array.from({ length: 2 ** n }, () =>
+          Math.floor(Math.random() * 2)).join('');
+        vectors.push(vector);
+        classes.push({
+          T0: vector[0] === '0' ? 1 : 0,
+          T1: vector[vector.length - 1] === '1' ? 1 : 0,
+          S: checkS(vector),
+          M: checkM(vector),
+          L: checkL(vector)
+        });
+      }
+      // Определение, является ли система полной
+      let isComplete = false;
+      let closedClasses = '';
+
+      // Проверяем каждый класс (T0, T1, S, M, L)
+      const classChecks = ['T0', 'T1', 'S', 'M', 'L'];
+      for (const cls of classChecks) {
+        const allInClass = classes.every(func => func[cls] === 1);
+        if (allInClass) {
+          closedClasses += cls;
+        }
+      }
+
+      isComplete = closedClasses === '';
+
+      return {
+        vectors: vectors,
+        correctAnswer: {
+          isComplete: isComplete,
+          closedClasses: closedClasses
+        }
+      };
+    }
+  }
+
+  function isLessOrEqual(i, j, vars) {
+    for (let k = 0; k < vars; k++) {
+      const bitI = (i >> k) & 1;
+      const bitJ = (j >> k) & 1;
+      if (bitI > bitJ) return false;
+    }
+    return true;
+  }
+  
+
+  function checkS(vector) {
+    const len = vector.length;
+    for (let i = 0; i < len / 2; i++) {
+      if (vector[i] === vector[len - 1 - i]) return 0;
+    }
+    return 1;
+  }
+
+  function checkM(vector) {
+    const len = vector.length;
+    const vars = Math.log2(len);
+    for (let i = 0; i < len - 1; i++) {
+      for (let j = i + 1; j < len; j++) {
+        if (isLessOrEqual(i, j, vars)) {
+          if (vector[i] > vector[j]) return 0;
+        }
+      }
+    }
+    return 1;
+  }
+
+  function checkL(vector) {
+    const n = vector.length;
+    const vars = Math.log2(n);
+    for (let a = 0; a < n; a++) {
+      let match = true;
+      for (let x = 0; x < n; x++) {
+        let product = 0;
+        for (let i = 0; i < vars; i++) {
+          product += ((a >> i) & 1) * ((x >> i) & 1);
+        }
+        if ((product % 2) !== parseInt(vector[x])) {
+          match = false;
+          break;
+        }
+      }
+      if (match) return 1;
+    }
+    return 0;
+  }
+
+  // Функции для генерации ДНФ и КНФ
+  function getDNF(vector) {
+    const n = Math.log2(vector.length);
+    if (!Number.isInteger(n)) throw new Error("Длина вектора должна быть степенью двойки");
+    const variables = Array.from({ length: n }, (_, i) => `x${i + 1}`);
+    let dnf = '';
+
+    for (let i = 0; i < vector.length; i++) {
+      if (vector[i] === '1') {
+        const binary = i.toString(2).padStart(n, '0');
+        let term = '';
+        for (let j = 0; j < n; j++) {
+          term += binary[j] === '0' ? `¬${variables[j]} ∧ ` : `${variables[j]} ∧ `;
+        }
+        dnf += `(${term.slice(0, -3)}) ∨ `;
+      }
+    }
+    return dnf === '' ? '0' : dnf.slice(0, -3);
+  }
+
+  function getCNF(vector) {
+    const n = Math.log2(vector.length);
+    if (!Number.isInteger(n)) throw new Error("Длина вектора должна быть степенью двойки");
+    const variables = Array.from({ length: n }, (_, i) => `x${i + 1}`);
+    let cnf = '';
+
+    for (let i = 0; i < vector.length; i++) {
+      if (vector[i] === '0') {
+        const binary = i.toString(2).padStart(n, '0');
+        let term = '';
+        for (let j = 0; j < n; j++) {
+          term += binary[j] === '1' ? `¬${variables[j]} ∨ ` : `${variables[j]} ∨ `;
+        }
+        term = term.slice(0, -3);
+        cnf += `(${term}) ∧ `;
+      }
+    }
+    return cnf === '' ? '1' : cnf.slice(0, -3);
   }
 
   // Функция для определения фиктивных и существенных переменных
@@ -286,7 +460,7 @@ io.on('connection', (socket) => {
           case 2: points = 50; break;
           default: points = 10; break;
         }
-      } 
+      }
       else {
         points = -50;
       }
@@ -339,7 +513,7 @@ io.on('connection', (socket) => {
         playerAnswers.delete(roomCode);
         playerScores.delete(roomCode);
       }, 10000);
-    } 
+    }
     else {
       // Генерируем новое задание
       const nextLevel = getRandomLevel();
@@ -367,9 +541,23 @@ io.on('connection', (socket) => {
   function checkAnswer(playerAnswer, correctAnswer) {
     if (typeof playerAnswer === 'string') {
       return playerAnswer === correctAnswer;
-    } else {
+    }
+    else if (playerAnswer.dummy !== undefined) {
       return playerAnswer.dummy === correctAnswer.dummy &&
         playerAnswer.essential === correctAnswer.essential;
+    }
+    else if (playerAnswer.T0 !== undefined) {
+      // Для уровня 5
+      return playerAnswer.T0 === correctAnswer.T0 &&
+        playerAnswer.T1 === correctAnswer.T1 &&
+        playerAnswer.S === correctAnswer.S &&
+        playerAnswer.M === correctAnswer.M &&
+        playerAnswer.L === correctAnswer.L;
+    }
+    else {
+      // Для уровня 6
+      return playerAnswer.isComplete === correctAnswer.isComplete &&
+        playerAnswer.closedClasses === correctAnswer.closedClasses;
     }
   }
 
@@ -477,7 +665,7 @@ io.on('connection', (socket) => {
 
 // Случайный выбор уровня
 function getRandomLevel() {
-  const levels = [1, 2];
+  const levels = [1, 2, 3, 4, 5, 6];
   return levels[Math.floor(Math.random() * levels.length)];
 }
 

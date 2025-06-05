@@ -11,6 +11,44 @@ document.addEventListener('DOMContentLoaded', () => {
     let n = 2 + Math.floor(Math.random() * 3); // 2-4 переменные
     let currentFunctionVector = '';
     let correctCNF = '';
+    let socket = null;
+    let isMultiplayer = false;
+    let roomCode = '';
+    let hasAnswered = false;
+
+    const params = new URLSearchParams(window.location.search);
+    isMultiplayer = params.get('mode') === 'multiplayer';
+    roomCode = params.get('room');
+
+    if (isMultiplayer) {
+        socket = io('http://localhost:3000');
+        const task = JSON.parse(localStorage.getItem('currentTask'));
+        if (task) {
+            currentFunctionVector = task.vector;
+            correctCNF = task.correctAnswer;
+            n = task.variablesCount || 2;
+            updateUI();
+        }
+        document.getElementById('submit-btn').textContent = 'Готов';
+    }
+
+    if (isMultiplayer) {
+        socket.on('showResults', (results) => {
+            window.location.href = `../results.html?room=${roomCode}`;
+        });
+
+        socket.on('timeUpdate', (timeLeft) => {
+            if (timeLeft <= 10) {
+                showFeedback(`Осталось ${timeLeft} секунд!`, 'error');
+            }
+        });
+    }
+
+    function updateUI() {
+        elements.functionVector.textContent = `Вектор функции (${n} переменных): ${currentFunctionVector}`;
+        generateTruthTable(n, currentFunctionVector);
+    }
+
 
     function insertSymbol(symbol) {
         const input = elements.cnfInput;
@@ -25,13 +63,14 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function generateNewVector() {
-        currentFunctionVector = '';
-        for (let i = 0; i < 2 ** n; i++) {
-            currentFunctionVector += Math.floor(Math.random() * 2);
+        if (!isMultiplayer) {
+            currentFunctionVector = '';
+            for (let i = 0; i < 2 ** n; i++) {
+                currentFunctionVector += Math.floor(Math.random() * 2);
+            }
+            correctCNF = getCNF(currentFunctionVector);
         }
-        elements.functionVector.textContent = `Вектор функции (${n} переменных): ${currentFunctionVector}`;
-        correctCNF = getCNF(currentFunctionVector);
-        generateTruthTable(n, currentFunctionVector);
+        updateUI();
     }
 
     function getCNF(vector) {
@@ -39,7 +78,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!Number.isInteger(n)) throw new Error("Длина вектора должна быть степенью двойки");
         const variables = Array.from({ length: n }, (_, i) => `x${i + 1}`);
         let cnf = '';
-        
+
         for (let i = 0; i < vector.length; i++) {
             if (vector[i] === '0') {
                 const binary = i.toString(2).padStart(n, '0');
@@ -73,7 +112,7 @@ document.addEventListener('DOMContentLoaded', () => {
         for (let i = 0; i < 2 ** n; i++) {
             const row = document.createElement('tr');
             const binary = i.toString(2).padStart(n, '0');
-            
+
             for (let j = 0; j < n; j++) {
                 const td = document.createElement('td');
                 td.textContent = binary[j];
@@ -148,12 +187,6 @@ document.addEventListener('DOMContentLoaded', () => {
         elements.feedback.textContent = message;
         elements.feedback.className = `feedback ${type}`;
         elements.feedback.style.display = 'block';
-        
-        if (type === 'correct') {
-            elements.submitBtn.disabled = true;
-            elements.submitBtn.style.opacity = '0.5';
-            elements.submitBtn.style.cursor = 'not-allowed';
-        }
     }
 
     // Обработчики событий
@@ -171,8 +204,10 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     elements.submitBtn.addEventListener('click', () => {
+        if (hasAnswered) return;
+
         const userCNF = elements.cnfInput.value.trim();
-        
+
         if (!userCNF) {
             showFeedback('Пожалуйста, введите КНФ!', 'error');
             return;
@@ -185,33 +220,64 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         if (validation.isZero) {
-            if (currentFunctionVector === '0'.repeat(2 ** n)) {
-                showFeedback('Правильно!', 'correct');
+            if (isMultiplayer) {
+                sendAnswer('0'); 
             } 
             else {
-                showFeedback('Неправильно!', 'incorrect');
+                if (currentFunctionVector === '0'.repeat(2 ** n)) {
+                    showFeedback('Правильно!', 'correct');
+                } 
+                else {
+                    showFeedback('Неправильно!', 'incorrect');
+                }
             }
             return;
         }
 
         if (validation.isOne) {
-            if (currentFunctionVector === '1'.repeat(2 ** n)) {
-                showFeedback('Правильно!', 'correct');
+            if (isMultiplayer) {
+                sendAnswer('1'); 
             } 
             else {
-                showFeedback('Неправильно!', 'incorrect');
+                if (currentFunctionVector === '1'.repeat(2 ** n)) {
+                    showFeedback('Правильно!', 'correct');
+                } 
+                else {
+                    showFeedback('Неправильно!', 'incorrect');
+                }
             }
             return;
         }
 
         const userVector = computeVectorFromCNF(userCNF, n);
-        if (userVector === currentFunctionVector) {
-            showFeedback('Правильно!', 'correct');
+        if (isMultiplayer) {
+            sendAnswer(userCNF); 
         } 
         else {
-            showFeedback('Неправильно!', 'incorrect');
+            if (userVector === currentFunctionVector) {
+                showFeedback('Правильно!', 'correct');
+            } 
+            else {
+                showFeedback('Неправильно!', 'incorrect');
+            }
         }
     });
+
+    function sendAnswer(answer) {
+        hasAnswered = true;
+        elements.submitBtn.disabled = true;
+        elements.submitBtn.style.opacity = '0.5';
+        elements.submitBtn.style.cursor = 'not-allowed';
+    
+        socket.emit('playerAnswer', {
+            room: roomCode,
+            answer: answer,
+            timestamp: Date.now(),
+            correctAnswer: correctCNF
+        });
+    
+        showFeedback('Ответ отправлен! Ожидаем других игроков...', 'info');
+    }
 
     generateNewVector();
 });

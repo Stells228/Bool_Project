@@ -10,6 +10,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
     let vectors = [];
     let correctClosedClasses = '';
+    let isMultiplayer = false;
+    let socket = null;
+    let roomCode = '';
+    let hasAnswered = false;
+    let correctAnswer = {};
+
 
     // Обеспечиваем взаимное исключение для радио-подобных чекбоксов
     elements.isCompleteYes.addEventListener('change', () => {
@@ -107,6 +113,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Генерация набора векторов функций и вычисление правильного ответа
     function generateVectorSet() {
+        correctAnswer = {
+            isComplete: correctClosedClasses === '',
+            closedClasses: correctClosedClasses
+        };
+
         const count = 2 + Math.floor(Math.random() * 2); // 2 или 3 функций
         vectors = [];
         const classMembership = [];
@@ -139,11 +150,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Проверка ответа пользователя
     function validateAnswer() {
+        if (hasAnswered) return;
+    
         const userIsCompleteYes = elements.isCompleteYes.checked;
         const userIsCompleteNo = elements.isCompleteNo.checked;
         const userClosedClasses = elements.closedClasses.value.trim().toUpperCase();
-        const isComplete = correctClosedClasses === '';
-
+        const isComplete = correctAnswer.closedClasses === '';
+    
         if (!userIsCompleteYes && !userIsCompleteNo) {
             return showFeedback('Ошибка! Выберите "Да" или "Нет".', 'error');
         }
@@ -153,24 +166,43 @@ document.addEventListener('DOMContentLoaded', () => {
         if (userIsCompleteNo && !userClosedClasses) {
             return showFeedback('Ошибка! Укажите замкнутый класс.', 'error');
         }
-
-        if (userIsCompleteYes) {
-            if (isComplete) {
-                showFeedback('Правильно!', 'correct');
-            } 
-            else {
-                showFeedback('Неправильно!', 'incorrect');
-            }
+    
+        const userAnswer = {
+            isComplete: userIsCompleteYes,
+            closedClasses: userClosedClasses
+        };
+    
+        if (isMultiplayer) {
+            hasAnswered = true;
+            elements.submitBtn.disabled = true;
+            elements.submitBtn.style.opacity = '0.5';
+            elements.submitBtn.style.cursor = 'not-allowed';
+    
+            socket.emit('playerAnswer', {
+                room: roomCode,
+                answer: userAnswer,
+                timestamp: Date.now(),
+                correctAnswer: correctAnswer
+            });
+    
+            showFeedback('Ответ отправлен! Ожидаем других игроков...', 'info');
         } 
         else {
-            if (isComplete) {
-                showFeedback('Неправильно!', 'incorrect');
-            }
-            else if (userClosedClasses === correctClosedClasses) {
-                showFeedback('Правильно!', 'correct');
+            if (userIsCompleteYes) {
+                if (isComplete) {
+                    showFeedback('Правильно!', 'correct');
+                } else {
+                    showFeedback('Неправильно!', 'incorrect');
+                }
             } 
             else {
-                showFeedback('Неправильно!', 'incorrect');
+                if (isComplete) {
+                    showFeedback('Неправильно!', 'incorrect');
+                } else if (userClosedClasses === correctAnswer.closedClasses) {
+                    showFeedback('Правильно!', 'correct');
+                } else {
+                    showFeedback('Неправильно!', 'incorrect');
+                }
             }
         }
     }
@@ -179,7 +211,7 @@ document.addEventListener('DOMContentLoaded', () => {
         elements.feedback.textContent = message;
         elements.feedback.className = `feedback ${type}`;
         elements.feedback.style.display = 'block';
-        
+
         if (type === 'correct') {
             elements.submitBtn.disabled = true;
             elements.submitBtn.style.opacity = '0.5';
@@ -187,6 +219,35 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
     generateVectorSet();
+
+    const params = new URLSearchParams(window.location.search);
+    isMultiplayer = params.get('mode') === 'multiplayer';
+    roomCode = params.get('room');
+
+    if (isMultiplayer) {
+        socket = io('http://localhost:3000');
+        const task = JSON.parse(localStorage.getItem('currentTask'));
+        if (task) {
+            vectors = task.vectors;
+            correctAnswer = task.correctAnswer;
+
+            elements.functionVectors.innerHTML = vectors
+                .map((v, i) => `f${i + 1}: ${v}`)
+                .join('<br>');
+        }
+
+        document.getElementById('submit-btn').textContent = 'Готов';
+
+        socket.on('showResults', (results) => {
+            window.location.href = `../results.html?room=${roomCode}`;
+        });
+
+        socket.on('timeUpdate', (timeLeft) => {
+            if (timeLeft <= 10) {
+                showFeedback(`Осталось ${timeLeft} секунд!`, 'error');
+            }
+        });
+    }
 
     elements.submitBtn.addEventListener('click', validateAnswer);
 });
