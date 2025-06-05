@@ -6,10 +6,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const graphContainer = document.getElementById('graph-visualization');
     graphContainer.style.height = '100%';
 
-    let currentNodes = 0;
-    let adjacencyMatrix = [];
-    let currentColoring = [];
-
     const colorPalette = [
         '#e6194b', '#3cb44b', '#ffe119', '#4363d8', '#f58231',
         '#911eb4', '#46f0f0', '#f032e6', '#bcf60c', '#fabebe',
@@ -17,16 +13,54 @@ document.addEventListener('DOMContentLoaded', () => {
         '#aaffc3', '#808000', '#ffd8b1', '#000075', '#808080'
     ];
 
-    // Случайное количество вершин от 3 до 4 (максимум 4)
-    currentNodes = Math.floor(Math.random() * 2) + 3;
+    let currentNodes = 0;
+    let adjacencyMatrix = [];
+    let currentColoring = [];
+    let chromaticNumber = 0;
+    let isMultiplayer = false;
+    let hasAnswered = false;
+    let socket = null;
+    let roomCode = '';
+
+    const params = new URLSearchParams(window.location.search);
+    isMultiplayer = params.get('mode') === 'multiplayer';
+    roomCode = params.get('room');
+
+    if (isMultiplayer) {
+        socket = io('http://localhost:3000');
+        const task = JSON.parse(localStorage.getItem('currentTask'));
+        if (task) {
+            adjacencyMatrix = task.matrix;
+            chromaticNumber = task.correctAnswer;
+            currentNodes = adjacencyMatrix.length;
+            renderMatrix(adjacencyMatrix);
+            updateGraphVisualization(adjacencyMatrix, []);
+        }
+
+        checkBtn.textContent = 'Готов';
+
+        socket.on('showResults', () => {
+            window.location.href = `../results.html?room=${roomCode}`;
+        });
+
+        socket.on('timeUpdate', (timeLeft) => {
+            if (timeLeft <= 10) {
+                showFeedback(`Осталось ${timeLeft} секунд!`, 'error');
+            }
+        });
+    } 
+    else {
+        generateGraph();
+    }
 
     function generateGraph() {
+        currentNodes = Math.floor(Math.random() * 2) + 3;
         adjacencyMatrix = generateRandomUndirectedGraph(currentNodes, 0.3);
-        currentColoring = [];
+        currentColoring = greedyColoring(adjacencyMatrix);
+        chromaticNumber = new Set(currentColoring).size;
 
         renderMatrix(adjacencyMatrix);
-        updateGraphVisualization(adjacencyMatrix, currentColoring);
-        resetTask();
+        updateGraphVisualization(adjacencyMatrix, []);
     }
 
     function generateRandomUndirectedGraph(n, edgeProb) {
@@ -66,12 +100,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 const cell = document.createElement('td');
                 const input = document.createElement('input');
                 input.type = 'number';
-                input.min = '0';
-                input.max = '1';
                 input.value = matrix[i][j];
+                input.readOnly = true;
                 input.dataset.row = i;
                 input.dataset.col = j;
-                input.readOnly = true;
                 cell.appendChild(input);
                 row.appendChild(cell);
             }
@@ -86,8 +118,7 @@ document.addEventListener('DOMContentLoaded', () => {
             Array.from({ length: currentNodes }, (_, i) => ({
                 id: i,
                 label: String.fromCharCode(65 + i),
-                color: coloring && coloring[i] !== undefined ?
-                    colorPalette[coloring[i] % colorPalette.length] : '#97c2fc'
+                color: coloring[i] !== undefined ? colorPalette[coloring[i] % colorPalette.length] : '#97c2fc'
             }))
         );
 
@@ -96,19 +127,18 @@ document.addEventListener('DOMContentLoaded', () => {
             for (let j = i + 1; j < currentNodes; j++) {
                 if (matrix[i][j] === 1) {
                     edges.add({ from: i, to: j, width: 2 });
-                    edges.add({ from: j, to: i, width: 2 });
                 }
             }
         }
 
         const data = { nodes, edges };
         const options = {
-            physics: { enabled: false },
+            physics: false,
             interaction: { dragNodes: false, dragView: false, zoomView: false, selectable: false },
             nodes: { font: { size: 16 } },
             edges: { smooth: false },
             layout: { improvedLayout: true, randomSeed: 1 },
-            configure: { enabled: false }
+            configure: false
         };
 
         new vis.Network(graphContainer, data, options);
@@ -118,7 +148,6 @@ document.addEventListener('DOMContentLoaded', () => {
         const n = matrix.length;
         const result = Array(n).fill(-1);
         result[0] = 0;
-
         const available = Array(n).fill(true);
 
         for (let u = 1; u < n; u++) {
@@ -128,18 +157,21 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             }
 
-            let cr;
-            for (cr = 0; cr < n; cr++) {
-                if (available[cr]) break;
+            for (let c = 0; c < n; c++) {
+                if (available[c]) {
+                    result[u] = c;
+                    break;
+                }
             }
-
-            result[u] = cr;
             available.fill(true);
         }
+
         return result;
     }
 
     function checkAnswer() {
+        if (hasAnswered) return;
+
         const userAnswer = parseInt(userAnswerInput.value);
         if (isNaN(userAnswer)) {
             showFeedback("Введите число цветов", "error");
@@ -147,35 +179,34 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         const coloring = greedyColoring(adjacencyMatrix);
-        currentColoring = coloring;
-        const usedColors = new Set(coloring);
-        const chromaticNumber = usedColors.size;
-
         updateGraphVisualization(adjacencyMatrix, coloring);
 
-        if (userAnswer === chromaticNumber) {
-            showFeedback(`✅ Правильно! Хроматическое число: ${chromaticNumber}`, "correct");
+        if (isMultiplayer) {
+            hasAnswered = true;
+            checkBtn.disabled = true;
+            checkBtn.style.opacity = '0.5';
+            checkBtn.style.cursor = 'not-allowed';
+
+            socket.emit('playerAnswer', {
+                room: roomCode,
+                answer: userAnswer,
+                timestamp: Date.now(),
+                correctAnswer: chromaticNumber
+            });
+
+            showFeedback("Ответ отправлен! Ожидаем других игроков...", "info");
         } else {
-            showFeedback(`❌ Неправильно. Хроматическое число: ${chromaticNumber}`, "incorrect");
+            if (userAnswer === chromaticNumber) {
+                showFeedback(`✅ Правильно! Хроматическое число: ${chromaticNumber}`, "correct");
+            } else {
+                showFeedback(`❌ Неправильно. Хроматическое число: ${chromaticNumber}`, "incorrect");
+            }
         }
-    }
-
-    function resetTask() {
-        userAnswerInput.value = '';
-        feedback.textContent = '';
-        feedback.className = 'feedback';
-        checkBtn.style.display = 'inline-block';
-    }
-
-    function showFeedback(message, type) {
-        feedback.textContent = message;
-        feedback.className = `feedback ${type} show`;
-        setTimeout(() => {
-            feedback.className = `feedback ${type}`;
-        }, 2000);
     }
 
     checkBtn.addEventListener('click', checkAnswer);
 
-    generateGraph();
+    if (!isMultiplayer) {
+        generateGraph();
+    }
 });

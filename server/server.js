@@ -140,12 +140,6 @@ io.on('connection', (socket) => {
     }
   });
 
-
-  socket.on('gameStarting', (data) => {
-    localStorage.setItem('currentTask', JSON.stringify(data.task));
-    window.location.href = `mlevel${data.level}.html?room=${roomCode}&mode=multiplayer`;
-  });
-
   function generateTask(level) {
     if (level === 1) {
       const functions = {
@@ -272,6 +266,243 @@ io.on('connection', (socket) => {
         }
       };
     }
+    else if (level === 7) {
+      const n = 2 + Math.floor(Math.random() * 3); // 2-4 вершины
+      const matrix = generateRandomAdjMatrix(n);
+      const start = Math.floor(Math.random() * n);
+      const dfsOrder = calculateDFS(matrix, start);
+      return {
+        matrix: matrix,
+        start: start,
+        correctAnswer: dfsOrder.map(i => String.fromCharCode(65 + i)).join(' ')
+      };
+    }
+    else if (level === 8) {
+      const n = 2 + Math.floor(Math.random() * 3); // 2–4 вершины
+      const matrix = generateRandomAdjMatrix(n);
+      const start = Math.floor(Math.random() * n);
+      const bfsOrder = calculateBFS(matrix, start);
+      return {
+        matrix: matrix,
+        start: start,
+        correctAnswer: bfsOrder.map(i => String.fromCharCode(65 + i)).join(' ')
+      };
+    }
+    else if (level === 9) {
+      const n = 2 + Math.floor(Math.random() * 3);
+      const matrix = generateRandomAdjMatrix(n);
+      const components = calculateSCC(matrix);
+      return {
+        matrix: matrix,
+        correctAnswer: components.length
+      };
+    }
+    else if (level === 10) {
+      const n = 2 + Math.floor(Math.random() * 3); // 2–4 вершины
+      const matrix = Array.from({ length: n }, (_, i) =>
+        Array.from({ length: n }, (_, j) =>
+          i === j ? 0 : (Math.random() < 0.3 ? Math.floor(Math.random() * 10) + 1 : 0)
+        )
+      );
+      const maxFlow = calculateMaxFlow(matrix, 0, n - 1);
+
+      return {
+        matrix: matrix,
+        correctAnswer: maxFlow
+      };
+    }
+    else if (level === 11) {
+      const nodes = Math.floor(Math.random() * 2) + 3;
+      const matrix = generateRandomUndirectedGraph(nodes, 0.3);
+      const coloring = greedyColoring(matrix);
+      const chromaticNumber = new Set(coloring).size;
+
+      return {
+        matrix: matrix,
+        correctAnswer: chromaticNumber
+      };
+    }
+
+  }
+
+  function calculateMaxFlow(matrix, source, sink) {
+    const n = matrix.length;
+    const residual = matrix.map(row => row.slice());
+    const parent = Array(n).fill(-1);
+    let maxFlow = 0;
+
+    function bfs() {
+      const visited = Array(n).fill(false);
+      const queue = [source];
+      visited[source] = true;
+      parent[source] = -1;
+
+      while (queue.length > 0) {
+        const u = queue.shift();
+        for (let v = 0; v < n; v++) {
+          if (!visited[v] && residual[u][v] > 0) {
+            queue.push(v);
+            parent[v] = u;
+            visited[v] = true;
+            if (v === sink) return true;
+          }
+        }
+      }
+      return false;
+    }
+
+    while (bfs()) {
+      let pathFlow = Infinity;
+      for (let v = sink; v !== source; v = parent[v]) {
+        const u = parent[v];
+        pathFlow = Math.min(pathFlow, residual[u][v]);
+      }
+
+      for (let v = sink; v !== source; v = parent[v]) {
+        const u = parent[v];
+        residual[u][v] -= pathFlow;
+        residual[v][u] += pathFlow;
+      }
+
+      maxFlow += pathFlow;
+    }
+
+    return maxFlow;
+  }
+
+
+  function calculateSCC(matrix) {
+    const visited = Array(matrix.length).fill(false);
+    const order = [];
+    const components = [];
+
+    function dfs1(v) {
+      visited[v] = true;
+      for (let i = 0; i < matrix.length; i++) {
+        if (matrix[v][i] && !visited[i]) dfs1(i);
+      }
+      order.push(v);
+    }
+
+    function dfs2(v, comp) {
+      visited[v] = true;
+      comp.push(v);
+      for (let i = 0; i < matrix.length; i++) {
+        if (matrix[i][v] && !visited[i]) dfs2(i, comp);
+      }
+    }
+
+    for (let i = 0; i < matrix.length; i++) {
+      if (!visited[i]) dfs1(i);
+    }
+
+    visited.fill(false);
+    order.reverse();
+
+    for (const v of order) {
+      if (!visited[v]) {
+        const comp = [];
+        dfs2(v, comp);
+        components.push(comp);
+      }
+    }
+
+    return components;
+  }
+
+
+  function calculateBFS(matrix, start) {
+    const visited = Array(matrix.length).fill(false);
+    const result = [];
+    const queue = [];
+
+    queue.push(start);
+    visited[start] = true;
+
+    while (queue.length > 0) {
+      const node = queue.shift();
+      result.push(node);
+
+      const neighbors = [];
+      for (let i = 0; i < matrix.length; i++) {
+        if (matrix[node][i] && !visited[i]) {
+          neighbors.push(i);
+          visited[i] = true;
+        }
+      }
+
+      neighbors.sort((a, b) => a - b);
+      queue.push(...neighbors);
+    }
+
+    return result;
+  }
+
+  function generateRandomUndirectedGraph(n, edgeProb) {
+    const matrix = Array.from({ length: n }, () => Array(n).fill(0));
+    for (let i = 0; i < n; i++) {
+      for (let j = i + 1; j < n; j++) {
+        if (Math.random() < edgeProb) {
+          matrix[i][j] = 1;
+          matrix[j][i] = 1;
+        }
+      }
+    }
+    return matrix;
+  }
+
+  function greedyColoring(matrix) {
+    const n = matrix.length;
+    const result = Array(n).fill(-1);
+    result[0] = 0;
+    const available = Array(n).fill(true);
+
+    for (let u = 1; u < n; u++) {
+      for (let i = 0; i < n; i++) {
+        if (matrix[u][i] === 1 && result[i] !== -1) {
+          available[result[i]] = false;
+        }
+      }
+
+      for (let c = 0; c < n; c++) {
+        if (available[c]) {
+          result[u] = c;
+          break;
+        }
+      }
+
+      available.fill(true);
+    }
+
+    return result;
+  }
+
+
+  function generateRandomAdjMatrix(n) {
+    const matrix = Array.from({ length: n }, () =>
+      Array.from({ length: n }, () => (Math.random() > 0.7 ? 1 : 0))
+    );
+    for (let i = 0; i < n; i++) matrix[i][i] = 0;
+    return matrix;
+  }
+
+  function calculateDFS(matrix, start) {
+    const visited = Array(matrix.length).fill(false);
+    const result = [];
+
+    function dfs(v) {
+      visited[v] = true;
+      result.push(v);
+      const neighbors = [];
+      for (let i = 0; i < matrix.length; i++) {
+        if (matrix[v][i] && !visited[i]) neighbors.push(i);
+      }
+      neighbors.sort((a, b) => a - b);
+      for (const u of neighbors) dfs(u);
+    }
+
+    dfs(start);
+    return result;
   }
 
   function isLessOrEqual(i, j, vars) {
@@ -282,7 +513,7 @@ io.on('connection', (socket) => {
     }
     return true;
   }
-  
+
 
   function checkS(vector) {
     const len = vector.length;
@@ -539,7 +770,10 @@ io.on('connection', (socket) => {
 
   // Проверка ответа
   function checkAnswer(playerAnswer, correctAnswer) {
-    if (typeof playerAnswer === 'string') {
+    if (typeof correctAnswer === 'string') {
+      return playerAnswer.trim().toUpperCase() === correctAnswer.trim().toUpperCase();
+    }
+    else if (typeof playerAnswer === 'number') {
       return playerAnswer === correctAnswer;
     }
     else if (playerAnswer.dummy !== undefined) {
@@ -553,6 +787,9 @@ io.on('connection', (socket) => {
         playerAnswer.S === correctAnswer.S &&
         playerAnswer.M === correctAnswer.M &&
         playerAnswer.L === correctAnswer.L;
+    }
+    else if (typeof correctAnswer === 'number') {
+      return playerAnswer === correctAnswer;
     }
     else {
       // Для уровня 6
@@ -665,7 +902,7 @@ io.on('connection', (socket) => {
 
 // Случайный выбор уровня
 function getRandomLevel() {
-  const levels = [1, 2, 3, 4, 5, 6];
+  const levels = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11];
   return levels[Math.floor(Math.random() * levels.length)];
 }
 

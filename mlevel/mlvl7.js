@@ -22,29 +22,99 @@ document.addEventListener('DOMContentLoaded', () => {
     let vertices = [];
     let adjacencyMatrix = [];
     let currentNodes = 0;
-    let startVertex;
+    let startVertex = 0;
+    let isMultiplayer = false;
+    let socket = null;
+    let roomCode = '';
+    let hasAnswered = false;
+    let correctAnswer = '';
 
-    elements.checkBtn.addEventListener('click', checkAnswer);
+    const params = new URLSearchParams(window.location.search);
+    isMultiplayer = params.get('mode') === 'multiplayer';
+    roomCode = params.get('room');
 
-    elements.userAnswerInput.addEventListener('input', function() {
+    if (isMultiplayer) {
+        socket = io('http://localhost:3000');
+
+        const task = JSON.parse(localStorage.getItem('currentTask'));
+        if (task) {
+            adjacencyMatrix = task.matrix;
+            startVertex = task.start;
+            currentNodes = adjacencyMatrix.length;
+            correctAnswer = task.correctAnswer;
+            renderMatrix(adjacencyMatrix);
+            updateGraph();
+        }
+
+        elements.checkBtn.textContent = 'Готов';
+
+        socket.on('showResults', () => {
+            window.location.href = `../results.html?room=${roomCode}`;
+        });
+
+        socket.on('timeUpdate', (timeLeft) => {
+            if (timeLeft <= 10) {
+                showFeedback(`Осталось ${timeLeft} секунд!`, 'error');
+            }
+        });
+    } 
+    else {
+        generateMatrix();
+    }
+
+    elements.checkBtn.addEventListener('click', () => {
+        if (hasAnswered) return;
+
+        const userAnswer = elements.userAnswerInput.value.trim().toUpperCase();
+        if (!userAnswer || !/^[A-Z\s]+$/.test(userAnswer)) {
+            showFeedback('Введите корректный порядок обхода (заглавные буквы через пробел)', 'error');
+            return;
+        }
+
+        const userOrder = userAnswer.split(/\s+/).filter(Boolean);
+
+        if (isMultiplayer) {
+            hasAnswered = true;
+            elements.checkBtn.disabled = true;
+            elements.checkBtn.style.opacity = '0.5';
+            elements.checkBtn.style.cursor = 'not-allowed';
+
+            socket.emit('playerAnswer', {
+                room: roomCode,
+                answer: userOrder.join(' '),
+                timestamp: Date.now(),
+                correctAnswer: correctAnswer
+            });
+
+            showFeedback('Ответ отправлен! Ожидаем других игроков...', 'info');
+        } 
+        else {
+            const dfsOrder = calculateDFS(adjacencyMatrix, startVertex);
+            const expected = dfsOrder.map(i => String.fromCharCode(65 + i));
+            if (JSON.stringify(expected) === JSON.stringify(userOrder)) {
+                showFeedback('✅ Правильно!', 'correct');
+            } 
+            else {
+                showFeedback(`❌ Неправильно. Правильный порядок: ${expected.join(' → ')}`, 'incorrect');
+            }
+
+            elements.checkBtn.style.display = 'none';
+        }
+    });
+
+    elements.userAnswerInput.addEventListener('input', function () {
         this.value = this.value.toUpperCase().replace(/[^A-Z\s]/g, '');
     });
 
-    function generateMatrix() {
-        const n = Math.floor(Math.random() * 4) + 1;
-        currentNodes = n;
+    function renderMatrix(matrix) {
         elements.matrixContainer.innerHTML = '<div class="matrix-wrapper"></div>';
         const wrapper = elements.matrixContainer.querySelector('.matrix-wrapper');
-
-        elements.feedback.textContent = '';
-        elements.feedback.className = 'feedback';
-        elements.userAnswerInput.value = '';
-        elements.checkBtn.style.display = 'inline-block';
 
         const table = document.createElement('table');
         const header = document.createElement('tr');
         header.appendChild(document.createElement('th'));
 
+        const n = matrix.length;
         for (let j = 0; j < n; j++) {
             const th = document.createElement('th');
             th.textContent = String.fromCharCode(65 + j);
@@ -62,12 +132,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 const cell = document.createElement('td');
                 const input = document.createElement('input');
                 input.type = 'number';
-                input.min = '0';
-                input.max = '1';
-                input.value = i === j ? '0' : Math.random() > 0.7 ? '1' : '0';
-                input.dataset.row = i;
-                input.dataset.col = j;
-                input.addEventListener('change', updateGraph);
+                input.value = matrix[i][j];
+                input.readOnly = true;
                 cell.appendChild(input);
                 row.appendChild(cell);
             }
@@ -75,80 +141,52 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         wrapper.appendChild(table);
-
-        const inputs = elements.matrixContainer.querySelectorAll('input');
-        inputs.forEach(input => {
-            input.readOnly = true;
-        });
-        startVertex = Math.floor(Math.random() * n);
-        updateGraph();
     }
 
     function updateGraph() {
         elements.graphContainer.innerHTML = '';
         vertices = [];
-        adjacencyMatrix = [];
+        const n = adjacencyMatrix.length;
 
-        for (let i = 0; i < currentNodes; i++) {
+        for (let i = 0; i < n; i++) {
             vertices.push(new Vertex(String.fromCharCode(65 + i)));
         }
 
-        for (let i = 0; i < currentNodes; i++) {
-            adjacencyMatrix[i] = [];
-            for (let j = 0; j < currentNodes; j++) {
-                const input = document.querySelector(`input[data-row='${i}'][data-col='${j}']`);
-                const value = parseInt(input.value);
-                adjacencyMatrix[i][j] = value;
-                if (value === 1 && i !== j) {
+        for (let i = 0; i < n; i++) {
+            for (let j = 0; j < n; j++) {
+                if (adjacencyMatrix[i][j] === 1 && i !== j) {
                     vertices[i].addEdge(vertices[j]);
                 }
             }
         }
 
-        const nodes = new vis.DataSet(
-            vertices.map((v, i) => ({
-                id: i,
-                label: v.name,
-                color: i === startVertex ? { background: '#ff6666', border: '#cc0000' } : undefined,
-                font: { color: i === startVertex ? '#ffffff' : undefined }
-            }))
-        );
+        const nodes = new vis.DataSet(vertices.map((v, i) => ({
+            id: i,
+            label: v.name,
+            color: i === startVertex ? { background: '#ff6666', border: '#cc0000' } : undefined,
+            font: { color: i === startVertex ? '#ffffff' : undefined }
+        })));
 
         const edges = new vis.DataSet([]);
         vertices.forEach((vertex, i) => {
-            vertex.adjacent.forEach(adjVertex => {
-                const j = vertices.indexOf(adjVertex);
+            vertex.adjacent.forEach(adj => {
+                const j = vertices.indexOf(adj);
                 edges.add({ from: i, to: j, arrows: 'to', width: 2 });
             });
         });
 
         const data = { nodes, edges };
         const options = {
-            physics: { enabled: false },
+            physics: false,
             interaction: { dragNodes: false, dragView: false, zoomView: false, selectable: false },
             nodes: { font: { size: 16 } },
-            edges: {
-                smooth: false,
-                arrows: { to: { enabled: true, scaleFactor: 0.5 } }
-            },
+            edges: { smooth: false, arrows: { to: { enabled: true, scaleFactor: 0.5 } } },
             layout: { improvedLayout: true, randomSeed: 1 },
-            configure: { enabled: false }
+            configure: false
         };
 
         const network = new vis.Network(elements.graphContainer, data, options);
-
-        network.once('stabilizationIterationsDone', () => {
-            network.fit({ animation: { duration: 0 }, scale: 1.0 });
-            setTimeout(() => {
-                const canvas = elements.graphContainer.querySelector('canvas');
-                if (canvas && canvas.width > elements.graphContainer.clientWidth) {
-                    network.moveTo({
-                        scale: elements.graphContainer.clientWidth / canvas.width * 0.9,
-                        animation: { duration: 0 }
-                    });
-                }
-            }, 50);
-        });
+        network.once('stabilizationIterationsDone', () => network.fit({ animation: { duration: 0 } }));
     }
 
     function calculateDFS(matrix, start) {
@@ -166,9 +204,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
             neighbors.sort((a, b) => a - b);
             for (const neighbor of neighbors) {
-                if (!visited[neighbor]) {
-                    traverse(neighbor);
-                }
+                if (!visited[neighbor]) traverse(neighbor);
             }
         }
 
@@ -176,62 +212,17 @@ document.addEventListener('DOMContentLoaded', () => {
         return result;
     }
 
-    function checkAnswer() {
-        if (!elements.matrixContainer.querySelector('table')) {
-            showFeedback("Сначала создайте матрицу", "error");
-            return;
-        }
-
-        const n = currentNodes;
-
-        const userAnswer = elements.userAnswerInput.value.trim();
-        if (!userAnswer) {
-            showFeedback("Введите порядок обхода", "error");
-            return;
-        }
-
-        if (!/^[A-Z\s]+$/.test(userAnswer)) {
-            showFeedback("Вводите только заглавные английские буквы (A-Z), разделённые пробелами", "error");
-            return;
-        }
-
-        const userOrderLetters = userAnswer.split(/\s+/).filter(x => x);
-        const correctDFS = calculateDFS(adjacencyMatrix, startVertex);
-        const reachableCount = correctDFS.length;
-
-        if (userOrderLetters.length !== reachableCount) {
-            showFeedback(`Введите обход для ${reachableCount} достижимых вершин`, "error");
-            return;
-        }
-
-        const validLetters = new Set();
-        for (let i = 0; i < reachableCount; i++) {
-            validLetters.add(String.fromCharCode(65 + correctDFS[i]));
-        }
-
-        const usedLetters = new Set();
-        for (const letter of userOrderLetters) {
-            if (!validLetters.has(letter)) {
-                showFeedback(`Вершина "${letter}" недостижима из начальной`, "error");
-                return;
-            }
-            if (usedLetters.has(letter)) {
-                showFeedback(`Вершина "${letter}" повторяется`, "error");
-                return;
-            }
-            usedLetters.add(letter);
-        }
-
-        const userOrder = userOrderLetters.map(l => l.charCodeAt(0) - 65);
-
-        if (JSON.stringify(userOrder) === JSON.stringify(correctDFS)) {
-            showFeedback("✅ Правильно! Порядок обхода вершин верный", "correct");
-        } else {
-            const correctOrderStr = correctDFS.map(i => String.fromCharCode(65 + i)).join(' → ');
-            showFeedback(`❌ Неправильно. Правильный порядок: ${correctOrderStr}`, "incorrect");
-        }
-
-        elements.checkBtn.style.display = 'none';
+    function generateMatrix() {
+        const n = Math.floor(Math.random() * 4) + 2;
+        currentNodes = n;
+        adjacencyMatrix = Array.from({ length: n }, (_, i) =>
+            Array.from({ length: n }, (_, j) =>
+                i === j ? 0 : Math.random() > 0.7 ? 1 : 0
+            )
+        );
+        startVertex = Math.floor(Math.random() * n);
+        renderMatrix(adjacencyMatrix);
+        updateGraph();
     }
 
     function showFeedback(message, type) {
@@ -241,6 +232,4 @@ document.addEventListener('DOMContentLoaded', () => {
             elements.feedback.className = `feedback ${type}`;
         }, 2000);
     }
-
-    generateMatrix();
 });
