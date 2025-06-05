@@ -1,10 +1,10 @@
 const express = require('express');
 const socketIo = require('socket.io');
-const http = require('http');
+const https = require('https');
 const path = require('path');
 
 const app = express();
-const server = http.createServer(app);
+const server = https.createServer(app);
 const io = socketIo(server, {
   cors: {
     origin: "*",
