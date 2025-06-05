@@ -32,7 +32,7 @@ document.addEventListener('DOMContentLoaded', () => {
     roomCode = params.get('room');
 
     if (isMultiplayer) {
-        socket = io('http://localhost:3000');
+        socket = io('https://lichinkis.ru/');
         const task = JSON.parse(localStorage.getItem('currentTask'));
         if (task) {
             capacityMatrix = task.matrix;

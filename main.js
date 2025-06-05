@@ -361,7 +361,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // Подключение к серверу Socket.IO
-    const socket = io('http://localhost:3000');
+    const socket = io('https://lichinkis.ru/');
 
     let currentRoom = null;
     let isHost = false;
