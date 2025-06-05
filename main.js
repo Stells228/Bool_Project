@@ -24,6 +24,8 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
+    let selectedBlock = 'all';
+
     // Обработчик кнопки выхода
     document.querySelector('.sign-out-btn')?.addEventListener('click', () => {
         auth.signOut().then(() => {
@@ -366,12 +368,6 @@ document.addEventListener('DOMContentLoaded', () => {
     let playerReady = false;
 
     function createRoom(settings) {
-        // Проверяем, что выбрана тематика "Булевы функции"
-        if (settings.mode !== 'bool') {
-            alert('Для мультиплеера доступна только тематика "Булевы функции"');
-            return;
-        }
-
         // Проверяем корректность количества игроков и уровней
         if (settings.maxPlayers < 2 || settings.maxPlayers > 4) {
             alert('Количество игроков должно быть от 2 до 4');
@@ -383,12 +379,15 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
+        let selectedBlock = document.querySelector('.block-option.selected')?.dataset.block || 'bool';
+        settings.block = selectedBlock;
+
         socket.emit('createRoom', settings, (response) => {
             if (response.success) {
                 currentRoom = response.roomCode;
                 isHost = true;
                 showLobbyWindow(response.roomCode, settings.maxPlayers);
-            } 
+            }
             else {
                 alert('Ошибка при создании комнаты: ' + response.message);
             }
@@ -424,6 +423,22 @@ document.addEventListener('DOMContentLoaded', () => {
         const playerSlots = document.querySelector('.player-slots');
         const readyBtn = document.querySelector('.ready-btn');
         const startBtn = document.querySelector('.start-game-btn');
+
+        const blockNames = {
+            bool: 'Булевы функции',
+            graphs: 'Графы',
+            all: 'Все уровни'
+        };
+
+        const blockInfo = document.createElement('p');
+        blockInfo.textContent = `Блок: ${blockNames[selectedBlock]}`;
+        blockInfo.className = 'block-info';
+        blockInfo.style.color = '#ffcc80';
+        blockInfo.style.margin = '10px 0';
+        blockInfo.style.textAlign = 'center';
+
+        // Вставляем после кода комнаты
+        document.querySelector('.room-code').after(blockInfo);
 
         // Заполняем информацию о комнате
         document.querySelector('.room-code').textContent = roomCode;
@@ -468,7 +483,8 @@ document.addEventListener('DOMContentLoaded', () => {
             socket.emit('startGame', roomCode, (response) => {
                 if (response.success) {
                     console.log('Игра начата');
-                } else {
+                }
+                else {
                     alert('Ошибка: ' + response.message);
                 }
             });
@@ -498,8 +514,9 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('create-room-btn').addEventListener('click', () => {
         const settings = {
             maxPlayers: parseInt(document.getElementById('max-players').value),
-            mode: document.getElementById('game-mode').value,
-            levels: parseInt(document.getElementById('levels-count').value)
+            selectedBlock: document.getElementById('game-mode').value,
+            levels: parseInt(document.getElementById('levels-count').value),
+            block: selectedBlock,          
         };
 
         document.getElementById('lobby-window').style.display = 'flex';
@@ -595,6 +612,17 @@ document.addEventListener('DOMContentLoaded', () => {
                 document.getElementById(`${tab.dataset.tab}-tab`).style.display = 'block';
             });
         });
+
+        document.querySelectorAll('.block-option').forEach(option => {
+            option.addEventListener('click', function () {
+                document.querySelectorAll('.block-option').forEach(opt => {
+                    opt.classList.remove('selected');
+                });
+                this.classList.add('selected');
+                selectedBlock = this.dataset.block; // Обновляем значение
+            });
+        });
+        document.querySelector('.block-option[data-block="all"]').classList.add('selected');
     }
 
     document.getElementById('fab-multiplayer').onclick = () => {

@@ -14,6 +14,8 @@ document.addEventListener('DOMContentLoaded', () => {
     let roomCode = '';
     let hasAnswered = false;
 
+    const memoL = new Map();
+
 
     const classCheckboxes = {
         T0: document.createElement('input'),
@@ -30,16 +32,7 @@ document.addEventListener('DOMContentLoaded', () => {
         generateTruthTable(n, vector);
     }
 
-    // Вычисление принадлежности функции к классам
-    function computeClasses(vector) {
-        return {
-            T0: T0(vector),
-            T1: T1(vector),
-            S: S(vector),
-            M: M(vector),
-            L: L(vector)
-        };
-    }
+
 
     // Класс T0: функция обращается в 0 при всех 0 на входе
     function T0(vector) {
@@ -85,7 +78,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // Класс L: линейная функция
-    const memoL = new Map();
     function L(vector) {
         if (memoL.has(vector)) return memoL.get(vector);
 
@@ -162,6 +154,17 @@ if (isMultiplayer) {
         }
     });
 }
+
+    // Вычисление принадлежности функции к классам
+    function computeClasses(vector) {
+        return {
+            T0: T0(vector),
+            T1: T1(vector),
+            S: S(vector),
+            M: M(vector),
+            L: L(vector)
+        };
+    }
 
     // Генерация таблицы истинности
     function generateTruthTable(n, vector) {

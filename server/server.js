@@ -12,6 +12,12 @@ const io = socketIo(server, {
   }
 });
 
+const LEVEL_BLOCKS = {
+  bool: [1, 2, 3, 4, 5, 6],
+  graphs: [7, 8, 9, 10, 11],
+  all: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]
+};
+
 const rooms = new Map();
 const playerAnswers = new Map();
 const playerScores = new Map();
@@ -23,8 +29,8 @@ io.on('connection', (socket) => {
 
   socket.on('createRoom', (settings, callback) => {
     try {
-      if (settings.mode !== 'bool') {
-        return callback({ success: false, message: 'Доступна только тематика "Булевы функции"' });
+      if (!settings.block || !LEVEL_BLOCKS[settings.block]) {
+        return callback({ success: false, message: 'Неверный блок уровней' });
       }
 
       const roomCode = generateRoomCode();
@@ -43,7 +49,9 @@ io.on('connection', (socket) => {
           readyForNext: false
         }],
         gameStarting: false,
-        gameFinished: false
+        gameFinished: false,
+        block: settings.block,
+        availableLevels: [...LEVEL_BLOCKS[settings.block]]
       };
 
       rooms.set(roomCode, newRoom);
@@ -79,6 +87,15 @@ io.on('connection', (socket) => {
       if (room.players.length >= room.maxPlayers) {
         return callback({ success: false, message: 'Комната заполнена' });
       }
+
+      const blockNames = {
+        bool: 'Булевы функции',
+        graphs: 'Графы',
+        all: 'Все уровни'
+      };
+
+      document.getElementById('level-block-info').textContent = 
+        `Блок: ${blockNames[room.block]}`;
 
       const player = {
         id: socket.id,
@@ -128,7 +145,7 @@ io.on('connection', (socket) => {
     const allReady = room.players.every(p => p.ready);
     if (allReady) {
       room.gameStaring = true;
-      const level = getRandomLevel();
+      const level = getRandomLevelFromBlock(room);
       const task = generateTask(level);
       room.currentTask = task;
       io.to(roomCode).emit('gameStarting', { level, task });
@@ -323,6 +340,19 @@ io.on('connection', (socket) => {
       };
     }
 
+  }
+
+  function getRandomLevelFromBlock(room) {
+    if (room.availableLevels.length === 0) {
+      // Если уровни закончились - восстанавливаем исходный набор
+      room.availableLevels = [...LEVEL_BLOCKS[room.block]];
+    }
+    const randomIndex = Math.floor(Math.random() * room.availableLevels.length);
+    const level = room.availableLevels[randomIndex];
+    // Удаляем выбранный уровень, чтобы не повторялся
+    room.availableLevels.splice(randomIndex, 1);
+
+    return level;
   }
 
   function calculateMaxFlow(matrix, source, sink) {
@@ -747,7 +777,7 @@ io.on('connection', (socket) => {
     }
     else {
       // Генерируем новое задание
-      const nextLevel = getRandomLevel();
+      const nextLevel = getRandomLevelFromBlock(room);
       const task = generateTask(nextLevel);
       room.currentTask = task;
 

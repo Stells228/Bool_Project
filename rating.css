@@ -214,3 +214,10 @@
     color: #ffcc00;
     font-size: 1.1rem;
 }
+
+body {
+    -webkit-user-select: none; /* Safari */
+    -moz-user-select: none; /* Firefox */
+    -ms-user-select: none; /* IE/Edge */
+    user-select: none; /* Standard */
+}

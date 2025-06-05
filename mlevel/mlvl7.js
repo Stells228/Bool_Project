@@ -65,6 +65,10 @@ document.addEventListener('DOMContentLoaded', () => {
     elements.checkBtn.addEventListener('click', () => {
         if (hasAnswered) return;
 
+        if (elements.checkBtn) {
+            elements.checkBtn.addEventListener('click', checkAnswer);
+        }
+
         const userAnswer = elements.userAnswerInput.value.trim().toUpperCase();
         if (!userAnswer || !/^[A-Z\s]+$/.test(userAnswer)) {
             showFeedback('Введите корректный порядок обхода (заглавные буквы через пробел)', 'error');

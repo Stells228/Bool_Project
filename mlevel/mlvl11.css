@@ -994,3 +994,10 @@ input[type="number"] {
     background: rgba(142, 155, 163, 0.8); 
     color: white;
 }
+
+body {
+    -webkit-user-select: none; /* Safari */
+    -moz-user-select: none; /* Firefox */
+    -ms-user-select: none; /* IE/Edge */
+    user-select: none; /* Standard */
+}

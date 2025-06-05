@@ -771,3 +771,10 @@ h1 {
 .select-options.active {
     display: block;
 }
+
+body {
+    -webkit-user-select: none; /* Safari */
+    -moz-user-select: none; /* Firefox */
+    -ms-user-select: none; /* IE/Edge */
+    user-select: none; /* Standard */
+}
