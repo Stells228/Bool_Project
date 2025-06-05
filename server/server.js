@@ -5,12 +5,7 @@ const path = require('path');
 
 const app = express();
 const server = https.createServer(app);
-const io = socketIo(server, {
-  cors: {
-    origin: "*",
-    methods: ["GET", "POST"]
-  }
-});
+const io = socketIo(server);
 
 const LEVEL_BLOCKS = {
   bool: [1, 2, 3, 4, 5, 6],
