@@ -4,69 +4,28 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Оффлайн режим</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      text-align: center;
-      padding: 20px;
-      background: linear-gradient(to bottom, #416190, #776f98);
-      color: white;
-      height: 100vh;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-    }
-    h1 {
-      font-size: 24px;
-    }
-    p {
-      font-size: 16px;
-      margin-bottom: 20px;
-    }
-  </style>
+  <link rel="stylesheet" href="offline.css">
 </head>
 <body>
-  <h1>Оффлайн режим</h1>
-  <p>Приложение работает без интернета, но некоторые функции могут быть недоступны.</p>
-  <button onclick="window.location.reload()">Попробовать снова</button>
+  <div class="offline-container">
+    <h1>Оффлайн режим</h1>
+    <p>Приложение работает без интернета, но некоторые функции могут быть недоступны.</p>
+    
+    <div class="offline-content">
+      <div class="offline-section">
+        <h2>Булевы функции</h2>
+        <div class="lecture-grid" id="bool-lectures"></div>
+      </div>
+      
+      <div class="offline-section">
+        <h2>Теория графов</h2>
+        <div class="lecture-grid" id="graph-lectures"></div>
+      </div>
+    </div>
+    
+    <button onclick="window.location.reload()" class="reload-btn">Попробовать снова</button>
+  </div>
 
-  <script>
-    // Конфиг Firebase 
-    const firebaseConfig = {
-      apiKey: "AIzaSyDlHLCPtlITZ4ezjYWbUYA3r70BgensOl8",
-      authDomain: "hehe-63f6d.firebaseapp.com",
-      projectId: "hehe-63f6d",
-      storageBucket: "hehe-63f6d.appspot.com",
-      messagingSenderId: "54586209991",
-      appId: "1:54586209991:web:ecaa663106b0160a1cb0e2",
-      measurementId: "G-F190E6ZZVY"
-    };
-  
-    // Инициализация Firebase
-    firebase.initializeApp(firebaseConfig);
-  
-    // Analytics
-    if (firebase.analytics) {
-      firebase.analytics();
-    }
-  
-    //  оффлайн-поддержка
-    if (firebase.firestore) {
-      const db = firebase.firestore();
-      db.enablePersistence()
-        .catch((err) => {
-          console.warn("Оффлайн-поддержка Firestore не доступна:", err.code);
-        });
-    }
-  </script>
-  
-
-  <!-- Firebase App -->
-  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
-  <!-- Firebase Analytics -->
-  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-analytics-compat.js"></script>
-  <!-- Firestore -->
-  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
+  <script src="offline.js"></script>
 </body>
 </html>
